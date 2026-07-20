@@ -160,7 +160,7 @@ def main():
 
     out_path = DATA_DIR / "signals.json"
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(signals, f, ensure_ascii=False, indent=2)
+        json.dump(signals, f, ensure_ascii=False, indent=2, allow_nan=False)
     print(f"信号已保存到 {out_path}")
     print(f"红:{signals['red_count']} 黄:{signals['yellow_count']} 绿:{signals['green_count']} 灰:{signals['gray_count']}")
     return signals

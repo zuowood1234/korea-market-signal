@@ -4,6 +4,7 @@ A股拐点信号追踪 - 数据获取脚本
 每日17:30由GitHub Actions触发
 """
 import json
+import math
 import os
 import datetime as dt
 from pathlib import Path
@@ -12,6 +13,18 @@ import traceback
 import akshare as ak
 import pandas as pd
 import yfinance as yf
+
+
+def clean_nan(obj):
+    """递归把NaN/Infinity替换成None，避免浏览器JSON.parse失败"""
+    if isinstance(obj, float) and (math.isnan(obj) or math.isinf(obj)):
+        return None
+    if isinstance(obj, dict):
+        return {k: clean_nan(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [clean_nan(v) for v in obj]
+    return obj
+
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -344,14 +357,16 @@ def main():
             print(f"    ERROR: {e}")
             traceback.print_exc()
 
+    output = clean_nan(output)
+
     out_path = DATA_DIR / "latest.json"
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
+        json.dump(output, f, ensure_ascii=False, indent=2, allow_nan=False)
     print(f"\n数据已保存到 {out_path}")
 
     hist_path = DATA_DIR / "history" / f"{TODAY}.json"
     with open(hist_path, "w", encoding="utf-8") as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
+        json.dump(output, f, ensure_ascii=False, indent=2, allow_nan=False)
     print(f"历史归档到 {hist_path}")
 
     return output

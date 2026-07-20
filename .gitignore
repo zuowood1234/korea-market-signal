@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.pyo
+.workbuddy/
+.DS_Store
+*.log

@@ -1,0 +1,73 @@
+{
+  "date": "2026-07-20",
+  "update_time": "2026-07-20 04:39:42",
+  "signals": {
+    "erp": {
+      "status": "yellow",
+      "label": "中性",
+      "note": "位于均值±1X区间（5.275%-6.825%）",
+      "current_value": 5.778,
+      "unit": "%",
+      "name": "ERP 股权风险溢价",
+      "subtitle": "沪深300PE · 5年窗口"
+    },
+    "turnover": {
+      "status": "red",
+      "label": "顶部预警",
+      "note": "单日换手率2.809%，市场沸腾",
+      "current_value": 2.809,
+      "unit": "%",
+      "name": "换手率",
+      "subtitle": "成交额/流通市值 · 单日"
+    },
+    "margin": {
+      "status": "green",
+      "label": "底部信号",
+      "note": "两融交易占比4.02%，杠杆出清",
+      "current_value": 4.02,
+      "unit": "%",
+      "name": "两融交易占比",
+      "subtitle": "两融买入额/成交额"
+    },
+    "etf_flow": {
+      "status": "yellow",
+      "label": "中性",
+      "note": "单日净流向2.24亿，正常波动",
+      "current_value": 2.24,
+      "unit": "亿",
+      "name": "ETF净流向",
+      "subtitle": "5只宽基合计净流入"
+    },
+    "ma": {
+      "status": "red",
+      "label": "顶部预警",
+      "note": "连续12日跌破20日线",
+      "current_value": 4529.1,
+      "unit": "",
+      "name": "均线",
+      "subtitle": "沪深300 · 20日/250日线"
+    },
+    "vix": {
+      "status": "yellow",
+      "label": "中性",
+      "note": "VIX=18.77，正常情绪",
+      "current_value": 18.77,
+      "unit": "",
+      "name": "VIX",
+      "subtitle": "CBOE恐慌指数"
+    },
+    "north": {
+      "status": "yellow",
+      "label": "中性",
+      "note": "3日累计净流向-17.36亿",
+      "current_value": -17.36,
+      "unit": "亿",
+      "name": "北向资金",
+      "subtitle": "3日累计净流向"
+    }
+  },
+  "red_count": 2,
+  "green_count": 1,
+  "yellow_count": 4,
+  "gray_count": 0
+}

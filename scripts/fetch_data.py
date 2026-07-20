@@ -110,8 +110,8 @@ def fetch_erp():
 
 
 def fetch_turnover():
-    """换手率 = 全市场成交额 / 流通市值。单日。"""
-    result = {"name": "换手率", "subtitle": "成交额/流通市值 · 单日", "unit": "%", "data_source": "akshare", "current_value": None, "history": []}
+    """换手率 = 全市场成交额 / 流通市值。当前值用legu，历史用沪深300成交额趋势。"""
+    result = {"name": "换手率", "subtitle": "换手率% · 图表为成交额(亿)", "unit": "%", "data_source": "akshare", "current_value": None, "history": []}
     errors = []
 
     df, err = safe_fetch(ak.stock_market_activity_legu)
@@ -140,27 +140,42 @@ def fetch_turnover():
         elif serr:
             errors.append(serr)
 
-    hist, herr = safe_fetch(ak.stock_market_activity_legu)
-    result["history"] = []
-    if herr:
+    hist_df, herr = safe_fetch(ak.index_zh_a_hist, symbol="000300", period="daily", start_date=(dt.date.today() - dt.timedelta(days=HISTORY_DAYS + 100)).strftime("%Y%m%d"), end_date=dt.date.today().strftime("%Y%m%d"))
+    if hist_df is not None and len(hist_df) > 0:
+        try:
+            hist_df = hist_df.copy()
+            hist_df["日期"] = pd.to_datetime(hist_df["日期"])
+            hist_df = hist_df.sort_values("日期")
+            hist_df["成交额"] = pd.to_numeric(hist_df["成交额"], errors="coerce")
+            result["history"] = [{"date": d.strftime("%Y-%m-%d"), "value": round(v / 1e8, 2)} for d, v in zip(hist_df["日期"], hist_df["成交额"]) if pd.notna(v)]
+        except Exception as e:
+            errors.append(f"hist parse: {e}")
+    elif herr:
         errors.append(herr)
+
     if errors:
         result["error"] = "; ".join(errors[:3])
     return result
 
 
 def fetch_margin():
-    """两融交易占比 = 融资买入额 / 全市场成交额。用上交所两融数据。"""
-    result = {"name": "两融交易占比", "subtitle": "两融买入额/成交额", "unit": "%", "data_source": "akshare", "current_value": None, "history": [], "extra": {}}
+    """两融交易占比 = 融资买入额 / 全市场成交额。历史用上交所融资买入额趋势。"""
+    result = {"name": "两融交易占比", "subtitle": "占比% · 图表为融资买入额(亿)", "unit": "%", "data_source": "akshare", "current_value": None, "history": [], "extra": {}}
     errors = []
 
-    sh_df, sherr = safe_fetch(ak.stock_margin_sse, start_date=(dt.date.today() - dt.timedelta(days=10)).strftime("%Y%m%d"), end_date=dt.date.today().strftime("%Y%m%d"))
+    start_date_3y = (dt.date.today() - dt.timedelta(days=HISTORY_DAYS + 100)).strftime("%Y%m%d")
+    sh_df, sherr = safe_fetch(ak.stock_margin_sse, start_date=start_date_3y, end_date=dt.date.today().strftime("%Y%m%d"))
     if sherr:
         errors.append(sherr)
 
     if sh_df is not None and len(sh_df) > 0:
         try:
-            latest = sh_df.iloc[0]
+            sh_df = sh_df.copy()
+            sh_df["日期"] = sh_df["信用交易日期"].astype(str)
+            sh_df["融资买入额"] = pd.to_numeric(sh_df["融资买入额"], errors="coerce")
+            sh_df = sh_df.sort_values("日期")
+            result["history"] = [{"date": d, "value": round(v / 1e8, 2)} for d, v in zip(sh_df["日期"], sh_df["融资买入额"]) if pd.notna(v)]
+            latest = sh_df.iloc[-1]
             buy_amount = float(latest["融资买入额"])
             balance = float(latest["融资余额"])
             result["extra"]["sh_buy"] = round(buy_amount / 1e8, 2)
@@ -188,38 +203,48 @@ def fetch_margin():
 
 
 def fetch_etf_flow():
-    """5只宽基ETF净流向（份额变化×近似净值）。"""
-    result = {"name": "ETF净流向", "subtitle": "5只宽基合计净流入", "unit": "亿", "data_source": "akshare", "current_value": None, "history": [], "extra": {"etfs": {}}}
+    """5只宽基ETF净流向。当前值为单日净流向，历史为合计成交额趋势。"""
+    result = {"name": "ETF净流向", "subtitle": "净流向(亿) · 图表为成交额(亿)", "unit": "亿", "data_source": "akshare", "current_value": None, "history": [], "extra": {"etfs": {}}}
     errors = []
     total_flow = 0
     etfs_detail = {}
+    start_date_3y = (dt.date.today() - dt.timedelta(days=HISTORY_DAYS + 100)).strftime("%Y%m%d")
+    all_dates = None
+    combined_amount = None
 
     for code, name in ETF_CODES.items():
-        df, err = safe_fetch(ak.fund_etf_hist_em, symbol=code, period="daily", start_date=(dt.date.today() - dt.timedelta(days=15)).strftime("%Y%m%d"), end_date=dt.date.today().strftime("%Y%m%d"), adjust="")
+        df, err = safe_fetch(ak.fund_etf_hist_em, symbol=code, period="daily", start_date=start_date_3y, end_date=dt.date.today().strftime("%Y%m%d"), adjust="")
         if err or df is None or len(df) < 2:
             if err:
                 errors.append(f"{code}: {err}")
             continue
         try:
             df = df.copy()
-            df["日期"] = pd.to_datetime(df["日期"])
+            df["日期"] = pd.to_datetime(df["日期"]).dt.strftime("%Y-%m-%d")
             df = df.sort_values("日期")
+            df["成交量"] = pd.to_numeric(df["成交量"], errors="coerce")
+            df["收盘"] = pd.to_numeric(df["收盘"], errors="coerce")
+            df["成交额亿"] = df["成交量"] * df["收盘"] / 1e8
+
             latest = df.iloc[-1]
             prev = df.iloc[-2]
-            if "成交量" in df.columns:
-                volume = float(latest["成交量"])
-                price = float(latest["收盘"]) if "收盘" in df.columns else 0
-                prev_volume = float(prev["成交量"])
-                flow = (volume - prev_volume) * price / 1e8
-            else:
-                flow = 0
+            flow = (float(latest["成交量"]) - float(prev["成交量"])) * float(latest["收盘"]) / 1e8
             total_flow += flow
             etfs_detail[name] = round(flow, 2)
+
+            if all_dates is None:
+                all_dates = df["日期"].tolist()
+                combined_amount = df["成交额亿"].fillna(0).tolist()
+            else:
+                temp = dict(zip(df["日期"], df["成交额亿"].fillna(0)))
+                combined_amount = [a + temp.get(d, 0) for a, d in zip(combined_amount, all_dates)]
         except Exception as e:
             errors.append(f"{code} parse: {e}")
 
     result["current_value"] = round(total_flow, 2)
     result["extra"]["etfs"] = etfs_detail
+    if all_dates and combined_amount:
+        result["history"] = [{"date": d, "value": round(v, 2)} for d, v in zip(all_dates, combined_amount)]
     if errors:
         result["error"] = "; ".join(errors[:3])
     return result

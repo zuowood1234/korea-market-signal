@@ -23,6 +23,33 @@ const TIMELINE_POINTS = [
   { date: '2026-07', label: '26.7', type: 'green', desc: '十连降+破年线后见底' },
 ];
 
+const BACKTEST_DATES = [
+  { date: '2024-01-31', label: '24.1' },
+  { date: '2024-05-31', label: '24.5' },
+  { date: '2024-09-30', label: '24.9' },
+  { date: '2024-10-31', label: '24.10' },
+  { date: '2025-01-31', label: '25.1' },
+  { date: '2025-04-07', label: '25.4' },
+  { date: '2025-10-31', label: '25.10' },
+  { date: '2026-01-31', label: '26.1' },
+  { date: '2026-02-28', label: '26.2' },
+  { date: '2026-07-20', label: '26.7' },
+];
+
+function findClosestDate(dates, target) {
+  let closest = null;
+  let minDiff = Infinity;
+  const targetTime = new Date(target).getTime();
+  for (const d of dates) {
+    const diff = Math.abs(new Date(d).getTime() - targetTime);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = d;
+    }
+  }
+  return closest;
+}
+
 const STATUS_LABELS = {
   red: '顶部预警',
   yellow: '中性',
@@ -198,10 +225,20 @@ function createChart(key, data, sig) {
   if (stats.plus_1x !== undefined) markLines.push({ yAxis: stats.plus_1x, color: '#ca8a04', name: '+1X' });
   if (stats.minus_1x !== undefined) markLines.push({ yAxis: stats.minus_1x, color: '#ca8a04', name: '-1X' });
 
+  const backtestMarks = BACKTEST_DATES.map(bt => {
+    const closest = findClosestDate(dates, bt.date);
+    return closest ? {
+      xAxis: closest,
+      lineStyle: { color: '#dc2626', type: 'solid', width: 1, opacity: 0.2 },
+      label: { show: true, position: 'insideEndTop', formatter: bt.label, fontSize: 9, color: '#991b1b' },
+    } : null;
+  }).filter(Boolean);
+
   const lineColor = sig.status === 'red' ? '#dc2626' : sig.status === 'green' ? '#16a34a' : '#2563eb';
+  const allMarks = [...markLines.map(m => ({ yAxis: m.yAxis, lineStyle: { color: m.color, type: 'dashed', width: 1 }, label: { show: false } })), ...backtestMarks];
 
   const option = {
-    grid: { left: 5, right: 5, top: 5, bottom: 5 },
+    grid: { left: 5, right: 5, top: 14, bottom: 5 },
     xAxis: { type: 'category', data: dates, show: false, boundaryGap: false },
     yAxis: { type: 'value', show: false, scale: true },
     series: [{
@@ -210,15 +247,10 @@ function createChart(key, data, sig) {
       symbol: 'none',
       lineStyle: { width: 1.5, color: lineColor },
       areaStyle: { color: lineColor, opacity: 0.06 },
-      markLine: markLines.length > 0 ? {
+      markLine: allMarks.length > 0 ? {
         silent: true,
         symbol: 'none',
-        lineStyle: { type: 'dashed', width: 1 },
-        data: markLines.map(m => ({
-          yAxis: m.yAxis,
-          lineStyle: { color: m.color },
-          label: { show: false },
-        })),
+        data: allMarks,
       } : undefined,
     }],
     tooltip: {

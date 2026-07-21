@@ -41,6 +41,7 @@ ETF_CODES = {
     "159915": "创业板ETF",
     "588000": "科创50ETF",
     "510050": "上证50ETF",
+    "512100": "中证1000ETF",
 }
 
 INDEX_CODE = "000300"
@@ -159,8 +160,8 @@ def fetch_turnover():
 
 
 def fetch_margin():
-    """两融交易占比 = 融资买入额 / 全市场成交额。历史用上交所融资买入额趋势。"""
-    result = {"name": "两融交易占比", "subtitle": "占比% · 图表为融资买入额(亿)", "unit": "%", "data_source": "akshare", "current_value": None, "history": [], "extra": {}}
+    """两融交易占比 = 上交所融资买入额 / 上证综指成交额。有历史占比%。"""
+    result = {"name": "两融交易占比", "subtitle": "融资买入额/上证成交额", "unit": "%", "data_source": "akshare", "current_value": None, "history": [], "extra": {}}
     errors = []
 
     start_date_3y = (dt.date.today() - dt.timedelta(days=HISTORY_DAYS + 100)).strftime("%Y%m%d")
@@ -168,34 +169,33 @@ def fetch_margin():
     if sherr:
         errors.append(sherr)
 
-    if sh_df is not None and len(sh_df) > 0:
+    idx_df, ierr = safe_fetch(ak.index_zh_a_hist, symbol="000001", period="daily", start_date=start_date_3y, end_date=dt.date.today().strftime("%Y%m%d"))
+    if ierr:
+        errors.append(ierr)
+
+    if sh_df is not None and len(sh_df) > 0 and idx_df is not None and len(idx_df) > 0:
         try:
             sh_df = sh_df.copy()
             sh_df["日期"] = sh_df["信用交易日期"].astype(str)
             sh_df["融资买入额"] = pd.to_numeric(sh_df["融资买入额"], errors="coerce")
             sh_df = sh_df.sort_values("日期")
-            result["history"] = [{"date": d, "value": round(v / 1e8, 2)} for d, v in zip(sh_df["日期"], sh_df["融资买入额"]) if pd.notna(v)]
-            latest = sh_df.iloc[-1]
-            buy_amount = float(latest["融资买入额"])
-            balance = float(latest["融资余额"])
-            result["extra"]["sh_buy"] = round(buy_amount / 1e8, 2)
-            result["extra"]["sh_balance"] = round(balance / 1e8, 2)
-        except Exception as e:
-            errors.append(f"parse sh: {e}")
 
-    spot, serr = safe_fetch(ak.stock_zh_a_spot_em)
-    total_amount = 0
-    if spot is not None and len(spot) > 0:
-        try:
-            total_amount = float(spot["成交额"].sum())
-        except Exception as e:
-            errors.append(f"spot amount: {e}")
-    elif serr:
-        errors.append(serr)
+            idx_df = idx_df.copy()
+            idx_df["日期"] = pd.to_datetime(idx_df["日期"]).dt.strftime("%Y%m%d")
+            idx_df["成交额"] = pd.to_numeric(idx_df["成交额"], errors="coerce")
+            idx_df = idx_df[["日期", "成交额"]].dropna().sort_values("日期")
 
-    sh_buy = result.get("extra", {}).get("sh_buy", 0) or 0
-    if sh_buy > 0 and total_amount > 0:
-        result["current_value"] = round(sh_buy * 1e8 / total_amount * 100, 2)
+            merged = sh_df[["日期", "融资买入额"]].merge(idx_df, on="日期", how="inner")
+            merged = merged.dropna()
+            merged["占比"] = merged["融资买入额"] / merged["成交额"] * 100
+
+            result["history"] = [{"date": d, "value": round(v, 2)} for d, v in zip(merged["日期"], merged["占比"]) if pd.notna(v)]
+            latest = merged.iloc[-1]
+            result["current_value"] = round(float(latest["占比"]), 2)
+            result["extra"]["sh_buy"] = round(float(latest["融资买入额"]) / 1e8, 2)
+            result["extra"]["sh_amount"] = round(float(latest["成交额"]) / 1e8, 2)
+        except Exception as e:
+            errors.append(f"parse margin: {e}")
 
     if errors:
         result["error"] = "; ".join(errors[:3])
@@ -203,11 +203,12 @@ def fetch_margin():
 
 
 def fetch_etf_flow():
-    """5只宽基ETF净流向。当前值为单日净流向，历史为合计成交额趋势。"""
-    result = {"name": "ETF净流向", "subtitle": "净流向(亿) · 图表为成交额(亿)", "unit": "亿", "data_source": "akshare", "current_value": None, "history": [], "extra": {"etfs": {}}}
+    """6只宽基ETF净流向。当前值为单日净流向，历史为各ETF成交额+合计。"""
+    result = {"name": "ETF净流向", "subtitle": "6只宽基合计 · 可切换查看单只", "unit": "亿", "data_source": "akshare", "current_value": None, "history": [], "extra": {"etfs": {}, "per_etf_history": {}}}
     errors = []
     total_flow = 0
     etfs_detail = {}
+    per_etf_hist = {}
     start_date_3y = (dt.date.today() - dt.timedelta(days=HISTORY_DAYS + 100)).strftime("%Y%m%d")
     all_dates = None
     combined_amount = None
@@ -232,6 +233,8 @@ def fetch_etf_flow():
             total_flow += flow
             etfs_detail[name] = round(flow, 2)
 
+            per_etf_hist[name] = [{"date": d, "value": round(v, 2)} for d, v in zip(df["日期"], df["成交额亿"]) if pd.notna(v)]
+
             if all_dates is None:
                 all_dates = df["日期"].tolist()
                 combined_amount = df["成交额亿"].fillna(0).tolist()
@@ -243,6 +246,7 @@ def fetch_etf_flow():
 
     result["current_value"] = round(total_flow, 2)
     result["extra"]["etfs"] = etfs_detail
+    result["extra"]["per_etf_history"] = per_etf_hist
     if all_dates and combined_amount:
         result["history"] = [{"date": d, "value": round(v, 2)} for d, v in zip(all_dates, combined_amount)]
     if errors:

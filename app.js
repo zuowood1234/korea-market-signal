@@ -11,28 +11,26 @@ const DIMENSION_META = {
 };
 
 const TIMELINE_POINTS = [
-  { date: '2024-01', label: '24.1', type: 'red', desc: '小微盘股流动性危机' },
-  { date: '2024-05', label: '24.5', type: 'red', desc: '924行情前阴跌' },
-  { date: '2024-09', label: '24.9', type: 'green', desc: '+2X ERP见大底' },
-  { date: '2024-10', label: '24.10', type: 'red', desc: '924高点后回调' },
-  { date: '2025-01', label: '25.1', type: 'red', desc: '年末调整' },
-  { date: '2025-04', label: '25.4', type: 'red', desc: '4月7日前后暴跌' },
-  { date: '2025-10', label: '25.10', type: 'red', desc: '8-9月冲高后调整' },
-  { date: '2026-01', label: '26.1', type: 'red', desc: '-2X ERP见顶' },
-  { date: '2026-02', label: '26.2', type: 'red', desc: '破20日线+黄金暴跌' },
-  { date: '2026-07', label: '26.7', type: 'green', desc: '十连降+破年线后见底' },
+  { date: '2024-02', label: '24.2', type: 'green', desc: '反弹' },
+  { date: '2024-05', label: '24.5', type: 'red', desc: '大跌起点' },
+  { date: '2024-09', label: '24.9', type: 'green', desc: '见大底' },
+  { date: '2024-10', label: '24.10', type: 'red', desc: '924高点' },
+  { date: '2025-04', label: '25.4', type: 'red', desc: '暴跌' },
+  { date: '2025-10', label: '25.10', type: 'red', desc: '回调' },
+  { date: '2026-01', label: '26.1', type: 'red', desc: '科创回调' },
+  { date: '2026-03', label: '26.3', type: 'green', desc: '反弹' },
+  { date: '2026-07', label: '26.7', type: 'green', desc: '见底' },
 ];
 
 const BACKTEST_DATES = [
-  { date: '2024-01-31', label: '24.1' },
-  { date: '2024-05-31', label: '24.5' },
-  { date: '2024-09-30', label: '24.9' },
-  { date: '2024-10-31', label: '24.10' },
-  { date: '2025-01-31', label: '25.1' },
+  { date: '2024-02-06', label: '24.2' },
+  { date: '2024-05-20', label: '24.5' },
+  { date: '2024-09-24', label: '24.9' },
+  { date: '2024-10-08', label: '24.10' },
   { date: '2025-04-07', label: '25.4' },
-  { date: '2025-10-31', label: '25.10' },
-  { date: '2026-01-31', label: '26.1' },
-  { date: '2026-02-28', label: '26.2' },
+  { date: '2025-10-28', label: '25.10' },
+  { date: '2026-01-27', label: '26.1' },
+  { date: '2026-03-24', label: '26.3' },
   { date: '2026-07-20', label: '26.7' },
 ];
 
@@ -139,6 +137,15 @@ function renderDimensions(latest, signals) {
     const valueDisplay = formatValue(data, sig);
     const thresholdBar = renderThresholdBar(data, sig, meta.direction);
 
+    let etfSelector = '';
+    if (key === 'etf_flow' && data.extra && data.extra.per_etf_history) {
+      const etfNames = Object.keys(data.extra.per_etf_history);
+      etfSelector = `<div class="etf-selector" id="etf-selector-${key}">
+        <span class="etf-tag active" data-etf="合计">合计</span>
+        ${etfNames.map(name => `<span class="etf-tag" data-etf="${name}">${name.replace('ETF','')}</span>`).join('')}
+      </div>`;
+    }
+
     card.innerHTML = `
       <div class="dim-card-header">
         <div>
@@ -152,12 +159,34 @@ function renderDimensions(latest, signals) {
       </div>
       <div class="dim-value">${valueDisplay}</div>
       <div class="dim-note">${sig.note || ''}</div>
+      ${etfSelector}
       <div class="dim-chart" id="chart-${key}"></div>
       ${thresholdBar}
     `;
     grid.appendChild(card);
 
-    setTimeout(() => createChart(key, data, sig), 50 + idx * 30);
+    setTimeout(() => {
+      createChart(key, data, sig);
+      if (etfSelector) {
+        const selector = document.getElementById(`etf-selector-${key}`);
+        if (selector) {
+          selector.querySelectorAll('.etf-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+              selector.querySelectorAll('.etf-tag').forEach(t => t.classList.remove('active'));
+              tag.classList.add('active');
+              const etfName = tag.dataset.etf;
+              const chartDom = document.getElementById('chart-' + key);
+              if (chartDom && window.echarts) {
+                const existing = echarts.getInstanceByDom(chartDom);
+                if (existing) existing.dispose();
+              }
+              const histData = etfName === '合计' ? data : { ...data, history: data.extra.per_etf_history[etfName] || [] };
+              createChart(key, histData, sig);
+            });
+          });
+        }
+      }
+    }, 50 + idx * 30);
   });
 }
 

@@ -264,6 +264,35 @@ body {
   width: 100%;
 }
 
+.etf-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.etf-tag {
+  padding: 2px 8px;
+  font-size: 11px;
+  border-radius: 3px;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 0.5px solid var(--border);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.etf-tag:hover {
+  background: var(--border-strong);
+}
+
+.etf-tag.active {
+  background: var(--text-primary);
+  color: white;
+  border-color: var(--text-primary);
+}
+
 .dim-threshold-bar {
   display: flex;
   height: 10px;

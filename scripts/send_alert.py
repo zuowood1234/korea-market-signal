@@ -1,5 +1,5 @@
 """
-A股拐点信号追踪 - Server酱微信告警
+韩国市场信号 - Server酱微信告警
 每日汇总日报，变红维度特别标识，推送到微信
 需要环境变量 SERVERCHAN_SENDKEY
 """
@@ -26,40 +26,41 @@ def load_signals():
 
 def build_report(signals):
     date = signals["date"]
-    red = signals["red_count"]
-    green = signals["green_count"]
-    yellow = signals["yellow_count"]
-    gray = signals["gray_count"]
+    korea = signals.get("korea", {})
+    korea_red = korea.get("red_count", 0)
+    korea_green = korea.get("green_count", 0)
+    korea_yellow = korea.get("yellow_count", 0)
+    korea_gray = korea.get("gray_count", 0)
 
-    title = f"A股拐点信号日报 {date}"
-    if red > 0 and green == 0:
-        title += f" | {red}项顶部预警"
-    elif green > 0 and red == 0:
-        title += f" | {green}项底部信号"
-    elif red > 0 and green > 0:
-        title += f" | {red}红{green}绿"
+    title = f"韩国市场信号日报 {date}"
+    if korea_red > 0 and korea_green == 0:
+        title += f" | {korea_red}项顶部预警"
+    elif korea_green > 0 and korea_red == 0:
+        title += f" | {korea_green}项底部信号"
+    elif korea_red > 0 and korea_green > 0:
+        title += f" | {korea_red}红{korea_green}绿"
 
-    lines = [f"# A股拐点信号日报\n\n**{date}** 收盘更新\n"]
-    lines.append(f"## 总览\n\n🔴 顶部预警 **{red}** ｜ 🟡 中性 **{yellow}** ｜ 🟢 底部信号 **{green}** ｜ ⚪ 数据缺失 **{gray}**\n")
+    lines = [f"# 韩国市场信号日报\n\n**{date}** 收盘更新\n"]
+    lines.append(f"## 总览\n\n🔴 顶部预警 **{korea_red}** ｜ 🟡 中性 **{korea_yellow}** ｜ 🟢 底部信号 **{korea_green}** ｜ ⚪ 数据缺失 **{korea_gray}**\n")
 
-    if red > 0:
+    if korea_red > 0:
         lines.append("\n## ⚠️ 顶部预警维度\n")
-        for key, sig in signals["signals"].items():
+        for key, sig in korea["signals"].items():
             if sig["status"] == "red":
                 val = sig.get("current_value", "—")
                 unit = sig.get("unit", "")
                 lines.append(f"- **{sig['name']}**：{val}{unit} — {sig['note']}\n")
 
-    if green > 0:
+    if korea_green > 0:
         lines.append("\n## 🎯 底部信号维度\n")
-        for key, sig in signals["signals"].items():
+        for key, sig in korea["signals"].items():
             if sig["status"] == "green":
                 val = sig.get("current_value", "—")
                 unit = sig.get("unit", "")
                 lines.append(f"- **{sig['name']}**：{val}{unit} — {sig['note']}\n")
 
     lines.append("\n## 全部维度状态\n")
-    for key, sig in signals["signals"].items():
+    for key, sig in korea["signals"].items():
         icon = STATUS_ICONS.get(sig["status"], "⚪")
         val = sig.get("current_value", "—")
         unit = sig.get("unit", "")
@@ -69,7 +70,7 @@ def build_report(signals):
             val_str = f"{val}{unit}"
         lines.append(f"- {icon} **{sig['name']}**：{val_str}（{sig['label']}）\n")
 
-    lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*\n*数据来源: akshare + yfinance*\n*每日17:30 GitHub Actions自动生成*")
+    lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*\n*数据来源: yfinance + KOFIA（手动更新）*\n*每日自动生成*")
 
     return title, "".join(lines)
 

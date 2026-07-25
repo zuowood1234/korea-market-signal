@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A股拐点信号追踪</title>
+  <title>韩国市场信号</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <header class="header">
       <div class="header-left">
-        <h1>A股拐点信号追踪</h1>
+        <h1>韩国市场信号</h1>
         <p class="header-sub">回调过热信号 · 反弹底部信号</p>
       </div>
       <div class="header-right">
@@ -19,26 +19,15 @@
       </div>
     </header>
 
-    <section class="overview">
-      <div class="section-title">7维度信号总览</div>
-      <div class="lights-grid" id="lights-grid"></div>
-      <div class="summary" id="summary"></div>
-    </section>
-
-    <section class="dimensions-section">
-      <div class="section-title">维度详情</div>
-      <div class="dimensions-grid" id="dimensions-grid"></div>
-    </section>
-
-    <section class="timeline-section">
-      <div class="section-title">回测时间轴 · 2024-2026</div>
-      <div class="timeline-bar" id="timeline-bar"></div>
-      <div class="timeline-hint">点击时间点查看当时7维度状态快照</div>
-      <div class="timeline-detail" id="timeline-detail"></div>
+    <section class="korea-section">
+      <div class="section-title">韩国市场信号</div>
+      <div class="korea-lights-grid" id="korea-lights-grid"></div>
+      <div class="korea-summary" id="korea-summary"></div>
+      <div class="korea-dimensions-grid" id="korea-dimensions-grid"></div>
     </section>
 
     <footer class="footer">
-      <p>数据来源: akshare + yfinance · 每日17:30 GitHub Actions自动更新 · 仅供参考，不构成投资建议</p>
+      <p>数据来源: yfinance + KOFIA（手动更新） · 每日自动更新 · 仅供参考，不构成投资建议</p>
     </footer>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>

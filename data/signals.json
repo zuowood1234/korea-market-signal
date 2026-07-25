@@ -1,73 +1,48 @@
 {
-  "date": "2026-07-20",
-  "update_time": "2026-07-20 11:59:34",
-  "signals": {
-    "erp": {
-      "status": "yellow",
-      "label": "中性",
-      "note": "位于均值±1X区间（5.275%-6.825%）",
-      "current_value": 5.778,
-      "unit": "%",
-      "name": "ERP 股权风险溢价",
-      "subtitle": "沪深300PE · 5年窗口"
+  "date": "2026-07-25",
+  "update_time": "2026-07-25 14:44:34",
+  "korea": {
+    "signals": {
+      "vkospi": {
+        "status": "red",
+        "label": "顶部预警",
+        "note": "VKOSPI=83.97，过度恐慌",
+        "current_value": 83.97,
+        "unit": "",
+        "name": "VKOSPI",
+        "subtitle": "韩国波动率指数"
+      },
+      "margin": {
+        "status": "red",
+        "label": "顶部预警",
+        "note": "融资余额36.1万亿韩元，杠杆过热",
+        "current_value": 36.1,
+        "unit": "万亿韩元",
+        "name": "融资余额",
+        "subtitle": "韩国信用融资"
+      },
+      "liquidation": {
+        "status": "red",
+        "label": "顶部预警",
+        "note": "强平1422亿韩元，强平加剧",
+        "current_value": 1422,
+        "unit": "亿韩元",
+        "name": "强平金额",
+        "subtitle": "韩国信用强平"
+      },
+      "liquidation_ratio": {
+        "status": "red",
+        "label": "顶部预警",
+        "note": "强平比例10.2%，强平比例过高",
+        "current_value": 10.2,
+        "unit": "%",
+        "name": "强平比例",
+        "subtitle": "强平÷未收"
+      }
     },
-    "turnover": {
-      "status": "yellow",
-      "label": "中性",
-      "note": "单日换手率1.753%，正常活跃",
-      "current_value": 1.753,
-      "unit": "%",
-      "name": "换手率",
-      "subtitle": "换手率% · 图表为成交额(亿)"
-    },
-    "margin": {
-      "status": "green",
-      "label": "底部信号",
-      "note": "两融交易占比6.39%，杠杆出清",
-      "current_value": 6.39,
-      "unit": "%",
-      "name": "两融交易占比",
-      "subtitle": "占比% · 图表为融资买入额(亿)"
-    },
-    "etf_flow": {
-      "status": "yellow",
-      "label": "中性",
-      "note": "单日净流向-2.61亿，正常波动",
-      "current_value": -2.61,
-      "unit": "亿",
-      "name": "ETF净流向",
-      "subtitle": "净流向(亿) · 图表为成交额(亿)"
-    },
-    "ma": {
-      "status": "red",
-      "label": "顶部预警",
-      "note": "连续13日跌破20日线",
-      "current_value": 4599.32,
-      "unit": "",
-      "name": "均线",
-      "subtitle": "沪深300 · 20日/250日线"
-    },
-    "vix": {
-      "status": "yellow",
-      "label": "中性",
-      "note": "VIX=18.77，正常情绪",
-      "current_value": 18.77,
-      "unit": "",
-      "name": "VIX",
-      "subtitle": "CBOE恐慌指数"
-    },
-    "north": {
-      "status": "yellow",
-      "label": "中性",
-      "note": "3日累计净流向-17.36亿",
-      "current_value": -17.36,
-      "unit": "亿",
-      "name": "北向资金",
-      "subtitle": "3日累计净流向"
-    }
-  },
-  "red_count": 1,
-  "green_count": 1,
-  "yellow_count": 5,
-  "gray_count": 0
+    "red_count": 4,
+    "green_count": 0,
+    "yellow_count": 0,
+    "gray_count": 0
+  }
 }

@@ -2,19 +2,28 @@ name: 韩国市场信号
 
 on:
   schedule:
-    - cron: '30 9 * * 1-5'
+    # 北京时间 09:40 / 14:16 / 21:30（工作日）
+    # 与数据源 KOFIA/kimpremium 刷新时间同步
+    - cron: '40 1 * * 1-5'
+    - cron: '16 6 * * 1-5'
+    - cron: '30 13 * * 1-5'
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -35,5 +44,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/
-          git commit -m "auto update $(date -u +%Y-%m-%d)" || echo "no changes to commit"
-          git push
+          git diff --cached --quiet && echo "no changes to commit" || ( \
+            git commit -m "auto update $(date -u +%Y-%m-%d)" && \
+            git push \
+          )

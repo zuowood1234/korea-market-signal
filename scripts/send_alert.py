@@ -70,7 +70,20 @@ def build_report(signals):
             val_str = f"{val}{unit}"
         lines.append(f"- {icon} **{sig['name']}**：{val_str}（{sig['label']}）\n")
 
-    lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*\n*数据来源: yfinance + KOFIA（手动更新）*\n*每日自动生成*")
+    data_sources = set()
+    latest_path = DATA_DIR / "latest.json"
+    if latest_path.exists():
+        try:
+            with open(latest_path, "r", encoding="utf-8") as f:
+                latest_data = json.load(f)
+            for dim_data in latest_data.get("korea", {}).values():
+                src = dim_data.get("data_source", "")
+                if src:
+                    data_sources.add(src)
+        except Exception:
+            pass
+    source_str = " + ".join(sorted(data_sources)) if data_sources else "KOFIA（kimpremium.com）"
+    lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*\n*数据来源: {source_str}*\n*每日自动生成*")
 
     return title, "".join(lines)
 

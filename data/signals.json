@@ -1,46 +1,37 @@
 {
-  "date": "2026-07-25",
-  "update_time": "2026-07-25 14:44:34",
+  "date": "2026-07-27",
+  "update_time": "2026-07-27 11:42:45",
   "korea": {
     "signals": {
       "vkospi": {
         "status": "red",
-        "label": "顶部预警",
-        "note": "VKOSPI=83.97，过度恐慌",
-        "current_value": 83.97,
+        "label": "危险",
+        "note": "VKOSPI=79.8，过度恐慌",
+        "current_value": 79.8,
         "unit": "",
         "name": "VKOSPI",
         "subtitle": "韩国波动率指数"
       },
-      "margin": {
-        "status": "red",
-        "label": "顶部预警",
-        "note": "融资余额36.1万亿韩元，杠杆过热",
-        "current_value": 36.1,
-        "unit": "万亿韩元",
-        "name": "融资余额",
-        "subtitle": "韩国信用融资"
-      },
       "liquidation": {
         "status": "red",
-        "label": "顶部预警",
-        "note": "强平1422亿韩元，强平加剧",
-        "current_value": 1422,
+        "label": "危险",
+        "note": "强平1037.9亿韩元，超500亿高风险线",
+        "current_value": 1037.9,
         "unit": "亿韩元",
         "name": "强平金额",
         "subtitle": "韩国信用强平"
       },
       "liquidation_ratio": {
         "status": "red",
-        "label": "顶部预警",
-        "note": "强平比例10.2%，强平比例过高",
-        "current_value": 10.2,
+        "label": "危险",
+        "note": "强平比例8.6%，超3%高风险线",
+        "current_value": 8.6,
         "unit": "%",
         "name": "强平比例",
         "subtitle": "强平÷未收"
       }
     },
-    "red_count": 4,
+    "red_count": 3,
     "green_count": 0,
     "yellow_count": 0,
     "gray_count": 0

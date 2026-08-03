@@ -20,11 +20,11 @@ def calc_korea_vkospi_signal(data):
     if val is None:
         return {"status": "gray", "label": "数据缺失", "note": ""}
     if val > 40:
-        return {"status": "red", "label": "顶部预警", "note": f"VKOSPI={val}，过度恐慌"}
+        return {"status": "red", "label": "危险", "note": f"VKOSPI={val}，过度恐慌"}
     elif val >= 20:
-        return {"status": "yellow", "label": "中性", "note": f"VKOSPI={val}，正常波动"}
+        return {"status": "yellow", "label": "警戒", "note": f"VKOSPI={val}，正常波动"}
     else:
-        return {"status": "green", "label": "底部信号", "note": f"VKOSPI={val}，波动平静"}
+        return {"status": "green", "label": "安全", "note": f"VKOSPI={val}，波动平静"}
 
 
 def calc_korea_margin_signal(data):
@@ -33,11 +33,11 @@ def calc_korea_margin_signal(data):
     if val is None:
         return {"status": "gray", "label": "数据缺失", "note": ""}
     if val > 35:
-        return {"status": "red", "label": "顶部预警", "note": f"融资余额{val}万亿韩元，杠杆过热"}
+        return {"status": "red", "label": "危险", "note": f"融资余额{val}万亿韩元，杠杆过热"}
     elif val >= 25:
-        return {"status": "yellow", "label": "中性", "note": f"融资余额{val}万亿韩元，正常水平"}
+        return {"status": "yellow", "label": "警戒", "note": f"融资余额{val}万亿韩元，正常水平"}
     else:
-        return {"status": "green", "label": "底部信号", "note": f"融资余额{val}万亿韩元，杠杆出清"}
+        return {"status": "green", "label": "安全", "note": f"融资余额{val}万亿韩元，杠杆出清"}
 
 
 def calc_korea_liquidation_signal(data):
@@ -46,11 +46,11 @@ def calc_korea_liquidation_signal(data):
     if val is None:
         return {"status": "gray", "label": "数据缺失", "note": ""}
     if val > 500:
-        return {"status": "red", "label": "顶部预警", "note": f"强平{val}亿韩元，强平加剧"}
+        return {"status": "red", "label": "危险", "note": f"强平{val}亿韩元，强平加剧"}
     elif val >= 200:
-        return {"status": "yellow", "label": "中性", "note": f"强平{val}亿韩元，正常出清"}
+        return {"status": "yellow", "label": "警戒", "note": f"强平{val}亿韩元，正常出清"}
     else:
-        return {"status": "green", "label": "底部信号", "note": f"强平{val}亿韩元，市场稳定"}
+        return {"status": "green", "label": "安全", "note": f"强平{val}亿韩元，市场稳定"}
 
 
 def calc_korea_liquidation_ratio_signal(data):
@@ -59,16 +59,15 @@ def calc_korea_liquidation_ratio_signal(data):
     if val is None:
         return {"status": "gray", "label": "数据缺失", "note": ""}
     if val > 3:
-        return {"status": "red", "label": "顶部预警", "note": f"强平比例{val}%，强平比例过高"}
+        return {"status": "red", "label": "危险", "note": f"强平比例{val}%，强平比例过高"}
     elif val >= 1:
-        return {"status": "yellow", "label": "中性", "note": f"强平比例{val}%，正常水平"}
+        return {"status": "yellow", "label": "警戒", "note": f"强平比例{val}%，正常水平"}
     else:
-        return {"status": "green", "label": "底部信号", "note": f"强平比例{val}%，杠杆风险低"}
+        return {"status": "green", "label": "安全", "note": f"强平比例{val}%，杠杆风险低"}
 
 
 KOREA_CALCULATORS = {
     "vkospi": calc_korea_vkospi_signal,
-    "margin": calc_korea_margin_signal,
     "liquidation": calc_korea_liquidation_signal,
     "liquidation_ratio": calc_korea_liquidation_ratio_signal,
 }

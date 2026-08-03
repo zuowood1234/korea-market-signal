@@ -227,18 +227,10 @@ def build_report(latest, signals):
     # === 信号灯卡片区域 ===
     lines.append("\n## 📊 韩国市场信号\n")
 
-    # 1. 存管金 & R2
     deposits = korea_latest.get("investor_deposits", {})
     margin = korea_latest.get("margin", {})
-    if deposits.get("current_value") is not None:
-        dep_val = deposits["current_value"]
-        lines.append(f"- 📦 **存管金 & R2**：{dep_val}万亿韩元")
-        if margin.get("current_value") is not None and dep_val > 0:
-            r2 = margin["current_value"] / dep_val * 100
-            lines.append(f"（R2={r2:.1f}%）")
-        lines.append("\n")
 
-    # 2. 存管金稳定性
+    # 1. 存管金稳定性
     if deposits.get("history") and len(deposits["history"]) > 22:
         scores = compute_stability_score(deposits["history"])
         if scores:
@@ -252,7 +244,7 @@ def build_report(latest, signals):
             tag = "<60" if score < 60 else "≥60"
             lines.append(f"- {st_icon} **存管金稳定性**：{score:.1f} {tag}（{st_label}）\n")
 
-    # 3 & 4. 杠杆去化情景
+    # 2 & 3. 杠杆去化情景
     lev_sigs = compute_leverage_signals(margin, deposits)
     if lev_sigs["fourteen"]:
         s = lev_sigs["fourteen"]
@@ -265,31 +257,23 @@ def build_report(latest, signals):
         abn_str = f" 异常:{s['abn']}" if s["abn"] else ""
         lines.append(f"- {icon} **单日杠杆比率状态**：{s['label']}{abn_str}（{s['note']}）\n")
 
-    # 5. 杠杆ETF净流入
-    etf = korea_latest.get("leveraged_etf", {})
-    if etf.get("current_value") is not None:
-        etf_val = etf["current_value"]
-        lines.append(f"- 📊 **杠杆ETF净流入**：{etf_val}万亿韩元（cumFlow）\n")
-
-    # 6. 融资余额 + 回落
+    # 4. 融资余额 + 最高点回落
     if margin.get("current_value") is not None:
         mar_val = margin["current_value"]
-        # 动态分位判定
         mar_sig = korea_signals.get("signals", {}).get("margin", {})
         mar_icon = STATUS_ICONS.get(mar_sig.get("status", "gray"), "⚪")
         lines.append(f"- {mar_icon} **融资余额**：{mar_val}万亿韩元")
 
-        # 回落百分比
         if margin.get("history"):
             hist = margin["history"]
             peak = max(h["value"] for h in hist)
             curr = hist[-1]["value"]
             if peak > 0:
                 drop_pct = (peak - curr) / peak * 100
-                lines.append(f"｜融资回落 -{drop_pct:.1f}%")
+                lines.append(f"｜融资最高点回落 -{drop_pct:.1f}%")
         lines.append("\n")
 
-    # 7. VKOSPI
+    # 5. VKOSPI
     vkospi = korea_latest.get("vkospi", {})
     vkospi_sig = korea_signals.get("signals", {}).get("vkospi", {})
     if vkospi.get("current_value") is not None:
@@ -298,7 +282,7 @@ def build_report(latest, signals):
         tag = get_threshold_tag(val, vkospi.get("thresholds", {}), "low_red", "")
         lines.append(f"- {icon} **VKOSPI**：{val} {tag}\n")
 
-    # 8. 强平金额
+    # 6. 强平金额
     liq = korea_latest.get("liquidation", {})
     liq_sig = korea_signals.get("signals", {}).get("liquidation", {})
     if liq.get("current_value") is not None:
@@ -307,7 +291,7 @@ def build_report(latest, signals):
         tag = get_threshold_tag(val, liq.get("thresholds", {}), "low_red", "亿")
         lines.append(f"- {icon} **强平金额**：{val}亿 {tag}\n")
 
-    # 9. 强平比例
+    # 7. 强平比例
     liq_ratio = korea_latest.get("liquidation_ratio", {})
     liq_ratio_sig = korea_signals.get("signals", {}).get("liquidation_ratio", {})
     if liq_ratio.get("current_value") is not None:

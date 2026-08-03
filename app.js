@@ -1,4 +1,4 @@
-const KOREA_DIMENSION_ORDER = ['investor_deposits', 'stability', 'leverage_14d', 'leverage_1d', 'leveraged_etf', 'margin', 'vkospi', 'liquidation', 'liquidation_ratio'];
+const KOREA_DIMENSION_ORDER = ['stability', 'leverage_14d', 'leverage_1d', 'margin', 'vkospi', 'liquidation', 'liquidation_ratio'];
 
 const KOREA_DIMENSION_META = {
   vkospi: { name: 'VKOSPI', direction: 'low_red', displayUnit: '' },
@@ -218,7 +218,7 @@ function renderKoreaLights(signals, latest) {
     ddCard.title = `峰值 ${peak} (${peakDate}) → 当前 ${curr} · 回落 ${dropPct}%`;
     ddCard.innerHTML = `
       <div class="light-dot"></div>
-      <div class="light-label">融资回落 <span class="dd-inline">-${dropPct}%</span></div>
+      <div class="light-label">融资最高点回落 <span class="dd-inline">-${dropPct}%</span></div>
     `;
     grid.appendChild(ddCard);
   }

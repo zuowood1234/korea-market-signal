@@ -330,12 +330,12 @@ function renderLeverageScenarioExplainer() {
           <tr><th>情景</th><th>融资</th><th>存管金</th><th>R2</th><th>市场含义</th><th>颜色</th></tr>
         </thead>
         <tbody>
-          <tr class="row-green"><td>A</td><td>↓</td><td>↑</td><td>↓</td><td>新钱入场稀释杠杆，最理想</td><td>🟢</td></tr>
-          <tr class="row-green"><td>A</td><td>↑</td><td>↑</td><td>↓</td><td>存管金涨幅更大，R2仍降</td><td>🟢</td></tr>
-          <tr class="row-yellow"><td>B</td><td>↓</td><td>↓</td><td>↓</td><td>融资跌幅更大，去化中</td><td>🟡</td></tr>
-          <tr class="row-yellow"><td>B</td><td>↑</td><td>↑</td><td>↑</td><td>同步加杠杆</td><td>🟡</td></tr>
-          <tr class="row-red"><td>C</td><td>↓</td><td>↓</td><td>↑</td><td>存管金跌幅更大，现金跑得比债务快</td><td>🔴</td></tr>
-          <tr class="row-red"><td>C</td><td>↑</td><td>↓</td><td>↑</td><td>加杠杆+资金外逃，最危险</td><td>🔴</td></tr>
+          <tr class="row-green"><td>A</td><td>↓</td><td>↑</td><td>↓</td><td>新钱入场稀释杠杆</td><td>🟢</td></tr>
+          <tr class="row-green"><td>A</td><td>↑</td><td>↑</td><td>↓</td><td>大量自有现金涌入股市，流入速度超过散户借钱速度</td><td>🟢</td></tr>
+          <tr class="row-yellow"><td>B</td><td>↓</td><td>↓</td><td>↓</td><td>爆仓盘出清，但现金没跑，杠杆硬着陆</td><td>🟡</td></tr>
+          <tr class="row-yellow"><td>B</td><td>↑</td><td>↑</td><td>↑</td><td>借的钱（融资）膨胀得比现金快得多</td><td>🟡</td></tr>
+          <tr class="row-red"><td>C</td><td>↓</td><td>↓</td><td>↑</td><td>现金流失比债务还快，主动退场，流动性枯竭，易触发新一轮爆仓</td><td>🔴</td></tr>
+          <tr class="row-red"><td>C</td><td>↑</td><td>↓</td><td>↑</td><td>盈利离场，纯加杠杆且场内资金非常不理性</td><td>🔴</td></tr>
         </tbody>
       </table>
       <table class="scenario-table">

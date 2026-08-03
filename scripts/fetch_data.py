@@ -221,44 +221,64 @@ def load_manual_korea_data():
     return {}
 
 
+def _investing_http_get(url, timeout=20):
+    """使用 curl_cffi 或 cloudscraper 访问 Investing.com，绕过 CloudFlare。
+    CI 环境优先 curl_cffi（模拟浏览器 TLS 指纹），本地回退 cloudscraper。
+    返回 Response 对象或 None。
+    """
+    # 方案 1: curl_cffi（模拟浏览器 TLS 指纹，CI 环境最可靠）
+    try:
+        from curl_cffi import requests as curl_requests
+        for browser in ["chrome120", "chrome116", "chrome110"]:
+            try:
+                resp = curl_requests.get(url, impersonate=browser, timeout=timeout)
+                if resp.status_code == 200:
+                    return resp
+            except Exception:
+                continue
+    except ImportError:
+        pass
+
+    # 方案 2: cloudscraper（本地环境可用）
+    if _HAS_CLOUDSCRAPER:
+        try:
+            scraper = cloudscraper.create_scraper(
+                browser={'browser': 'chrome', 'platform': 'darwin', 'mobile': False}
+            )
+            resp = scraper.get(url, timeout=timeout)
+            if resp.status_code == 200:
+                return resp
+        except Exception:
+            pass
+
+    return None
+
+
 def _fetch_vkospi_via_investing():
     """从 Investing.com 获取 VKOSPI 历史数据。
-    使用 cloudscraper 绕过 CloudFlare 保护。
+    使用 curl_cffi/cloudscraper 绕过 CloudFlare 保护。
     返回 [{date, value}, ...] 或 []。
     """
-    if not _HAS_CLOUDSCRAPER:
-        print("      cloudscraper 未安装，跳过 Investing.com")
-        return []
-
-    try:
-        scraper = cloudscraper.create_scraper(
-            browser={'browser': 'chrome', 'platform': 'darwin', 'mobile': False}
-        )
-    except Exception as e:
-        print(f"      cloudscraper 初始化失败: {e}")
-        return []
-
     # 1. 先获取当前实时值（从概览页面）
     current_value = None
     try:
-        resp = scraper.get("https://cn.investing.com/indices/kospi-volatility", timeout=20)
-        if resp.status_code == 200:
+        resp = _investing_http_get("https://cn.investing.com/indices/kospi-volatility")
+        if resp:
             m = re.search(r'instrument-price-last[^>]*>([0-9]+\.?[0-9]*)', resp.text)
             if m:
                 current_value = float(m.group(1))
                 print(f"      Investing.com 实时值: {current_value}")
+        else:
+            print("      Investing.com 概览页获取失败（CloudFlare 拦截）")
     except Exception as e:
         print(f"      Investing.com 概览页失败: {e}")
 
     # 2. 获取历史数据
     history = []
     try:
-        resp = scraper.get(
-            "https://cn.investing.com/indices/kospi-volatility-historical-data",
-            timeout=20,
-        )
-        if resp.status_code != 200:
-            print(f"      Investing.com 历史数据页 HTTP {resp.status_code}")
+        resp = _investing_http_get("https://cn.investing.com/indices/kospi-volatility-historical-data")
+        if not resp:
+            print("      Investing.com 历史数据页获取失败（CloudFlare 拦截）")
             return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}] if current_value else []
 
         if not _HAS_BS4:

@@ -3,10 +3,11 @@
 拉取韩国市场指标数据，生成 latest.json
 
 数据源优先级（VKOSPI）：
-1. KRX 指数开放接口（日频波动率指数）
-2. yfinance ^VKOSPI（CI 环境 IP 池大，不受限）
-3. Yahoo Finance chart API 直连（规避本地 cookie 限流）
-4. korea_manual.json 手动数据
+1. Investing.com（cloudscraper 绕过 CloudFlare，稳定可用）
+2. KRX 指数开放接口（日频波动率指数）
+3. yfinance ^VKOSPI（Yahoo 已下架该 ticker，备用）
+4. Yahoo Finance chart API 直连（备用）
+5. korea_manual.json 手动数据
 
 其他指标：
 - 融资/强平/存管金/杠杆ETF 等 -> kimpremium.com (KOFIA/KRX 官方数据)
@@ -14,6 +15,7 @@
 import json
 import math
 import os
+import re
 import datetime as dt
 from pathlib import Path
 import traceback
@@ -21,6 +23,18 @@ import traceback
 import pandas as pd
 import yfinance as yf
 import requests
+
+try:
+    import cloudscraper
+    _HAS_CLOUDSCRAPER = True
+except ImportError:
+    _HAS_CLOUDSCRAPER = False
+
+try:
+    from bs4 import BeautifulSoup
+    _HAS_BS4 = True
+except ImportError:
+    _HAS_BS4 = False
 
 
 KIMPREMIUM_BASE = "https://kimpremium.com/data"
@@ -205,6 +219,109 @@ def load_manual_korea_data():
         except Exception:
             pass
     return {}
+
+
+def _fetch_vkospi_via_investing():
+    """从 Investing.com 获取 VKOSPI 历史数据。
+    使用 cloudscraper 绕过 CloudFlare 保护。
+    返回 [{date, value}, ...] 或 []。
+    """
+    if not _HAS_CLOUDSCRAPER:
+        print("      cloudscraper 未安装，跳过 Investing.com")
+        return []
+
+    try:
+        scraper = cloudscraper.create_scraper(
+            browser={'browser': 'chrome', 'platform': 'darwin', 'mobile': False}
+        )
+    except Exception as e:
+        print(f"      cloudscraper 初始化失败: {e}")
+        return []
+
+    # 1. 先获取当前实时值（从概览页面）
+    current_value = None
+    try:
+        resp = scraper.get("https://cn.investing.com/indices/kospi-volatility", timeout=20)
+        if resp.status_code == 200:
+            m = re.search(r'instrument-price-last[^>]*>([0-9]+\.?[0-9]*)', resp.text)
+            if m:
+                current_value = float(m.group(1))
+                print(f"      Investing.com 实时值: {current_value}")
+    except Exception as e:
+        print(f"      Investing.com 概览页失败: {e}")
+
+    # 2. 获取历史数据
+    history = []
+    try:
+        resp = scraper.get(
+            "https://cn.investing.com/indices/kospi-volatility-historical-data",
+            timeout=20,
+        )
+        if resp.status_code != 200:
+            print(f"      Investing.com 历史数据页 HTTP {resp.status_code}")
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}] if current_value else []
+
+        if not _HAS_BS4:
+            print("      beautifulsoup4 未安装，无法解析历史数据表格")
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}] if current_value else []
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        tables = soup.find_all("table")
+
+        # 找包含"日期"和"收盘"表头的表格
+        target_table = None
+        for table in tables:
+            headers = [th.get_text(strip=True) for th in table.find_all("th")]
+            if "日期" in headers and "收盘" in headers:
+                target_table = table
+                break
+
+        if not target_table:
+            print("      Investing.com 未找到历史数据表格")
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}] if current_value else []
+
+        rows = target_table.find_all("tr")
+        for row in rows[1:]:  # 跳过表头
+            cells = [td.get_text(strip=True) for td in row.find_all(["td", "th"])]
+            if len(cells) < 2:
+                continue
+            date_str = cells[0]  # 格式: "2026年08月03日"
+            close_str = cells[1]  # 收盘价
+
+            # 解析日期
+            m = re.match(r'(\d{4})年(\d{1,2})月(\d{1,2})日', date_str)
+            if not m:
+                continue
+            d_fmt = f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+
+            # 解析收盘价
+            try:
+                val = float(close_str.replace(",", ""))
+            except ValueError:
+                continue
+
+            history.append({"date": d_fmt, "value": round(val, 2)})
+
+        # 历史数据是倒序的（最新在上），转换为正序
+        history.reverse()
+        print(f"      Investing.com 历史数据: {len(history)} 条, 最新 {history[-1]['date']} = {history[-1]['value']}")
+
+        # 3. 如果有实时值且与最新历史数据日期不同，追加实时值
+        if current_value is not None:
+            from datetime import timezone, timedelta
+            kr_today = dt.datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
+            if not history or history[-1]["date"] != kr_today:
+                # 检查是否是交易日（工作日）
+                if dt.date.today().weekday() < 5:
+                    history.append({"date": kr_today, "value": current_value})
+                    print(f"      追加盘中实时值: {kr_today} = {current_value}")
+
+    except Exception as e:
+        print(f"      Investing.com 历史数据抓取失败: {e}")
+        if current_value is not None:
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}]
+
+    return history
 
 
 def _fetch_vkospi_via_krx():
@@ -419,7 +536,7 @@ def _fetch_vkospi_via_yahoo_direct():
 
 
 def fetch_korea_vkospi():
-    """韩国波动率指数 VKOSPI。KRX 开放接口 -> yfinance -> Yahoo 直连 -> manual。"""
+    """韩国波动率指数 VKOSPI。Investing.com -> KRX 开放接口 -> yfinance -> Yahoo 直连 -> manual。"""
     manual = load_manual_korea_data()
     result = {"name": "VKOSPI", "subtitle": "韩国波动率指数", "unit": "", "data_source": "KRX", "current_value": None, "history": []}
     result["thresholds"] = {"red": ">40", "yellow": "20-40", "green": "<20"}
@@ -427,16 +544,26 @@ def fetch_korea_vkospi():
     auto_history = []
     auto_source_name = ""
 
-    # 1. 优先 KRX 官方接口（VKOSPI 的发布机构，权威）
+    # 1. 优先 Investing.com（cloudscraper 绕过 CloudFlare，稳定可用）
     try:
-        print("    尝试 KRX 开放门户获取 VKOSPI...")
-        auto_history = _fetch_vkospi_via_krx()
+        print("    尝试从 Investing.com 获取 VKOSPI...")
+        auto_history = _fetch_vkospi_via_investing()
         if auto_history:
-            auto_source_name = "KRX/开放门户"
+            auto_source_name = "Investing.com"
     except Exception as e:
-        print(f"      KRX VKOSPI 失败: {e}")
+        print(f"      Investing.com VKOSPI 失败: {e}")
 
-    # 2. 失败 -> yfinance（CI 环境 IP 池大，通常不受限流）
+    # 2. KRX 官方接口（VKOSPI 的发布机构，权威）
+    if not auto_history:
+        try:
+            print("    尝试 KRX 开放门户获取 VKOSPI...")
+            auto_history = _fetch_vkospi_via_krx()
+            if auto_history:
+                auto_source_name = "KRX/开放门户"
+        except Exception as e:
+            print(f"      KRX VKOSPI 失败: {e}")
+
+    # 3. 失败 -> yfinance（CI 环境 IP 池大，通常不受限流）
     if not auto_history:
         try:
             print("    从 yfinance 抓取 VKOSPI (^VKOSPI)...")
@@ -454,18 +581,18 @@ def fetch_korea_vkospi():
         except Exception as e:
             print(f"      yfinance VKOSPI 失败: {e}")
 
-    # 3. -> Yahoo Finance 直连 chart API（规避本地 cookie 限流
+    # 4. -> Yahoo Finance 直连 chart API（规避本地 cookie 限流
     if not auto_history:
         print("    尝试 Yahoo Finance 直连 API 获取 VKOSPI...")
         auto_history = _fetch_vkospi_via_yahoo_direct()
         if auto_history:
             auto_source_name = "KRX/Yahoo直连"
 
-    # 4. 读取 manual 数据作为补充
+    # 5. 读取 manual 数据作为补充
     m = manual.get("vkospi", {})
     manual_history = m.get("history", [])
 
-    # 5. 合并策略：优先自动抓取；有自动，缺失用 manual 填充；两者都空才回退 manual
+    # 6. 合并策略：优先自动抓取；有自动，缺失用 manual 填充；两者都空才回退 manual
     if auto_history:
         auto_date_set = {h["date"] for h in auto_history}
         for item in manual_history:
@@ -476,21 +603,9 @@ def fetch_korea_vkospi():
             seen[item["date"]] = item["value"]
         merged_history = [{"date": d, "value": v} for d, v in sorted(seen.items())]
 
-        # 6. 尝试拿盘中实时值（覆盖当天）—— 让 09:40/14:16 那两次也能拿到当天 VKOSPI
-        realtime_val = _fetch_vkospi_realtime()
-        if realtime_val is not None:
-            # 韩国时区当天日期（韩国 UTC+9）
-            from datetime import timezone, timedelta
-            kr_today = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
-            seen[kr_today] = realtime_val
-            merged_history = [{"date": d, "value": v} for d, v in sorted(seen.items())]
-            print(f"      盘中实时 VKOSPI: {kr_today} = {realtime_val}")
-
         result["history"] = merged_history[-500:]
         result["current_value"] = result["history"][-1]["value"]
         result["data_source"] = auto_source_name or "KRX/自动"
-        if realtime_val is not None:
-            result["data_source"] += "+实时"
         supplement_count = len(merged_history) - len(auto_date_set)
         note_parts = [f"自动抓取 {len(auto_date_set)} 条"]
         if supplement_count > 0:

@@ -180,7 +180,13 @@ function renderKoreaLights(signals, latest) {
       const scoreStr = stabilityScore.toFixed(1);
       const tag = stabilitySig.thresholdTag || '';
       valueSuffix = ` <span class="dd-inline">${scoreStr} ${tag}</span>`;
-    } else if (key === 'leverage_1d' || key === 'leverage_14d' || key === 'leveraged_etf') {
+    } else if (key === 'leverage_1d' && sig && sig.label) {
+      const abnStr = sig.abn ? ` ${sig.abn}` : '';
+      valueSuffix = ` <span class="dd-inline">${sig.label}${abnStr}</span>`;
+    } else if (key === 'leverage_14d' && sig && sig.label) {
+      const abnStr = sig.abn ? ` ${sig.abn}` : '';
+      valueSuffix = ` <span class="dd-inline">${sig.label}${abnStr}</span>`;
+    } else if (key === 'leveraged_etf') {
       // 去化情景/杠杆ETF：已通过标签说明，不需要额外数值
     } else if (dimData && dimData.current_value != null) {
       const val = dimData.current_value;
@@ -208,10 +214,10 @@ function renderKoreaLights(signals, latest) {
     const dropAbs = (peak - curr).toFixed(1);
     const dropPct = ((peak - curr) / peak * 100).toFixed(1);
     const ddCard = document.createElement('div');
-    ddCard.className = 'light-card drawdown-card';
+    ddCard.className = 'light-card yellow';
     ddCard.title = `峰值 ${peak} (${peakDate}) → 当前 ${curr} · 回落 ${dropPct}%`;
     ddCard.innerHTML = `
-      <div class="drawdown-dot"></div>
+      <div class="light-dot"></div>
       <div class="light-label">融资回落 <span class="dd-inline">-${dropPct}%</span></div>
     `;
     grid.appendChild(ddCard);
@@ -296,9 +302,12 @@ function computeLeverageScenarioSignals(marginData, depositsData) {
   const d1 = (depD[latest] - depD[prev]) / depD[prev] * 100;
   const r2_1 = marD[latest] / depD[latest] * 100 - marD[prev] / depD[prev] * 100;
   const daily = classifyLeverageScenario(m1, d1, r2_1, '1d');
+  const dailyAbn = (daily.mAbn ? '融' : '') + (daily.dAbn ? '存' : '');
   result.daily = {
     status: daily.color,
-    note: `单日情景 ${daily.scenario} ${daily.label} · 融资${m1 >= 0 ? '+' : ''}${m1.toFixed(2)}% 存管金${d1 >= 0 ? '+' : ''}${d1.toFixed(2)}% R2${r2_1 >= 0 ? '+' : ''}${r2_1.toFixed(2)}pp${daily.enhanced ? ' · 异常强化' : ''}`
+    note: `单日情景 ${daily.scenario} ${daily.label} · 融资${m1 >= 0 ? '+' : ''}${m1.toFixed(2)}% 存管金${d1 >= 0 ? '+' : ''}${d1.toFixed(2)}% R2${r2_1 >= 0 ? '+' : ''}${r2_1.toFixed(2)}pp${daily.enhanced ? ' · 异常强化' : ''}`,
+    label: daily.label,
+    abn: dailyAbn
   };
 
   // 14日
@@ -306,9 +315,12 @@ function computeLeverageScenarioSignals(marginData, depositsData) {
   const d14 = (depD[latest] - depD[prev14]) / depD[prev14] * 100;
   const r2_14 = marD[latest] / depD[latest] * 100 - marD[prev14] / depD[prev14] * 100;
   const fourteen = classifyLeverageScenario(m14, d14, r2_14, '14d');
+  const fourteenAbn = (fourteen.mAbn ? '融' : '') + (fourteen.dAbn ? '存' : '');
   result.fourteen = {
     status: fourteen.color,
-    note: `14日情景 ${fourteen.scenario} ${fourteen.label} · 融资${m14 >= 0 ? '+' : ''}${m14.toFixed(2)}% 存管金${d14 >= 0 ? '+' : ''}${d14.toFixed(2)}% R2${r2_14 >= 0 ? '+' : ''}${r2_14.toFixed(2)}pp${fourteen.enhanced ? ' · 异常强化' : ''}`
+    note: `14日情景 ${fourteen.scenario} ${fourteen.label} · 融资${m14 >= 0 ? '+' : ''}${m14.toFixed(2)}% 存管金${d14 >= 0 ? '+' : ''}${d14.toFixed(2)}% R2${r2_14 >= 0 ? '+' : ''}${r2_14.toFixed(2)}pp${fourteen.enhanced ? ' · 异常强化' : ''}`,
+    label: fourteen.label,
+    abn: fourteenAbn
   };
 
   return result;

@@ -1,12 +1,12 @@
 {
   "date": "2026-08-04",
-  "update_time": "2026-08-04 06:40:11",
+  "update_time": "2026-08-04 07:31:12",
   "korea": {
     "vkospi": {
       "name": "VKOSPI",
       "subtitle": "韩国波动率指数",
       "unit": "",
-      "data_source": "KRX (手动更新)",
+      "data_source": "Investing.com",
       "current_value": 80.78,
       "history": [
         {
@@ -307,7 +307,7 @@
         "yellow": "20-40",
         "green": "<20"
       },
-      "note": "本地 cloudscraper 自动更新，最新 2026-08-03"
+      "note": "自动抓取 21 条, manual 补充 52 条, 最新 2026-08-03"
     },
     "kospi": {
       "name": "KOSPI",

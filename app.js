@@ -1,7 +1,7 @@
 const KOREA_DIMENSION_ORDER = ['kospi', 'kosdaq', 'vkospi', 'leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'liquidation', 'liquidation_ratio'];
 
-// T+0 实时指标（KOSPI/KOSDAQ/VKOSPI）；其余为 T+2（KOFIA 披露滞后）
-const T0_KEYS = ['kospi', 'kosdaq', 'vkospi'];
+// T+1 指标（KOSPI/KOSDAQ/VKOSPI，前一交易日收盘价）；其余为 T+2（KOFIA 披露滞后）
+const T1_KEYS = ['kospi', 'kosdaq', 'vkospi'];
 
 const KOREA_DIMENSION_META = {
   vkospi: { name: 'VKOSPI', direction: 'low_red', displayUnit: '' },
@@ -265,11 +265,10 @@ function renderKoreaLights(signals, latest) {
       valueSuffix = ` <span class="dd-inline">${valStr}${displayUnit}${tag ? ' ' + tag : ''}${dodStr}</span>`;
     }
 
-    // T+0/T+2 时效角标
-    const isT0 = T0_KEYS.includes(key);
-    const t0Time = latest.update_time ? latest.update_time.slice(5, 16) : '';
-    const freshTag = isT0
-      ? `<span class="fresh-tag t0">T+0 · ${t0Time}</span>`
+    // T+1/T+2 时效角标
+    const isT1 = T1_KEYS.includes(key);
+    const freshTag = isT1
+      ? `<span class="fresh-tag t1">T+1</span>`
       : `<span class="fresh-tag t2">T+2</span>`;
 
     card.innerHTML = `

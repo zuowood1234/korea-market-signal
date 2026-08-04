@@ -263,13 +263,13 @@ def build_report(latest, signals):
 
     # === 信号灯卡片区域 ===
     lines.append("\n## 📊 韩国市场信号\n")
-    lines.append(f"*T+0 实时指标 · 更新时间 {signals['update_time']}｜其余为 T+2（KOFIA 披露滞后）*\n")
+    lines.append(f"*T+1 指标（前一交易日收盘）· 更新时间 {signals['update_time']}｜其余为 T+2（KOFIA 披露滞后）*\n")
 
     deposits = korea_latest.get("investor_deposits", {})
     margin = korea_latest.get("margin", {})
     margin_hist = margin.get("history", [])
 
-    # 1. KOSPI（T+0）
+    # 1. KOSPI（T+1）
     kospi = korea_latest.get("kospi", {})
     if kospi.get("current_value") is not None and kospi.get("history") and len(kospi["history"]) > 1:
         ps = peak_status(kospi["history"])
@@ -286,9 +286,9 @@ def build_report(latest, signals):
                     icon = "🟢"
                 peak_str = f"高点回落{ps['pct']:.1f}%"
             dod_s = dod_pct(kospi["history"])
-            lines.append(f"- {icon} **KOSPI** (T+0)：{kospi['current_value']}｜{peak_str}{dod_s}\n")
+            lines.append(f"- {icon} **KOSPI** (T+1)：{kospi['current_value']}｜{peak_str}{dod_s}\n")
 
-    # 2. KOSDAQ（T+0）
+    # 2. KOSDAQ（T+1）
     kosdaq = korea_latest.get("kosdaq", {})
     if kosdaq.get("current_value") is not None and kosdaq.get("history") and len(kosdaq["history"]) > 1:
         ps = peak_status(kosdaq["history"])
@@ -305,9 +305,9 @@ def build_report(latest, signals):
                     icon = "🟢"
                 peak_str = f"高点回落{ps['pct']:.1f}%"
             dod_s = dod_pct(kosdaq["history"])
-            lines.append(f"- {icon} **KOSDAQ** (T+0)：{kosdaq['current_value']}｜{peak_str}{dod_s}\n")
+            lines.append(f"- {icon} **KOSDAQ** (T+1)：{kosdaq['current_value']}｜{peak_str}{dod_s}\n")
 
-    # 3. VKOSPI（T+0）
+    # 3. VKOSPI（T+1）
     vkospi = korea_latest.get("vkospi", {})
     vkospi_sig = korea_signals.get("signals", {}).get("vkospi", {})
     if vkospi.get("current_value") is not None:
@@ -315,7 +315,7 @@ def build_report(latest, signals):
         icon = STATUS_ICONS.get(vkospi_sig.get("status", "gray"), "⚪")
         tag = get_threshold_tag(val, vkospi.get("thresholds", {}), "low_red", "")
         dod_s = dod_pct(vkospi.get("history", []))
-        lines.append(f"- {icon} **VKOSPI** (T+0)：{val} {tag}{dod_s}\n")
+        lines.append(f"- {icon} **VKOSPI** (T+1)：{val} {tag}{dod_s}\n")
 
     # 4. 两周杠杆比率趋势（T+2）
     lev_sigs = compute_leverage_signals(margin, deposits)

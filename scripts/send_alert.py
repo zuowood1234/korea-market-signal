@@ -206,7 +206,7 @@ def get_threshold_tag(current_value, thresholds, direction, unit):
 
 
 def dod_pct(history):
-    """计算日环比变化百分比，返回带符号的字符串，如 '+1.2%'/'−0.5%'，无法计算返回''"""
+    """计算日环比变化百分比，返回逗号分隔的字符串，如 '，+1.2%'/'，-0.5%'，无法计算返回''"""
     if not history or len(history) < 2:
         return ""
     curr = history[-1].get("value")
@@ -215,23 +215,27 @@ def dod_pct(history):
         return ""
     pct = (curr - prev) / prev * 100
     sign = "+" if pct >= 0 else ""
-    return f" {sign}{pct:.1f}%"
+    return f"，{sign}{pct:.1f}%"
 
 
-def drop_dod(margin_history):
-    """融资最高点回落的日环比变化（回落幅度的变化百分点），返回如 '+0.2%'/'−0.1%'，无法计算返回''"""
-    if not margin_history or len(margin_history) < 2:
-        return ""
-    peak = max(h["value"] for h in margin_history)
-    if peak == 0:
-        return ""
-    curr = margin_history[-1]["value"]
-    prev = margin_history[-2]["value"]
-    curr_drop = (peak - curr) / peak * 100
-    prev_drop = (peak - prev) / peak * 100
-    delta = curr_drop - prev_drop
-    sign = "+" if delta >= 0 else ""
-    return f" {sign}{delta:.1f}%"
+def peak_status(history):
+    """计算最高点状态：创新高(上升) vs 回落。
+    prevPeak = 排除当前点后的历史最高值。
+    返回 dict 或 None。
+    """
+    if not history or len(history) < 2:
+        return None
+    curr = history[-1]["value"]
+    prev_hist = history[:-1]
+    prev_peak = max(h["value"] for h in prev_hist)
+    prev_peak_date = next((h["date"] for h in prev_hist if h["value"] == prev_peak), "")
+    if curr >= prev_peak and prev_peak > 0:
+        rise_pct = (curr - prev_peak) / prev_peak * 100
+        return {"type": "up", "pct": rise_pct, "prev_peak": prev_peak, "prev_peak_date": prev_peak_date, "curr": curr}
+    elif prev_peak > 0:
+        drop_pct = (prev_peak - curr) / prev_peak * 100
+        return {"type": "down", "pct": drop_pct, "prev_peak": prev_peak, "prev_peak_date": prev_peak_date, "curr": curr}
+    return None
 
 
 def build_report(latest, signals):
@@ -293,39 +297,43 @@ def build_report(latest, signals):
             tag = "<60" if score < 60 else "≥60"
             lines.append(f"- {st_icon} **存管金稳定性**：{score:.1f} {tag}（{st_label}）\n")
 
-    # 4. 融资余额 + 最高点回落（含日环比）
+    # 4. 融资余额 + 最高点动态表述（含日环比）
     if margin.get("current_value") is not None:
         mar_val = margin["current_value"]
         mar_sig = korea_signals.get("signals", {}).get("margin", {})
         mar_icon = STATUS_ICONS.get(mar_sig.get("status", "gray"), "⚪")
         lines.append(f"- {mar_icon} **融资余额**：{mar_val}万亿韩元{dod_pct(margin_hist)}")
 
-        if margin_hist:
-            peak = max(h["value"] for h in margin_hist)
-            curr = margin_hist[-1]["value"]
-            if peak > 0:
-                drop_pct = (peak - curr) / peak * 100
-                dod_s = drop_dod(margin_hist)
-                lines.append(f"｜融资最高点回落 -{drop_pct:.1f}%{dod_s}")
+        if margin_hist and len(margin_hist) > 1:
+            ps = peak_status(margin_hist)
+            if ps:
+                if ps["type"] == "up":
+                    lines.append(f"｜融资最高点上升 +{ps['pct']:.1f}%")
+                else:
+                    lines.append(f"｜融资最高点回落 -{ps['pct']:.1f}%")
         lines.append("\n")
 
-    # 4.5 KOSPI + KOSDAQ（从高点回落% + 日环比）
+    # 4.5 KOSPI + KOSDAQ（动态：高点上升/回落% + 日环比）
     for idx_key, idx_name in [("kospi", "KOSPI"), ("kosdaq", "KOSDAQ")]:
         idx = korea_latest.get(idx_key, {})
-        if idx.get("current_value") is not None and idx.get("history"):
+        if idx.get("current_value") is not None and idx.get("history") and len(idx["history"]) > 1:
             hist = idx["history"]
             val = idx["current_value"]
-            peak = max(h["value"] for h in hist)
-            drop_pct = (peak - val) / peak * 100 if peak > 0 else 0
-            # 颜色判定
-            if drop_pct > 10:
-                icon = "🔴"
-            elif drop_pct > 5:
-                icon = "🟡"
-            else:
-                icon = "🟢"
-            dod_s = dod_pct(hist)
-            lines.append(f"- {icon} **{idx_name}**：{val}｜高点回落 -{drop_pct:.1f}%{dod_s}\n")
+            ps = peak_status(hist)
+            if ps:
+                if ps["type"] == "up":
+                    icon = "🟢"
+                    peak_str = f"最高点上升+{ps['pct']:.1f}%"
+                else:
+                    if ps["pct"] > 10:
+                        icon = "🔴"
+                    elif ps["pct"] > 5:
+                        icon = "🟡"
+                    else:
+                        icon = "🟢"
+                    peak_str = f"高点回落{ps['pct']:.1f}%"
+                dod_s = dod_pct(hist)
+                lines.append(f"- {icon} **{idx_name}**：{val}｜{peak_str}{dod_s}\n")
 
     # 5. VKOSPI（含日环比）
     vkospi = korea_latest.get("vkospi", {})

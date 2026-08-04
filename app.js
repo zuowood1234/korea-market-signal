@@ -157,7 +157,7 @@ function renderKoreaLights(signals, latest) {
   const marginData = koreaLatest.margin;
   const leverageSigs = computeLeverageScenarioSignals(marginData, depositsData);
 
-  // 计算日环比辅助函数：从 history 取当前值和上一个值，返回变化百分比字符串
+  // 计算日环比辅助函数：从 history 取当前值和上一个值，返回变化百分比字符串（逗号分隔）
   function getDayOverDayStr(history) {
     if (!history || history.length < 2) return '';
     const curr = history[history.length - 1].value;
@@ -165,23 +165,25 @@ function renderKoreaLights(signals, latest) {
     if (prev == null || prev === 0) return '';
     const pct = (curr - prev) / prev * 100;
     const sign = pct >= 0 ? '+' : '';
-    return ` ${sign}${pct.toFixed(1)}%`;
+    return `，${sign}${pct.toFixed(1)}%`;
   }
 
-  // 计算融资最高点回落的日环比（回落百分比 vs 昨日）
-  function getDropDayOverDayStr(marginHistory) {
-    if (!marginHistory || marginHistory.length < 2) return '';
-    const h = marginHistory;
-    const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
-    if (peak === 0) return '';
-    const curr = h[h.length - 1].value;
-    const prev = h[h.length - 2].value;
-    const currDropPct = (peak - curr) / peak * 100;
-    const prevDropPct = (peak - prev) / peak * 100;
-    const delta = currDropPct - prevDropPct;
-    const sign = delta >= 0 ? '+' : '';
-    // 回落百分比变大 → 实际去杠杆了 → 这里显示回落幅度的变化
-    return ` ${sign}${delta.toFixed(1)}%`;
+  // 计算最高点状态：创新高(上升) vs 回落
+  // prevPeak = 排除当前点后的历史最高值
+  function computePeakStatus(history) {
+    if (!history || history.length < 2) return null;
+    const curr = history[history.length - 1].value;
+    const prevHist = history.slice(0, -1);
+    const prevPeak = prevHist.reduce((m, x) => Math.max(m, x.value), -Infinity);
+    const prevPeakDate = prevHist.find(x => x.value === prevPeak)?.date || '';
+    if (curr >= prevPeak && prevPeak > 0) {
+      const risePct = (curr - prevPeak) / prevPeak * 100;
+      return { type: 'up', pct: risePct, prevPeak, prevPeakDate, curr };
+    } else if (prevPeak > 0) {
+      const dropPct = (prevPeak - curr) / prevPeak * 100;
+      return { type: 'down', pct: dropPct, prevPeak, prevPeakDate, curr };
+    }
+    return null;
   }
 
   KOREA_DIMENSION_ORDER.forEach(key => {
@@ -193,17 +195,22 @@ function renderKoreaLights(signals, latest) {
     } else if (key === 'leverage_14d') {
       sig = leverageSigs.fourteen;
     } else if (key === 'kospi' || key === 'kosdaq') {
-      // KOSPI/KOSDAQ：从 history 计算回落%判定颜色
+      // KOSPI/KOSDAQ：从 history 计算高点上升/回落% 判定颜色
       const idxData = koreaLatest[key];
-      if (idxData && idxData.history && idxData.history.length > 0) {
-        const h = idxData.history;
-        const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
-        const curr = h[h.length - 1].value;
-        const dropPct = (peak - curr) / peak * 100;
-        let status = 'green', label = '健康回调';
-        if (dropPct > 10) { status = 'red'; label = '深度回调'; }
-        else if (dropPct > 5) { status = 'yellow'; label = '中度回调'; }
-        sig = { status, note: `${idxData.name} 当前 ${curr} · 峰值 ${peak} · 回落 ${dropPct.toFixed(1)}% · ${label}` };
+      if (idxData && idxData.history && idxData.history.length > 1) {
+        const ps = computePeakStatus(idxData.history);
+        if (ps) {
+          let status, label;
+          if (ps.type === 'up') {
+            status = 'green'; label = '创新高';
+          } else {
+            if (ps.pct > 10) { status = 'red'; label = '深度回调'; }
+            else if (ps.pct > 5) { status = 'yellow'; label = '中度回调'; }
+            else { status = 'green'; label = '健康回调'; }
+          }
+          const peakLabel = ps.type === 'up' ? `上次峰值 ${ps.prevPeak} (${ps.prevPeakDate}) → 新高 ${ps.curr}，+${ps.pct.toFixed(1)}%` : `峰值 ${ps.prevPeak} (${ps.prevPeakDate}) → 当前 ${ps.curr}，回落 ${ps.pct.toFixed(1)}%`;
+          sig = { status, note: `${idxData.name} ${peakLabel} · ${label}` };
+        }
       }
     } else {
       sig = koreaSignals.signals ? koreaSignals.signals[key] : null;
@@ -233,13 +240,15 @@ function renderKoreaLights(signals, latest) {
       const abnStr = sig.abn ? ` ${sig.abn}` : '';
       valueSuffix = ` <span class="dd-inline">${sig.label}${abnStr}</span>`;
     } else if (key === 'kospi' || key === 'kosdaq') {
-      // KOSPI/KOSDAQ：显示 从高点回落% + 日环比
-      if (dimData && dimData.history && dimData.history.length > 0) {
-        const h = dimData.history;
-        const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
-        const curr = h[h.length - 1].value;
-        const dropPct = ((peak - curr) / peak * 100).toFixed(1);
-        valueSuffix = ` <span class="dd-inline">-${dropPct}%${dodStr}</span>`;
+      // KOSPI/KOSDAQ：动态显示 高点上升/回落% + 日环比
+      if (dimData && dimData.history && dimData.history.length > 1) {
+        const ps = computePeakStatus(dimData.history);
+        if (ps) {
+          const pctStr = ps.type === 'up'
+            ? `最高点上升+${ps.pct.toFixed(1)}%`
+            : `高点回落${ps.pct.toFixed(1)}%`;
+          valueSuffix = ` <span class="dd-inline">${pctStr}${dodStr}</span>`;
+        }
       }
     } else if (key === 'leveraged_etf') {
       // 去化情景/杠杆ETF：已通过标签说明，不需要额外数值
@@ -260,25 +269,35 @@ function renderKoreaLights(signals, latest) {
     grid.appendChild(card);
   });
 
-  // 渲染融资余额高点回落卡片（并入信号灯网格，与其他卡片同宽同高）+ 日环比
-  if (marginData && marginData.history && marginData.history.length > 0) {
+  // 渲染融资余额高点卡片（动态：上升/回落）+ 日环比
+  if (marginData && marginData.history && marginData.history.length > 1) {
     const h = marginData.history;
-    const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
-    const peakDate = h.find(x => x.value === peak)?.date || '';
-    const curr = h[h.length - 1].value;
-    const dropAbs = (peak - curr).toFixed(1);
-    const dropPct = ((peak - curr) / peak * 100).toFixed(1);
-    const dropDodStr = getDropDayOverDayStr(h);
-    const titleParts = [`峰值 ${peak} (${peakDate}) → 当前 ${curr} · 回落 ${dropPct}%`];
-    if (dropDodStr) titleParts.push(`较昨日 ${dropDodStr.trim()}`);
-    const ddCard = document.createElement('div');
-    ddCard.className = 'light-card yellow';
-    ddCard.title = titleParts.join('｜');
-    ddCard.innerHTML = `
-      <div class="light-dot"></div>
-      <div class="light-label">融资最高点回落 <span class="dd-inline">-${dropPct}%${dropDodStr}</span></div>
-    `;
-    grid.appendChild(ddCard);
+    const ps = computePeakStatus(h);
+    if (ps) {
+      const dodStr = getDayOverDayStr(h);
+      let ddCard, label, valueStr, titleStr;
+      if (ps.type === 'up') {
+        // 创新高 → 红色（融资创新高=危险）
+        label = '融资最高点上升';
+        valueStr = `+${ps.pct.toFixed(1)}%`;
+        titleStr = `上次峰值 ${ps.prevPeak} (${ps.prevPeakDate}) → 新高 ${ps.curr}，+${ps.pct.toFixed(1)}%`;
+        ddCard = document.createElement('div');
+        ddCard.className = 'light-card red';
+      } else {
+        // 回落 → 黄色
+        label = '融资最高点回落';
+        valueStr = `-${ps.pct.toFixed(1)}%`;
+        titleStr = `峰值 ${ps.prevPeak} (${ps.prevPeakDate}) → 当前 ${ps.curr}，回落 ${ps.pct.toFixed(1)}%`;
+        ddCard = document.createElement('div');
+        ddCard.className = 'light-card yellow';
+      }
+      ddCard.title = titleStr;
+      ddCard.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">${label} <span class="dd-inline">${valueStr}${dodStr}</span></div>
+      `;
+      grid.appendChild(ddCard);
+    }
   }
 
   // 渲染折叠式判定标准说明

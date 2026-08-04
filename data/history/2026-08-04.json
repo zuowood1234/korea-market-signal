@@ -1,13 +1,13 @@
 {
   "date": "2026-08-04",
-  "update_time": "2026-08-04 00:43:01",
+  "update_time": "2026-08-04 00:51:52",
   "korea": {
     "vkospi": {
       "name": "VKOSPI",
       "subtitle": "韩国波动率指数",
       "unit": "",
-      "data_source": "KRX (手动更新)",
-      "current_value": 79.8,
+      "data_source": "Investing.com",
+      "current_value": 82.3,
       "history": [
         {
           "date": "2025-01-03",
@@ -260,6 +260,10 @@
         {
           "date": "2026-07-25",
           "value": 79.8
+        },
+        {
+          "date": "2026-08-04",
+          "value": 82.3
         }
       ],
       "thresholds": {
@@ -267,7 +271,7 @@
         "yellow": "20-40",
         "green": "<20"
       },
-      "note": "VKOSPI 韩国波动率指数。数据来源：KRX/yfinance。"
+      "note": "自动抓取 1 条, manual 补充 63 条, 最新 2026-08-04"
     },
     "margin": {
       "name": "融资余额",

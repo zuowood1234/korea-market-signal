@@ -2,14 +2,9 @@ name: 韩国市场信号
 
 on:
   schedule:
-    # 北京时间 07:50 / 08:30 / 09:40 / 14:30 / 21:30（工作日）
-    # 07:50 提前抓取一次（应对 kimpremium 数据源更新时间不稳定）
-    # 08:30 抓取数据 + Server酱微信推送
-    - cron: '50 23 * * 0-4'   # 北京时间 07:50 (周一-周五)
-    - cron: '30 0 * * 1-5'    # 北京时间 08:30 (周一-周五) - 推送
-    - cron: '40 1 * * 1-5'    # 北京时间 09:40 (周一-周五)
-    - cron: '30 6 * * 1-5'    # 北京时间 14:30 (周一-周五)
-    - cron: '30 13 * * 1-5'   # 北京时间 21:30 (周一-周五)
+    # 北京时间 14:35（工作日）— kimpremium 14:11 更新 T+2 数据后统一抓取
+    # 抓取完成后自动推送 Server 酱（约 14:38-14:40）
+    - cron: '35 6 * * 1-5'    # 北京时间 14:35 (周一-周五) - 抓取 + 推送
   workflow_dispatch:
   push:
     branches: [main]
@@ -40,8 +35,8 @@ jobs:
         run: python scripts/compute_signals.py
 
       - name: Send WeChat alert
-        # 仅在北京时间 08:30 的 cron 触发时推送，避免 push 和其他时段重复推送
-        if: github.event_name == 'schedule' && github.event.schedule == '30 0 * * 1-5'
+        # 仅在 14:35 的 schedule 触发时推送，push 触发不推送
+        if: github.event_name == 'schedule'
         env:
           SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
         run: python scripts/send_alert.py

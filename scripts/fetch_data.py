@@ -344,6 +344,157 @@ def _fetch_vkospi_via_investing():
     return history
 
 
+def _fetch_index_via_investing(overview_url, history_url, name):
+    """通用 Investing.com 指数抓取函数。
+    返回 [{"date": "YYYY-MM-DD", "value": float}, ...] 或 []。
+    """
+    # 1. 先获取当前实时值
+    current_value = None
+    try:
+        resp = _investing_http_get(overview_url)
+        if resp:
+            # 新版页面用 text-5xl/9 类名显示主价格
+            soup = BeautifulSoup(resp.text, "html.parser")
+            el = soup.find(class_='text-5xl/9')
+            if el:
+                try:
+                    current_value = float(el.get_text(strip=True).replace(",", ""))
+                    print(f"      Investing.com {name} 实时值: {current_value}")
+                except ValueError:
+                    pass
+            # 兜底：旧版 instrument-price-last
+            if current_value is None:
+                m = re.search(r'instrument-price-last[^>]*>([0-9,]+\.?[0-9]*)', resp.text)
+                if m:
+                    current_value = float(m.group(1).replace(",", ""))
+        else:
+            print(f"      Investing.com {name} 概览页获取失败")
+    except Exception as e:
+        print(f"      Investing.com {name} 概览页失败: {e}")
+
+    # 2. 获取历史数据
+    history = []
+    try:
+        resp = _investing_http_get(history_url)
+        if not resp:
+            print(f"      Investing.com {name} 历史数据页获取失败")
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}] if current_value else []
+
+        if not _HAS_BS4:
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}] if current_value else []
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        tables = soup.find_all("table")
+
+        target_table = None
+        for table in tables:
+            headers = [th.get_text(strip=True) for th in table.find_all("th")]
+            if "日期" in headers and "收盘" in headers:
+                target_table = table
+                break
+
+        if not target_table:
+            print(f"      Investing.com {name} 未找到历史数据表格")
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}] if current_value else []
+
+        rows = target_table.find_all("tr")
+        for row in rows[1:]:
+            cells = [td.get_text(strip=True) for td in row.find_all(["td", "th"])]
+            if len(cells) < 2:
+                continue
+            date_str = cells[0]
+            close_str = cells[1]
+
+            m = re.match(r'(\d{4})年(\d{1,2})月(\d{1,2})日', date_str)
+            if not m:
+                continue
+            d_fmt = f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+
+            try:
+                val = float(close_str.replace(",", ""))
+            except ValueError:
+                continue
+
+            history.append({"date": d_fmt, "value": round(val, 2)})
+
+        history.reverse()
+        print(f"      Investing.com {name} 历史数据: {len(history)} 条, 最新 {history[-1]['date']} = {history[-1]['value']}")
+
+        # 3. 如果有实时值且与最新历史数据日期不同，追加实时值
+        if current_value is not None:
+            from datetime import timezone, timedelta
+            kr_today = dt.datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
+            if not history or history[-1]["date"] != kr_today:
+                if dt.date.today().weekday() < 5:
+                    history.append({"date": kr_today, "value": current_value})
+                    print(f"      追加盘中实时值: {kr_today} = {current_value}")
+
+    except Exception as e:
+        print(f"      Investing.com {name} 历史数据抓取失败: {e}")
+        if current_value is not None:
+            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}]
+
+    return history
+
+
+def fetch_korea_kospi():
+    """KOSPI 综合指数。数据源: Investing.com。"""
+    result = {
+        "name": "KOSPI",
+        "subtitle": "韩国综合股价指数",
+        "unit": "",
+        "data_source": "Investing.com",
+        "current_value": None,
+        "history": [],
+    }
+    try:
+        print("    尝试从 Investing.com 获取 KOSPI...")
+        history = _fetch_index_via_investing(
+            "https://cn.investing.com/indices/kospi",
+            "https://cn.investing.com/indices/kospi-historical-data",
+            "KOSPI",
+        )
+        if history:
+            result["history"] = history[-500:]
+            result["current_value"] = history[-1]["value"]
+            result["note"] = f"自动抓取 {len(history)} 条，最新 {history[-1]['date']}"
+        else:
+            result["error"] = "Investing.com 无 KOSPI 数据"
+    except Exception as e:
+        result["error"] = str(e)
+        print(f"      KOSPI 抓取失败: {e}")
+    return result
+
+
+def fetch_korea_kosdaq():
+    """KOSDAQ 综合指数。数据源: Investing.com。"""
+    result = {
+        "name": "KOSDAQ",
+        "subtitle": "韩国创业板指数",
+        "unit": "",
+        "data_source": "Investing.com",
+        "current_value": None,
+        "history": [],
+    }
+    try:
+        print("    尝试从 Investing.com 获取 KOSDAQ...")
+        history = _fetch_index_via_investing(
+            "https://cn.investing.com/indices/kosdaq",
+            "https://cn.investing.com/indices/kosdaq-historical-data",
+            "KOSDAQ",
+        )
+        if history:
+            result["history"] = history[-500:]
+            result["current_value"] = history[-1]["value"]
+            result["note"] = f"自动抓取 {len(history)} 条，最新 {history[-1]['date']}"
+        else:
+            result["error"] = "Investing.com 无 KOSDAQ 数据"
+    except Exception as e:
+        result["error"] = str(e)
+        print(f"      KOSDAQ 抓取失败: {e}")
+    return result
+
+
 def _fetch_vkospi_via_krx():
     """从 KRX 指数开放接口获取 VKOSPI 日频历史数据。
 
@@ -989,6 +1140,8 @@ def main():
 
     korea_fetchers = {
         "vkospi": fetch_korea_vkospi,
+        "kospi": fetch_korea_kospi,
+        "kosdaq": fetch_korea_kosdaq,
         "margin": fetch_korea_margin,
         "liquidation": fetch_korea_liquidation,
         "liquidation_ratio": fetch_korea_liquidation_ratio,

@@ -16,6 +16,8 @@ STATUS_ICONS = {
     "yellow": "🟡",
     "green": "🟢",
     "gray": "⚪",
+    "orange": "🟠",
+    "darkred": "🟤",
 }
 
 STATUS_LABELS = {
@@ -23,6 +25,8 @@ STATUS_LABELS = {
     "yellow": "警戒",
     "green": "安全",
     "gray": "数据缺失",
+    "orange": "异常警戒",
+    "darkred": "危险·强化",
 }
 
 
@@ -246,7 +250,7 @@ def build_report(latest, signals):
     if korea_red > 0 and korea_green == 0:
         title += f" | {korea_red}项顶部预警"
     elif korea_green > 0 and korea_red == 0:
-        title += f" | {korea_green}项底部信号"
+        title += f" | {korea_green}项稳定信号"
     elif korea_red > 0 and korea_green > 0:
         title += f" | {korea_red}红{korea_green}绿"
 
@@ -304,6 +308,24 @@ def build_report(latest, signals):
                 dod_s = drop_dod(margin_hist)
                 lines.append(f"｜融资最高点回落 -{drop_pct:.1f}%{dod_s}")
         lines.append("\n")
+
+    # 4.5 KOSPI + KOSDAQ（从高点回落% + 日环比）
+    for idx_key, idx_name in [("kospi", "KOSPI"), ("kosdaq", "KOSDAQ")]:
+        idx = korea_latest.get(idx_key, {})
+        if idx.get("current_value") is not None and idx.get("history"):
+            hist = idx["history"]
+            val = idx["current_value"]
+            peak = max(h["value"] for h in hist)
+            drop_pct = (peak - val) / peak * 100 if peak > 0 else 0
+            # 颜色判定
+            if drop_pct > 10:
+                icon = "🔴"
+            elif drop_pct > 5:
+                icon = "🟡"
+            else:
+                icon = "🟢"
+            dod_s = dod_pct(hist)
+            lines.append(f"- {icon} **{idx_name}**：{val}｜高点回落 -{drop_pct:.1f}%{dod_s}\n")
 
     # 5. VKOSPI（含日环比）
     vkospi = korea_latest.get("vkospi", {})

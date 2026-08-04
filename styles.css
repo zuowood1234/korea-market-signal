@@ -23,6 +23,16 @@
   --gray-bg: #f5f5f4;
   --gray-border: #d6d3d1;
   --gray-text: #44403c;
+  /* 异常警戒（B被异常强化）- 橙色 */
+  --orange: #ea580c;
+  --orange-bg: #fff7ed;
+  --orange-border: #fed7aa;
+  --orange-text: #9a3412;
+  /* 危险·强化（C+异常强化）- 红棕色 */
+  --darkred: #7f1d1d;
+  --darkred-bg: #fee2e2;
+  --darkred-border: #fca5a5;
+  --darkred-text: #7f1d1d;
   --radius-md: 8px;
   --radius-lg: 12px;
 }
@@ -119,6 +129,14 @@ body {
   background: var(--gray-bg);
   border-color: var(--gray-border);
 }
+.light-card.orange {
+  background: var(--orange-bg);
+  border-color: var(--orange-border);
+}
+.light-card.darkred {
+  background: var(--darkred-bg);
+  border-color: var(--darkred-border);
+}
 
 .light-dot {
   width: 10px;
@@ -131,6 +149,8 @@ body {
 .light-card.yellow .light-dot { background: var(--yellow); }
 .light-card.green .light-dot { background: var(--green); }
 .light-card.gray .light-dot { background: var(--gray); }
+.light-card.orange .light-dot { background: var(--orange); }
+.light-card.darkred .light-dot { background: var(--darkred); }
 
 .light-label {
   font-size: 12px;
@@ -141,6 +161,8 @@ body {
 .light-card.yellow .light-label { color: var(--yellow-text); }
 .light-card.green .light-label { color: var(--green-text); }
 .light-card.gray .light-label { color: var(--gray-text); }
+.light-card.orange .light-label { color: var(--orange-text); }
+.light-card.darkred .light-label { color: var(--darkred-text); }
 
 /* 信号灯卡片内的内联数值（VKOSPI/强平/融资回落） */
 .light-card .dd-inline {
@@ -151,6 +173,8 @@ body {
 .light-card.yellow .dd-inline { color: var(--yellow); }
 .light-card.green .dd-inline { color: var(--green); }
 .light-card.gray .dd-inline { color: var(--gray); }
+.light-card.orange .dd-inline { color: var(--orange); }
+.light-card.darkred .dd-inline { color: var(--darkred); }
 
 .summary-item {
   display: flex;
@@ -969,11 +993,15 @@ body {
 .scenario-track-table tr.row-yellow td { background: #fefce8; }
 .scenario-track-table tr.row-red td { background: #fef2f2; }
 .scenario-track-table tr.row-gray td { background: #f5f5f4; }
+.scenario-track-table tr.row-orange td { background: #fff7ed; }
+.scenario-track-table tr.row-darkred td { background: #fee2e2; }
 
 .dot-green,
 .dot-yellow,
 .dot-red,
-.dot-gray {
+.dot-gray,
+.dot-orange,
+.dot-darkred {
   display: inline-block;
   width: 8px;
   height: 8px;
@@ -986,6 +1014,8 @@ body {
 .dot-yellow { background: #eab308; }
 .dot-red { background: #dc2626; }
 .dot-gray { background: #78716c; }
+.dot-orange { background: #ea580c; }
+.dot-darkred { background: #7f1d1d; }
 
 @media (max-width: 768px) {
   .scenario-tables-wrap {

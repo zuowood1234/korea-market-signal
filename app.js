@@ -2,6 +2,8 @@ const KOREA_DIMENSION_ORDER = ['leverage_14d', 'leverage_1d', 'stability', 'inve
 
 const KOREA_DIMENSION_META = {
   vkospi: { name: 'VKOSPI', direction: 'low_red', displayUnit: '' },
+  kospi: { name: 'KOSPI', direction: 'special', displayUnit: '' },
+  kosdaq: { name: 'KOSDAQ', direction: 'special', displayUnit: '' },
   margin: { name: '融资余额', direction: 'high_red', displayUnit: '' },
   liquidation: { name: '强平金额', direction: 'low_red', displayUnit: '亿' },
   liquidation_ratio: { name: '强平比例', direction: 'low_red', displayUnit: '%' },
@@ -190,6 +192,19 @@ function renderKoreaLights(signals, latest) {
       sig = leverageSigs.daily;
     } else if (key === 'leverage_14d') {
       sig = leverageSigs.fourteen;
+    } else if (key === 'kospi' || key === 'kosdaq') {
+      // KOSPI/KOSDAQ：从 history 计算回落%判定颜色
+      const idxData = koreaLatest[key];
+      if (idxData && idxData.history && idxData.history.length > 0) {
+        const h = idxData.history;
+        const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
+        const curr = h[h.length - 1].value;
+        const dropPct = (peak - curr) / peak * 100;
+        let status = 'green', label = '健康回调';
+        if (dropPct > 10) { status = 'red'; label = '深度回调'; }
+        else if (dropPct > 5) { status = 'yellow'; label = '中度回调'; }
+        sig = { status, note: `${idxData.name} 当前 ${curr} · 峰值 ${peak} · 回落 ${dropPct.toFixed(1)}% · ${label}` };
+      }
     } else {
       sig = koreaSignals.signals ? koreaSignals.signals[key] : null;
     }
@@ -203,8 +218,8 @@ function renderKoreaLights(signals, latest) {
     let valueSuffix = '';
     const dimData = koreaLatest[key];
 
-    // 需要显示日环比的指标：强平金额、强平比例、VKOSPI
-    const needsDod = ['liquidation', 'liquidation_ratio', 'vkospi'].includes(key);
+    // 需要显示日环比的指标：强平金额、强平比例、VKOSPI、KOSPI、KOSDAQ
+    const needsDod = ['liquidation', 'liquidation_ratio', 'vkospi', 'kospi', 'kosdaq'].includes(key);
     const dodStr = needsDod && dimData ? getDayOverDayStr(dimData.history) : '';
 
     if (key === 'stability' && stabilityScore != null) {
@@ -217,6 +232,15 @@ function renderKoreaLights(signals, latest) {
     } else if (key === 'leverage_14d' && sig && sig.label) {
       const abnStr = sig.abn ? ` ${sig.abn}` : '';
       valueSuffix = ` <span class="dd-inline">${sig.label}${abnStr}</span>`;
+    } else if (key === 'kospi' || key === 'kosdaq') {
+      // KOSPI/KOSDAQ：显示 从高点回落% + 日环比
+      if (dimData && dimData.history && dimData.history.length > 0) {
+        const h = dimData.history;
+        const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
+        const curr = h[h.length - 1].value;
+        const dropPct = ((peak - curr) / peak * 100).toFixed(1);
+        valueSuffix = ` <span class="dd-inline">-${dropPct}%${dodStr}</span>`;
+      }
     } else if (key === 'leveraged_etf') {
       // 去化情景/杠杆ETF：已通过标签说明，不需要额外数值
     } else if (dimData && dimData.current_value != null) {
@@ -305,12 +329,15 @@ function classifyLeverageScenario(marChg, depChg, r2Chg, window) {
     scenario = '?'; color = 'gray'; label = '未匹配'; baseScenario = '?';
   }
 
-  // 异常强化: 黄→红, 红保持；用 baseScenario 区分"原生危险"vs"异常强化"
+  // 异常强化: 用独立颜色区分三种危险状态
+  // - 原生C（无异常）= red 红色
+  // - B被异常强化升级为红 = orange 橙色（异常警戒）
+  // - C + 异常强化 = darkred 红棕色（危险·强化）
   let enhanced = false;
   if (color === 'yellow' && (mAbn || dAbn)) {
-    color = 'red'; enhanced = true; label = '异常警戒';
+    color = 'orange'; enhanced = true; label = '异常警戒';
   } else if (color === 'red' && (mAbn || dAbn)) {
-    enhanced = true; label = '危险·强化';
+    color = 'darkred'; enhanced = true; label = '危险·强化';
   }
 
   return { scenario, color, label, baseScenario, mDir, dDir, rDir, mAbn, dAbn, enhanced,
@@ -395,14 +422,20 @@ function renderLeverageScenarioExplainer() {
       </table>
 
       <p class="explainer-note">
-        判定流程：① 用正负号定方向（↑/↓，无横盘）→ ② 匹配情景表得初始红黄绿 → ③ 异常阈值强化（黄→红，红保持）
+        判定流程：① 用正负号定方向（↑/↓，无横盘）→ ② 匹配情景表得初始红黄绿 → ③ 异常阈值强化（黄→橙，红→深红棕）
+      </p>
+
+      <p class="explainer-note">
+        <b>三种危险颜色区分</b>：<br>
+        🔴 <b>危险</b>（红色）= 原生C情景，无异常强化；<br>
+        🟠 <b>异常警戒</b>（橙色）= 初始B中性被异常强化升级为红色；<br>
+        🟤 <b>危险·强化</b>（红棕色）= 原生C情景且同时触发异常阈值。
       </p>
 
       <p class="explainer-note">
         <b>追踪表说明</b>：<br>
         「异常」列：「融」=融资变化超阈值，「存」=存管金变化超阈值；<br>
-        「情景」列：B→C = 初始B中性被异常强化为C，C·强化 = 初始C且同时触发异常阈值；<br>
-        「信号」列：危险 = 原生C情景，危险·强化 = C且触发异常，异常警戒 = B被异常强化为红色。
+        「情景」列：B→C = 初始B中性被异常强化为C，C·强化 = 初始C且同时触发异常阈值。
       </p>
     </div>
   `;
@@ -511,7 +544,7 @@ function renderKoreaSummary(signals) {
   const items = [
     { status: 'red', label: '顶部预警', count: koreaSignals.red_count || 0 },
     { status: 'yellow', label: '中性', count: koreaSignals.yellow_count || 0 },
-    { status: 'green', label: '底部信号', count: koreaSignals.green_count || 0 },
+    { status: 'green', label: '稳定信号', count: koreaSignals.green_count || 0 },
     { status: 'gray', label: '数据缺失', count: koreaSignals.gray_count || 0 },
   ];
   el.innerHTML = items.map(i => `

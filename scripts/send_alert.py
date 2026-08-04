@@ -263,27 +263,76 @@ def build_report(latest, signals):
 
     # === 信号灯卡片区域 ===
     lines.append("\n## 📊 韩国市场信号\n")
+    lines.append(f"*T+0 实时指标 · 更新时间 {signals['update_time']}｜其余为 T+2（KOFIA 披露滞后）*\n")
 
     deposits = korea_latest.get("investor_deposits", {})
     margin = korea_latest.get("margin", {})
     margin_hist = margin.get("history", [])
 
-    # 1. 两周杠杆比率趋势
+    # 1. KOSPI（T+0）
+    kospi = korea_latest.get("kospi", {})
+    if kospi.get("current_value") is not None and kospi.get("history") and len(kospi["history"]) > 1:
+        ps = peak_status(kospi["history"])
+        if ps:
+            if ps["type"] == "up":
+                icon = "🟢"
+                peak_str = f"最高点上升+{ps['pct']:.1f}%"
+            else:
+                if ps["pct"] > 10:
+                    icon = "🔴"
+                elif ps["pct"] > 5:
+                    icon = "🟡"
+                else:
+                    icon = "🟢"
+                peak_str = f"高点回落{ps['pct']:.1f}%"
+            dod_s = dod_pct(kospi["history"])
+            lines.append(f"- {icon} **KOSPI** (T+0)：{kospi['current_value']}｜{peak_str}{dod_s}\n")
+
+    # 2. KOSDAQ（T+0）
+    kosdaq = korea_latest.get("kosdaq", {})
+    if kosdaq.get("current_value") is not None and kosdaq.get("history") and len(kosdaq["history"]) > 1:
+        ps = peak_status(kosdaq["history"])
+        if ps:
+            if ps["type"] == "up":
+                icon = "🟢"
+                peak_str = f"最高点上升+{ps['pct']:.1f}%"
+            else:
+                if ps["pct"] > 10:
+                    icon = "🔴"
+                elif ps["pct"] > 5:
+                    icon = "🟡"
+                else:
+                    icon = "🟢"
+                peak_str = f"高点回落{ps['pct']:.1f}%"
+            dod_s = dod_pct(kosdaq["history"])
+            lines.append(f"- {icon} **KOSDAQ** (T+0)：{kosdaq['current_value']}｜{peak_str}{dod_s}\n")
+
+    # 3. VKOSPI（T+0）
+    vkospi = korea_latest.get("vkospi", {})
+    vkospi_sig = korea_signals.get("signals", {}).get("vkospi", {})
+    if vkospi.get("current_value") is not None:
+        val = vkospi["current_value"]
+        icon = STATUS_ICONS.get(vkospi_sig.get("status", "gray"), "⚪")
+        tag = get_threshold_tag(val, vkospi.get("thresholds", {}), "low_red", "")
+        dod_s = dod_pct(vkospi.get("history", []))
+        lines.append(f"- {icon} **VKOSPI** (T+0)：{val} {tag}{dod_s}\n")
+
+    # 4. 两周杠杆比率趋势（T+2）
     lev_sigs = compute_leverage_signals(margin, deposits)
     if lev_sigs["fourteen"]:
         s = lev_sigs["fourteen"]
         icon = STATUS_ICONS.get(s["status"], "⚪")
         abn_str = f" 异常:{s['abn']}" if s["abn"] else ""
-        lines.append(f"- {icon} **两周杠杆比率趋势**：{s['label']}{abn_str}（{s['note']}）\n")
+        lines.append(f"- {icon} **两周杠杆比率趋势** (T+2)：{s['label']}{abn_str}（{s['note']}）\n")
 
-    # 2. 单日杠杆比率状态
+    # 5. 单日杠杆比率状态（T+2）
     if lev_sigs["daily"]:
         s = lev_sigs["daily"]
         icon = STATUS_ICONS.get(s["status"], "⚪")
         abn_str = f" 异常:{s['abn']}" if s["abn"] else ""
-        lines.append(f"- {icon} **单日杠杆比率状态**：{s['label']}{abn_str}（{s['note']}）\n")
+        lines.append(f"- {icon} **单日杠杆比率状态** (T+2)：{s['label']}{abn_str}（{s['note']}）\n")
 
-    # 3. 存管金稳定性
+    # 6. 存管金稳定性（T+2）
     if deposits.get("history") and len(deposits["history"]) > 22:
         scores = compute_stability_score(deposits["history"])
         if scores:
@@ -295,14 +344,14 @@ def build_report(latest, signals):
             else:
                 st_label, st_icon = "不稳定", "🔴"
             tag = "<60" if score < 60 else "≥60"
-            lines.append(f"- {st_icon} **存管金稳定性**：{score:.1f} {tag}（{st_label}）\n")
+            lines.append(f"- {st_icon} **存管金稳定性** (T+2)：{score:.1f} {tag}（{st_label}）\n")
 
-    # 4. 融资余额 + 最高点动态表述（含日环比）
+    # 7. 融资余额 + 最高点动态表述（T+2，含日环比）
     if margin.get("current_value") is not None:
         mar_val = margin["current_value"]
         mar_sig = korea_signals.get("signals", {}).get("margin", {})
         mar_icon = STATUS_ICONS.get(mar_sig.get("status", "gray"), "⚪")
-        lines.append(f"- {mar_icon} **融资余额**：{mar_val}万亿韩元{dod_pct(margin_hist)}")
+        lines.append(f"- {mar_icon} **融资余额** (T+2)：{mar_val}万亿韩元{dod_pct(margin_hist)}")
 
         if margin_hist and len(margin_hist) > 1:
             ps = peak_status(margin_hist)
@@ -313,39 +362,7 @@ def build_report(latest, signals):
                     lines.append(f"｜融资最高点回落 -{ps['pct']:.1f}%")
         lines.append("\n")
 
-    # 4.5 KOSPI + KOSDAQ（动态：高点上升/回落% + 日环比）
-    for idx_key, idx_name in [("kospi", "KOSPI"), ("kosdaq", "KOSDAQ")]:
-        idx = korea_latest.get(idx_key, {})
-        if idx.get("current_value") is not None and idx.get("history") and len(idx["history"]) > 1:
-            hist = idx["history"]
-            val = idx["current_value"]
-            ps = peak_status(hist)
-            if ps:
-                if ps["type"] == "up":
-                    icon = "🟢"
-                    peak_str = f"最高点上升+{ps['pct']:.1f}%"
-                else:
-                    if ps["pct"] > 10:
-                        icon = "🔴"
-                    elif ps["pct"] > 5:
-                        icon = "🟡"
-                    else:
-                        icon = "🟢"
-                    peak_str = f"高点回落{ps['pct']:.1f}%"
-                dod_s = dod_pct(hist)
-                lines.append(f"- {icon} **{idx_name}**：{val}｜{peak_str}{dod_s}\n")
-
-    # 5. VKOSPI（含日环比）
-    vkospi = korea_latest.get("vkospi", {})
-    vkospi_sig = korea_signals.get("signals", {}).get("vkospi", {})
-    if vkospi.get("current_value") is not None:
-        val = vkospi["current_value"]
-        icon = STATUS_ICONS.get(vkospi_sig.get("status", "gray"), "⚪")
-        tag = get_threshold_tag(val, vkospi.get("thresholds", {}), "low_red", "")
-        dod_s = dod_pct(vkospi.get("history", []))
-        lines.append(f"- {icon} **VKOSPI**：{val} {tag}{dod_s}\n")
-
-    # 6. 强平金额（含日环比）
+    # 8. 强平金额（T+2，含日环比）
     liq = korea_latest.get("liquidation", {})
     liq_sig = korea_signals.get("signals", {}).get("liquidation", {})
     if liq.get("current_value") is not None:
@@ -353,9 +370,9 @@ def build_report(latest, signals):
         icon = STATUS_ICONS.get(liq_sig.get("status", "gray"), "⚪")
         tag = get_threshold_tag(val, liq.get("thresholds", {}), "low_red", "亿")
         dod_s = dod_pct(liq.get("history", []))
-        lines.append(f"- {icon} **强平金额**：{val}亿 {tag}{dod_s}\n")
+        lines.append(f"- {icon} **强平金额** (T+2)：{val}亿 {tag}{dod_s}\n")
 
-    # 7. 强平比例（含日环比）
+    # 9. 强平比例（T+2，含日环比）
     liq_ratio = korea_latest.get("liquidation_ratio", {})
     liq_ratio_sig = korea_signals.get("signals", {}).get("liquidation_ratio", {})
     if liq_ratio.get("current_value") is not None:
@@ -363,7 +380,7 @@ def build_report(latest, signals):
         icon = STATUS_ICONS.get(liq_ratio_sig.get("status", "gray"), "⚪")
         tag = get_threshold_tag(val, liq_ratio.get("thresholds", {}), "low_red", "%")
         dod_s = dod_pct(liq_ratio.get("history", []))
-        lines.append(f"- {icon} **强平比例**：{val}% {tag}{dod_s}\n")
+        lines.append(f"- {icon} **强平比例** (T+2)：{val}% {tag}{dod_s}\n")
 
     # 数据来源
     lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*")

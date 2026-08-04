@@ -1,4 +1,7 @@
-const KOREA_DIMENSION_ORDER = ['leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'kospi', 'kosdaq', 'vkospi', 'liquidation', 'liquidation_ratio'];
+const KOREA_DIMENSION_ORDER = ['kospi', 'kosdaq', 'vkospi', 'leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'liquidation', 'liquidation_ratio'];
+
+// T+0 实时指标（KOSPI/KOSDAQ/VKOSPI）；其余为 T+2（KOFIA 披露滞后）
+const T0_KEYS = ['kospi', 'kosdaq', 'vkospi'];
 
 const KOREA_DIMENSION_META = {
   vkospi: { name: 'VKOSPI', direction: 'low_red', displayUnit: '' },
@@ -262,9 +265,17 @@ function renderKoreaLights(signals, latest) {
       valueSuffix = ` <span class="dd-inline">${valStr}${displayUnit}${tag ? ' ' + tag : ''}${dodStr}</span>`;
     }
 
+    // T+0/T+2 时效角标
+    const isT0 = T0_KEYS.includes(key);
+    const t0Time = latest.update_time ? latest.update_time.slice(5, 16) : '';
+    const freshTag = isT0
+      ? `<span class="fresh-tag t0">T+0 · ${t0Time}</span>`
+      : `<span class="fresh-tag t2">T+2</span>`;
+
     card.innerHTML = `
       <div class="light-dot"></div>
       <div class="light-label">${meta.name}${valueSuffix}</div>
+      ${freshTag}
     `;
     grid.appendChild(card);
   });
@@ -295,6 +306,7 @@ function renderKoreaLights(signals, latest) {
       ddCard.innerHTML = `
         <div class="light-dot"></div>
         <div class="light-label">${label} <span class="dd-inline">${valueStr}${dodStr}</span></div>
+        <span class="fresh-tag t2">T+2</span>
       `;
       grid.appendChild(ddCard);
     }

@@ -772,7 +772,13 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-bottom: 12px;
+}
+
+.korea-lights-note {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin: 6px 0 14px 2px;
+  padding: 0;
 }
 
 .korea-summary {

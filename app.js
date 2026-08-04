@@ -1,4 +1,4 @@
-const KOREA_DIMENSION_ORDER = ['leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'vkospi', 'liquidation', 'liquidation_ratio'];
+const KOREA_DIMENSION_ORDER = ['leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'kospi', 'kosdaq', 'vkospi', 'liquidation', 'liquidation_ratio'];
 
 const KOREA_DIMENSION_META = {
   vkospi: { name: 'VKOSPI', direction: 'low_red', displayUnit: '' },

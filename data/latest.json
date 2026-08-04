@@ -1,6 +1,6 @@
 {
   "date": "2026-08-04",
-  "update_time": "2026-08-04 02:04:35",
+  "update_time": "2026-08-04 03:20:01",
   "korea": {
     "vkospi": {
       "name": "VKOSPI",
@@ -274,7 +274,7 @@
       "subtitle": "韩国综合股价指数",
       "unit": "",
       "data_source": "yfinance",
-      "current_value": 6248.25,
+      "current_value": 6215.67,
       "history": [
         {
           "date": "2026-02-04",
@@ -754,7 +754,7 @@
         },
         {
           "date": "2026-08-04",
-          "value": 6248.25
+          "value": 6215.67
         }
       ],
       "note": "自动抓取 120 条"
@@ -764,7 +764,7 @@
       "subtitle": "韩国创业板指数",
       "unit": "",
       "data_source": "yfinance",
-      "current_value": 775.72,
+      "current_value": 773.0,
       "history": [
         {
           "date": "2026-02-04",
@@ -1244,7 +1244,7 @@
         },
         {
           "date": "2026-08-04",
-          "value": 775.72
+          "value": 773.0
         }
       ],
       "note": "自动抓取 120 条"

@@ -37,6 +37,8 @@ jobs:
         run: python scripts/compute_signals.py
 
       - name: Send WeChat alert
+        # 仅在北京时间 14:30 的 cron 触发时推送，避免 push 和其他时段重复推送
+        if: github.event_name == 'schedule' && github.event.schedule == '30 6 * * 1-5'
         env:
           SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
         run: python scripts/send_alert.py

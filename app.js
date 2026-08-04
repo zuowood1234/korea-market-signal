@@ -1,4 +1,4 @@
-const KOREA_DIMENSION_ORDER = ['investor_deposits', 'stability', 'leverage_14d', 'leverage_1d', 'leveraged_etf', 'margin', 'vkospi', 'liquidation', 'liquidation_ratio'];
+const KOREA_DIMENSION_ORDER = ['leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'vkospi', 'liquidation', 'liquidation_ratio'];
 
 const KOREA_DIMENSION_META = {
   vkospi: { name: 'VKOSPI', direction: 'low_red', displayUnit: '' },
@@ -155,6 +155,33 @@ function renderKoreaLights(signals, latest) {
   const marginData = koreaLatest.margin;
   const leverageSigs = computeLeverageScenarioSignals(marginData, depositsData);
 
+  // 计算日环比辅助函数：从 history 取当前值和上一个值，返回变化百分比字符串
+  function getDayOverDayStr(history) {
+    if (!history || history.length < 2) return '';
+    const curr = history[history.length - 1].value;
+    const prev = history[history.length - 2].value;
+    if (prev == null || prev === 0) return '';
+    const pct = (curr - prev) / prev * 100;
+    const sign = pct >= 0 ? '+' : '';
+    return ` ${sign}${pct.toFixed(1)}%`;
+  }
+
+  // 计算融资最高点回落的日环比（回落百分比 vs 昨日）
+  function getDropDayOverDayStr(marginHistory) {
+    if (!marginHistory || marginHistory.length < 2) return '';
+    const h = marginHistory;
+    const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
+    if (peak === 0) return '';
+    const curr = h[h.length - 1].value;
+    const prev = h[h.length - 2].value;
+    const currDropPct = (peak - curr) / peak * 100;
+    const prevDropPct = (peak - prev) / peak * 100;
+    const delta = currDropPct - prevDropPct;
+    const sign = delta >= 0 ? '+' : '';
+    // 回落百分比变大 → 实际去杠杆了 → 这里显示回落幅度的变化
+    return ` ${sign}${delta.toFixed(1)}%`;
+  }
+
   KOREA_DIMENSION_ORDER.forEach(key => {
     let sig = null;
     if (key === 'stability') {
@@ -176,6 +203,10 @@ function renderKoreaLights(signals, latest) {
     let valueSuffix = '';
     const dimData = koreaLatest[key];
 
+    // 需要显示日环比的指标：强平金额、强平比例、VKOSPI
+    const needsDod = ['liquidation', 'liquidation_ratio', 'vkospi'].includes(key);
+    const dodStr = needsDod && dimData ? getDayOverDayStr(dimData.history) : '';
+
     if (key === 'stability' && stabilityScore != null) {
       const scoreStr = stabilityScore.toFixed(1);
       const tag = stabilitySig.thresholdTag || '';
@@ -195,7 +226,7 @@ function renderKoreaLights(signals, latest) {
       const direction = meta.direction || 'low_red';
       const tag = getThresholdTag(val, thresholds, direction, displayUnit);
       const valStr = Number.isInteger(val) ? String(val) : String(parseFloat(val.toFixed(1)));
-      valueSuffix = ` <span class="dd-inline">${valStr}${displayUnit}${tag ? ' ' + tag : ''}</span>`;
+      valueSuffix = ` <span class="dd-inline">${valStr}${displayUnit}${tag ? ' ' + tag : ''}${dodStr}</span>`;
     }
 
     card.innerHTML = `
@@ -205,7 +236,7 @@ function renderKoreaLights(signals, latest) {
     grid.appendChild(card);
   });
 
-  // 渲染融资余额高点回落卡片（并入信号灯网格，与其他卡片同宽同高）
+  // 渲染融资余额高点回落卡片（并入信号灯网格，与其他卡片同宽同高）+ 日环比
   if (marginData && marginData.history && marginData.history.length > 0) {
     const h = marginData.history;
     const peak = h.reduce((m, x) => Math.max(m, x.value), -Infinity);
@@ -213,12 +244,15 @@ function renderKoreaLights(signals, latest) {
     const curr = h[h.length - 1].value;
     const dropAbs = (peak - curr).toFixed(1);
     const dropPct = ((peak - curr) / peak * 100).toFixed(1);
+    const dropDodStr = getDropDayOverDayStr(h);
+    const titleParts = [`峰值 ${peak} (${peakDate}) → 当前 ${curr} · 回落 ${dropPct}%`];
+    if (dropDodStr) titleParts.push(`较昨日 ${dropDodStr.trim()}`);
     const ddCard = document.createElement('div');
     ddCard.className = 'light-card yellow';
-    ddCard.title = `峰值 ${peak} (${peakDate}) → 当前 ${curr} · 回落 ${dropPct}%`;
+    ddCard.title = titleParts.join('｜');
     ddCard.innerHTML = `
       <div class="light-dot"></div>
-      <div class="light-label">融资最高点回落 <span class="dd-inline">-${dropPct}%</span></div>
+      <div class="light-label">融资最高点回落 <span class="dd-inline">-${dropPct}%${dropDodStr}</span></div>
     `;
     grid.appendChild(ddCard);
   }

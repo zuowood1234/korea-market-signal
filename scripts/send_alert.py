@@ -201,8 +201,37 @@ def get_threshold_tag(current_value, thresholds, direction, unit):
     return ""
 
 
+def dod_pct(history):
+    """计算日环比变化百分比，返回带符号的字符串，如 '+1.2%'/'−0.5%'，无法计算返回''"""
+    if not history or len(history) < 2:
+        return ""
+    curr = history[-1].get("value")
+    prev = history[-2].get("value")
+    if curr is None or prev is None or prev == 0:
+        return ""
+    pct = (curr - prev) / prev * 100
+    sign = "+" if pct >= 0 else ""
+    return f" {sign}{pct:.1f}%"
+
+
+def drop_dod(margin_history):
+    """融资最高点回落的日环比变化（回落幅度的变化百分点），返回如 '+0.2%'/'−0.1%'，无法计算返回''"""
+    if not margin_history or len(margin_history) < 2:
+        return ""
+    peak = max(h["value"] for h in margin_history)
+    if peak == 0:
+        return ""
+    curr = margin_history[-1]["value"]
+    prev = margin_history[-2]["value"]
+    curr_drop = (peak - curr) / peak * 100
+    prev_drop = (peak - prev) / peak * 100
+    delta = curr_drop - prev_drop
+    sign = "+" if delta >= 0 else ""
+    return f" {sign}{delta:.1f}%"
+
+
 def build_report(latest, signals):
-    """构建包含所有卡片内容的报告"""
+    """构建包含所有卡片内容的报告（顺序与前端一致：两周杠杆→单日杠杆→存管金稳定性→…）"""
     date = signals["date"]
     korea_signals = signals.get("korea", {})
     korea_latest = latest.get("korea", {})
@@ -229,8 +258,24 @@ def build_report(latest, signals):
 
     deposits = korea_latest.get("investor_deposits", {})
     margin = korea_latest.get("margin", {})
+    margin_hist = margin.get("history", [])
 
-    # 1. 存管金稳定性
+    # 1. 两周杠杆比率趋势
+    lev_sigs = compute_leverage_signals(margin, deposits)
+    if lev_sigs["fourteen"]:
+        s = lev_sigs["fourteen"]
+        icon = STATUS_ICONS.get(s["status"], "⚪")
+        abn_str = f" 异常:{s['abn']}" if s["abn"] else ""
+        lines.append(f"- {icon} **两周杠杆比率趋势**：{s['label']}{abn_str}（{s['note']}）\n")
+
+    # 2. 单日杠杆比率状态
+    if lev_sigs["daily"]:
+        s = lev_sigs["daily"]
+        icon = STATUS_ICONS.get(s["status"], "⚪")
+        abn_str = f" 异常:{s['abn']}" if s["abn"] else ""
+        lines.append(f"- {icon} **单日杠杆比率状态**：{s['label']}{abn_str}（{s['note']}）\n")
+
+    # 3. 存管金稳定性
     if deposits.get("history") and len(deposits["history"]) > 22:
         scores = compute_stability_score(deposits["history"])
         if scores:
@@ -244,66 +289,56 @@ def build_report(latest, signals):
             tag = "<60" if score < 60 else "≥60"
             lines.append(f"- {st_icon} **存管金稳定性**：{score:.1f} {tag}（{st_label}）\n")
 
-    # 2 & 3. 杠杆去化情景
-    lev_sigs = compute_leverage_signals(margin, deposits)
-    if lev_sigs["fourteen"]:
-        s = lev_sigs["fourteen"]
-        icon = STATUS_ICONS.get(s["status"], "⚪")
-        abn_str = f" 异常:{s['abn']}" if s["abn"] else ""
-        lines.append(f"- {icon} **两周杠杆比率趋势**：{s['label']}{abn_str}（{s['note']}）\n")
-    if lev_sigs["daily"]:
-        s = lev_sigs["daily"]
-        icon = STATUS_ICONS.get(s["status"], "⚪")
-        abn_str = f" 异常:{s['abn']}" if s["abn"] else ""
-        lines.append(f"- {icon} **单日杠杆比率状态**：{s['label']}{abn_str}（{s['note']}）\n")
-
-    # 4. 融资余额 + 最高点回落
+    # 4. 融资余额 + 最高点回落（含日环比）
     if margin.get("current_value") is not None:
         mar_val = margin["current_value"]
         mar_sig = korea_signals.get("signals", {}).get("margin", {})
         mar_icon = STATUS_ICONS.get(mar_sig.get("status", "gray"), "⚪")
-        lines.append(f"- {mar_icon} **融资余额**：{mar_val}万亿韩元")
+        lines.append(f"- {mar_icon} **融资余额**：{mar_val}万亿韩元{dod_pct(margin_hist)}")
 
-        if margin.get("history"):
-            hist = margin["history"]
-            peak = max(h["value"] for h in hist)
-            curr = hist[-1]["value"]
+        if margin_hist:
+            peak = max(h["value"] for h in margin_hist)
+            curr = margin_hist[-1]["value"]
             if peak > 0:
                 drop_pct = (peak - curr) / peak * 100
-                lines.append(f"｜融资最高点回落 -{drop_pct:.1f}%")
+                dod_s = drop_dod(margin_hist)
+                lines.append(f"｜融资最高点回落 -{drop_pct:.1f}%{dod_s}")
         lines.append("\n")
 
-    # 5. VKOSPI
+    # 5. VKOSPI（含日环比）
     vkospi = korea_latest.get("vkospi", {})
     vkospi_sig = korea_signals.get("signals", {}).get("vkospi", {})
     if vkospi.get("current_value") is not None:
         val = vkospi["current_value"]
         icon = STATUS_ICONS.get(vkospi_sig.get("status", "gray"), "⚪")
         tag = get_threshold_tag(val, vkospi.get("thresholds", {}), "low_red", "")
-        lines.append(f"- {icon} **VKOSPI**：{val} {tag}\n")
+        dod_s = dod_pct(vkospi.get("history", []))
+        lines.append(f"- {icon} **VKOSPI**：{val} {tag}{dod_s}\n")
 
-    # 6. 强平金额
+    # 6. 强平金额（含日环比）
     liq = korea_latest.get("liquidation", {})
     liq_sig = korea_signals.get("signals", {}).get("liquidation", {})
     if liq.get("current_value") is not None:
         val = liq["current_value"]
         icon = STATUS_ICONS.get(liq_sig.get("status", "gray"), "⚪")
         tag = get_threshold_tag(val, liq.get("thresholds", {}), "low_red", "亿")
-        lines.append(f"- {icon} **强平金额**：{val}亿 {tag}\n")
+        dod_s = dod_pct(liq.get("history", []))
+        lines.append(f"- {icon} **强平金额**：{val}亿 {tag}{dod_s}\n")
 
-    # 7. 强平比例
+    # 7. 强平比例（含日环比）
     liq_ratio = korea_latest.get("liquidation_ratio", {})
     liq_ratio_sig = korea_signals.get("signals", {}).get("liquidation_ratio", {})
     if liq_ratio.get("current_value") is not None:
         val = liq_ratio["current_value"]
         icon = STATUS_ICONS.get(liq_ratio_sig.get("status", "gray"), "⚪")
         tag = get_threshold_tag(val, liq_ratio.get("thresholds", {}), "low_red", "%")
-        lines.append(f"- {icon} **强平比例**：{val}% {tag}\n")
+        dod_s = dod_pct(liq_ratio.get("history", []))
+        lines.append(f"- {icon} **强平比例**：{val}% {tag}{dod_s}\n")
 
     # 数据来源
     lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*")
-    lines.append("\n*数据来源: KOFIA（kimpremium.com）+ KRX*")
-    lines.append("\n*每日14:30自动推送*")
+    lines.append("\n*数据来源: KOFIA（kimpremium.com）+ Investing.com（VKOSPI）*")
+    lines.append("\n*每日08:30自动推送*")
 
     return title, "".join(lines)
 

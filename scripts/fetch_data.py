@@ -437,16 +437,104 @@ def _fetch_index_via_investing(overview_url, history_url, name):
     return history
 
 
+def _fetch_index_via_yahoo_direct(symbol, name, range_param="6mo"):
+    """直接使用 requests 调用 Yahoo Finance chart API 获取指数日线。
+    symbol 例: "^KS11" (KOSPI), "^KQ11" (KOSDAQ)。
+    返回 [{"date": "YYYY-MM-DD", "value": float}, ...] 或 []。
+    Yahoo chart API 对 CI 环境（GitHub Actions IP 池）稳定，无 CloudFlare 拦截。
+    """
+    session = requests.Session()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+        "Accept": "application/json,text/plain,*/*",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
+    # 获取 A3 cookie（失败不影响后续）
+    try:
+        session.get("https://fc.yahoo.com", headers=headers, allow_redirects=True, timeout=10)
+    except Exception:
+        pass
+
+    import time
+    time.sleep(0.3)
+
+    # 获取 crumb
+    try:
+        crumb_resp = session.get(
+            "https://query2.finance.yahoo.com/v1/test/getcrumb",
+            headers=headers,
+            timeout=10,
+        )
+        crumb = crumb_resp.text.strip() if crumb_resp.status_code == 200 and len(crumb_resp.text) < 32 else ""
+    except Exception:
+        crumb = ""
+
+    time.sleep(0.3)
+
+    # 查询指数日线
+    from urllib.parse import quote
+    url = f"https://query2.finance.yahoo.com/v8/finance/chart/{quote(symbol)}"
+    params = {
+        "range": range_param,
+        "interval": "1d",
+        "includePrePost": "false",
+    }
+    if crumb:
+        params["crumb"] = crumb
+
+    try:
+        resp = session.get(url, headers=headers, params=params, timeout=20)
+        if resp.status_code != 200:
+            print(f"      Yahoo direct {name} HTTP {resp.status_code}")
+            return []
+        obj = resp.json()
+        results = obj.get("chart", {}).get("result", [])
+        if not results:
+            err = obj.get("chart", {}).get("error", {})
+            print(f"      Yahoo direct {name} 错误: {err}")
+            return []
+        ts = results[0].get("timestamp", [])
+        quotes = results[0].get("indicators", {}).get("quote", [{}])[0]
+        closes = quotes.get("close", [])
+        history = []
+        for t, c in zip(ts, closes):
+            if c is None:
+                continue
+            d = dt.datetime.fromtimestamp(t, tz=dt.timezone.utc).strftime("%Y-%m-%d")
+            history.append({"date": d, "value": round(float(c), 2)})
+        if history:
+            print(f"      Yahoo direct {name}: {len(history)} 条, 最新 {history[-1]['date']} = {history[-1]['value']}")
+        return history
+    except Exception as e:
+        print(f"      Yahoo direct {name} 错误: {e}")
+        return []
+
+
 def fetch_korea_kospi():
-    """KOSPI 综合指数。数据源: Investing.com。"""
+    """KOSPI 综合指数。数据源优先级: Yahoo chart API -> Investing.com -> yfinance。"""
     result = {
         "name": "KOSPI",
         "subtitle": "韩国综合股价指数",
         "unit": "",
-        "data_source": "Investing.com",
+        "data_source": "Yahoo Finance",
         "current_value": None,
         "history": [],
     }
+
+    # 1. Yahoo chart API 直连（CI 环境最稳定）
+    try:
+        print("    尝试从 Yahoo Finance 获取 KOSPI (^KS11)...")
+        history = _fetch_index_via_yahoo_direct("^KS11", "KOSPI")
+        if history:
+            result["history"] = history[-500:]
+            result["current_value"] = history[-1]["value"]
+            result["note"] = f"自动抓取 {len(history)} 条，最新 {history[-1]['date']}"
+            return result
+    except Exception as e:
+        print(f"      Yahoo Finance KOSPI 失败: {e}")
+
+    # 2. Investing.com（curl_cffi/cloudscraper，本地可用）
     try:
         print("    尝试从 Investing.com 获取 KOSPI...")
         history = _fetch_index_via_investing(
@@ -457,25 +545,59 @@ def fetch_korea_kospi():
         if history:
             result["history"] = history[-500:]
             result["current_value"] = history[-1]["value"]
+            result["data_source"] = "Investing.com"
             result["note"] = f"自动抓取 {len(history)} 条，最新 {history[-1]['date']}"
-        else:
-            result["error"] = "Investing.com 无 KOSPI 数据"
+            return result
     except Exception as e:
-        result["error"] = str(e)
-        print(f"      KOSPI 抓取失败: {e}")
+        print(f"      Investing.com KOSPI 失败: {e}")
+
+    # 3. yfinance（最后备用，CI 环境可能被限流）
+    try:
+        print("    尝试从 yfinance 获取 KOSPI (^KS11)...")
+        ticker = yf.Ticker("^KS11")
+        hist = ticker.history(period="6mo")
+        if hist is not None and len(hist) > 0:
+            history = [
+                {"date": idx.strftime("%Y-%m-%d"), "value": round(float(row["Close"]), 2)}
+                for idx, row in hist.iterrows() if row["Close"] == row["Close"]
+            ]
+            if history:
+                result["history"] = history[-500:]
+                result["current_value"] = history[-1]["value"]
+                result["data_source"] = "yfinance"
+                result["note"] = f"自动抓取 {len(history)} 条"
+                return result
+    except Exception as e:
+        print(f"      yfinance KOSPI 失败: {e}")
+
+    result["error"] = "Yahoo/Investing.com/yfinance 均无 KOSPI 数据"
     return result
 
 
 def fetch_korea_kosdaq():
-    """KOSDAQ 综合指数。数据源: Investing.com。"""
+    """KOSDAQ 综合指数。数据源优先级: Yahoo chart API -> Investing.com -> yfinance。"""
     result = {
         "name": "KOSDAQ",
         "subtitle": "韩国创业板指数",
         "unit": "",
-        "data_source": "Investing.com",
+        "data_source": "Yahoo Finance",
         "current_value": None,
         "history": [],
     }
+
+    # 1. Yahoo chart API 直连（CI 环境最稳定）
+    try:
+        print("    尝试从 Yahoo Finance 获取 KOSDAQ (^KQ11)...")
+        history = _fetch_index_via_yahoo_direct("^KQ11", "KOSDAQ")
+        if history:
+            result["history"] = history[-500:]
+            result["current_value"] = history[-1]["value"]
+            result["note"] = f"自动抓取 {len(history)} 条，最新 {history[-1]['date']}"
+            return result
+    except Exception as e:
+        print(f"      Yahoo Finance KOSDAQ 失败: {e}")
+
+    # 2. Investing.com（curl_cffi/cloudscraper，本地可用）
     try:
         print("    尝试从 Investing.com 获取 KOSDAQ...")
         history = _fetch_index_via_investing(
@@ -486,12 +608,32 @@ def fetch_korea_kosdaq():
         if history:
             result["history"] = history[-500:]
             result["current_value"] = history[-1]["value"]
+            result["data_source"] = "Investing.com"
             result["note"] = f"自动抓取 {len(history)} 条，最新 {history[-1]['date']}"
-        else:
-            result["error"] = "Investing.com 无 KOSDAQ 数据"
+            return result
     except Exception as e:
-        result["error"] = str(e)
-        print(f"      KOSDAQ 抓取失败: {e}")
+        print(f"      Investing.com KOSDAQ 失败: {e}")
+
+    # 3. yfinance（最后备用，CI 环境可能被限流）
+    try:
+        print("    尝试从 yfinance 获取 KOSDAQ (^KQ11)...")
+        ticker = yf.Ticker("^KQ11")
+        hist = ticker.history(period="6mo")
+        if hist is not None and len(hist) > 0:
+            history = [
+                {"date": idx.strftime("%Y-%m-%d"), "value": round(float(row["Close"]), 2)}
+                for idx, row in hist.iterrows() if row["Close"] == row["Close"]
+            ]
+            if history:
+                result["history"] = history[-500:]
+                result["current_value"] = history[-1]["value"]
+                result["data_source"] = "yfinance"
+                result["note"] = f"自动抓取 {len(history)} 条"
+                return result
+    except Exception as e:
+        print(f"      yfinance KOSDAQ 失败: {e}")
+
+    result["error"] = "Yahoo/Investing.com/yfinance 均无 KOSDAQ 数据"
     return result
 
 

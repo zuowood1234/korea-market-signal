@@ -1,9 +1,9 @@
 {
   "_comment": "KOFIA 韩国市场数据手动更新文件。从 KOFIA 网站 (kofia.or.kr) 获取数据后填入此文件。",
   "_how_to_get": "浏览器打开 https://www.kofia.or.kr → 数据披露 → 信用交易统计 → 每日信用交易状况",
-  "update_date": "2026-07-25",
+  "update_date": "2026-08-06",
   "vkospi": {
-    "current_value": 80.78,
+    "current_value": 77.17,
     "history": [
       {
         "date": "2025-01-03",
@@ -296,9 +296,21 @@
       {
         "date": "2026-08-03",
         "value": 80.78
+      },
+      {
+        "date": "2026-08-04",
+        "value": 82.05
+      },
+      {
+        "date": "2026-08-05",
+        "value": 78.55
+      },
+      {
+        "date": "2026-08-06",
+        "value": 77.17
       }
     ],
-    "note": "本地 cloudscraper 自动更新，最新 2026-08-03"
+    "note": "本地 cloudscraper 自动更新，最新 2026-08-06"
   },
   "margin": {
     "current_value": 37.5,

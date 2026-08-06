@@ -10,7 +10,8 @@
   "aum_ccy": "USD",
   "premium": 3.13,
   "close_price": 9.1551,
-  "daily_change_pct": null
+  "daily_change_pct": null,
+  "cum_change_pct": 0.0
  },
  {
   "date": "2025-10-17",
@@ -23,7 +24,8 @@
   "aum_ccy": "USD",
   "premium": 1.28,
   "close_price": 9.4996,
-  "daily_change_pct": 3.76
+  "daily_change_pct": 3.76,
+  "cum_change_pct": 3.76
  },
  {
   "date": "2025-10-20",
@@ -36,7 +38,8 @@
   "aum_ccy": "USD",
   "premium": 8.12,
   "close_price": 11.0003,
-  "daily_change_pct": 15.8
+  "daily_change_pct": 15.8,
+  "cum_change_pct": 20.15
  },
  {
   "date": "2025-10-21",
@@ -49,7 +52,8 @@
   "aum_ccy": "USD",
   "premium": 3.05,
   "close_price": 10.1897,
-  "daily_change_pct": -7.37
+  "daily_change_pct": -7.37,
+  "cum_change_pct": 11.3
  },
  {
   "date": "2025-10-22",
@@ -62,7 +66,8 @@
   "aum_ccy": "USD",
   "premium": 0.31,
   "close_price": 10.0196,
-  "daily_change_pct": -1.67
+  "daily_change_pct": -1.67,
+  "cum_change_pct": 9.44
  },
  {
   "date": "2025-10-23",
@@ -75,7 +80,8 @@
   "aum_ccy": "USD",
   "premium": 1.38,
   "close_price": 9.9954,
-  "daily_change_pct": -0.24
+  "daily_change_pct": -0.24,
+  "cum_change_pct": 9.18
  },
  {
   "date": "2025-10-24",
@@ -88,7 +94,8 @@
   "aum_ccy": "USD",
   "premium": 2.16,
   "close_price": 11.4002,
-  "daily_change_pct": 14.05
+  "daily_change_pct": 14.05,
+  "cum_change_pct": 24.52
  },
  {
   "date": "2025-10-27",
@@ -101,7 +108,8 @@
   "aum_ccy": "USD",
   "premium": 5.64,
   "close_price": 12.93,
-  "daily_change_pct": 13.42
+  "daily_change_pct": 13.42,
+  "cum_change_pct": 41.23
  },
  {
   "date": "2025-10-28",
@@ -114,7 +122,8 @@
   "aum_ccy": "USD",
   "premium": 2.17,
   "close_price": 11.8301,
-  "daily_change_pct": -8.51
+  "daily_change_pct": -8.51,
+  "cum_change_pct": 29.22
  },
  {
   "date": "2025-10-30",
@@ -127,7 +136,8 @@
   "aum_ccy": "USD",
   "premium": 1.94,
   "close_price": 13.9401,
-  "daily_change_pct": 17.84
+  "daily_change_pct": 17.84,
+  "cum_change_pct": 52.27
  },
  {
   "date": "2025-10-31",
@@ -140,7 +150,8 @@
   "aum_ccy": "USD",
   "premium": 1.01,
   "close_price": 13.3601,
-  "daily_change_pct": -4.16
+  "daily_change_pct": -4.16,
+  "cum_change_pct": 45.93
  },
  {
   "date": "2025-11-03",
@@ -153,7 +164,8 @@
   "aum_ccy": "USD",
   "premium": 4.09,
   "close_price": 16.77,
-  "daily_change_pct": 25.52
+  "daily_change_pct": 25.52,
+  "cum_change_pct": 83.18
  },
  {
   "date": "2025-11-04",
@@ -166,7 +178,8 @@
   "aum_ccy": "USD",
   "premium": 3.44,
   "close_price": 14.8098,
-  "daily_change_pct": -11.69
+  "daily_change_pct": -11.69,
+  "cum_change_pct": 61.77
  },
  {
   "date": "2025-11-05",
@@ -179,7 +192,8 @@
   "aum_ccy": "USD",
   "premium": -0.46,
   "close_price": 13.8994,
-  "daily_change_pct": -6.15
+  "daily_change_pct": -6.15,
+  "cum_change_pct": 51.82
  },
  {
   "date": "2025-11-06",
@@ -192,7 +206,8 @@
   "aum_ccy": "USD",
   "premium": -0.09,
   "close_price": 14.6203,
-  "daily_change_pct": 5.19
+  "daily_change_pct": 5.19,
+  "cum_change_pct": 59.7
  },
  {
   "date": "2025-11-07",
@@ -205,7 +220,8 @@
   "aum_ccy": "USD",
   "premium": 0.72,
   "close_price": 14.0795,
-  "daily_change_pct": -3.7
+  "daily_change_pct": -3.7,
+  "cum_change_pct": 53.79
  },
  {
   "date": "2025-11-10",
@@ -218,7 +234,8 @@
   "aum_ccy": "USD",
   "premium": 2.97,
   "close_price": 15.6807,
-  "daily_change_pct": 11.37
+  "daily_change_pct": 11.37,
+  "cum_change_pct": 71.28
  },
  {
   "date": "2025-11-11",
@@ -231,7 +248,8 @@
   "aum_ccy": "USD",
   "premium": 0.89,
   "close_price": 15.9701,
-  "daily_change_pct": 1.85
+  "daily_change_pct": 1.85,
+  "cum_change_pct": 74.44
  },
  {
   "date": "2025-11-12",
@@ -244,7 +262,8 @@
   "aum_ccy": "USD",
   "premium": 1.84,
   "close_price": 16.0107,
-  "daily_change_pct": 0.25
+  "daily_change_pct": 0.25,
+  "cum_change_pct": 74.88
  },
  {
   "date": "2025-11-13",
@@ -257,7 +276,8 @@
   "aum_ccy": "USD",
   "premium": -1.74,
   "close_price": 15.1904,
-  "daily_change_pct": -5.12
+  "daily_change_pct": -5.12,
+  "cum_change_pct": 65.92
  },
  {
   "date": "2025-11-14",
@@ -270,7 +290,8 @@
   "aum_ccy": "USD",
   "premium": 0.81,
   "close_price": 12.9002,
-  "daily_change_pct": -15.08
+  "daily_change_pct": -15.08,
+  "cum_change_pct": 40.91
  },
  {
   "date": "2025-11-17",
@@ -283,7 +304,8 @@
   "aum_ccy": "USD",
   "premium": -0.41,
   "close_price": 14.8106,
-  "daily_change_pct": 14.81
+  "daily_change_pct": 14.81,
+  "cum_change_pct": 61.77
  },
  {
   "date": "2025-11-18",
@@ -296,7 +318,8 @@
   "aum_ccy": "USD",
   "premium": 0.66,
   "close_price": 13.1802,
-  "daily_change_pct": -11.01
+  "daily_change_pct": -11.01,
+  "cum_change_pct": 43.97
  },
  {
   "date": "2025-11-19",
@@ -309,7 +332,8 @@
   "aum_ccy": "USD",
   "premium": 3.26,
   "close_price": 13.1394,
-  "daily_change_pct": -0.31
+  "daily_change_pct": -0.31,
+  "cum_change_pct": 43.52
  },
  {
   "date": "2025-11-20",
@@ -322,7 +346,8 @@
   "aum_ccy": "USD",
   "premium": -0.45,
   "close_price": 13.0505,
-  "daily_change_pct": -0.68
+  "daily_change_pct": -0.68,
+  "cum_change_pct": 42.55
  },
  {
   "date": "2025-11-21",
@@ -335,7 +360,8 @@
   "aum_ccy": "USD",
   "premium": -2.23,
   "close_price": 10.57,
-  "daily_change_pct": -19.01
+  "daily_change_pct": -19.01,
+  "cum_change_pct": 15.45
  },
  {
   "date": "2025-11-24",
@@ -348,7 +374,8 @@
   "aum_ccy": "USD",
   "premium": 1.6,
   "close_price": 10.9202,
-  "daily_change_pct": 3.31
+  "daily_change_pct": 3.31,
+  "cum_change_pct": 19.28
  },
  {
   "date": "2025-11-25",
@@ -361,7 +388,8 @@
   "aum_ccy": "USD",
   "premium": -0.81,
   "close_price": 10.5896,
-  "daily_change_pct": -3.03
+  "daily_change_pct": -3.03,
+  "cum_change_pct": 15.67
  },
  {
   "date": "2025-11-26",
@@ -374,7 +402,8 @@
   "aum_ccy": "USD",
   "premium": 0.74,
   "close_price": 10.9604,
-  "daily_change_pct": 3.5
+  "daily_change_pct": 3.5,
+  "cum_change_pct": 19.72
  },
  {
   "date": "2025-11-27",
@@ -387,7 +416,8 @@
   "aum_ccy": "USD",
   "premium": -1.44,
   "close_price": 11.5501,
-  "daily_change_pct": 5.38
+  "daily_change_pct": 5.38,
+  "cum_change_pct": 26.16
  },
  {
   "date": "2025-11-28",
@@ -400,7 +430,8 @@
   "aum_ccy": "USD",
   "premium": 1.73,
   "close_price": 11.3098,
-  "daily_change_pct": -2.08
+  "daily_change_pct": -2.08,
+  "cum_change_pct": 23.54
  },
  {
   "date": "2025-12-01",
@@ -413,7 +444,8 @@
   "aum_ccy": "USD",
   "premium": 0.45,
   "close_price": 11.4996,
-  "daily_change_pct": 1.68
+  "daily_change_pct": 1.68,
+  "cum_change_pct": 25.61
  },
  {
   "date": "2025-12-02",
@@ -426,7 +458,8 @@
   "aum_ccy": "USD",
   "premium": -0.23,
   "close_price": 12.2603,
-  "daily_change_pct": 6.62
+  "daily_change_pct": 6.62,
+  "cum_change_pct": 33.92
  },
  {
   "date": "2025-12-03",
@@ -439,7 +472,8 @@
   "aum_ccy": "USD",
   "premium": 0.01,
   "close_price": 12.0096,
-  "daily_change_pct": -2.04
+  "daily_change_pct": -2.04,
+  "cum_change_pct": 31.18
  },
  {
   "date": "2025-12-04",
@@ -452,7 +486,8 @@
   "aum_ccy": "USD",
   "premium": -0.56,
   "close_price": 11.4996,
-  "daily_change_pct": -4.25
+  "daily_change_pct": -4.25,
+  "cum_change_pct": 25.61
  },
  {
   "date": "2025-12-05",
@@ -465,7 +500,8 @@
   "aum_ccy": "USD",
   "premium": -1.21,
   "close_price": 11.5,
-  "daily_change_pct": 0.0
+  "daily_change_pct": 0.0,
+  "cum_change_pct": 25.61
  },
  {
   "date": "2025-12-08",
@@ -478,7 +514,8 @@
   "aum_ccy": "USD",
   "premium": -0.66,
   "close_price": 12.9506,
-  "daily_change_pct": 12.61
+  "daily_change_pct": 12.61,
+  "cum_change_pct": 41.46
  },
  {
   "date": "2025-12-09",
@@ -491,7 +528,8 @@
   "aum_ccy": "USD",
   "premium": 0.17,
   "close_price": 12.5302,
-  "daily_change_pct": -3.25
+  "daily_change_pct": -3.25,
+  "cum_change_pct": 36.87
  },
  {
   "date": "2025-12-10",
@@ -504,7 +542,8 @@
   "aum_ccy": "USD",
   "premium": -0.67,
   "close_price": 13.3498,
-  "daily_change_pct": 6.54
+  "daily_change_pct": 6.54,
+  "cum_change_pct": 45.82
  },
  {
   "date": "2025-12-11",
@@ -517,7 +556,8 @@
   "aum_ccy": "USD",
   "premium": 0.63,
   "close_price": 12.4998,
-  "daily_change_pct": -6.37
+  "daily_change_pct": -6.37,
+  "cum_change_pct": 36.53
  },
  {
   "date": "2025-12-12",
@@ -530,7 +570,8 @@
   "aum_ccy": "USD",
   "premium": 1.33,
   "close_price": 12.8506,
-  "daily_change_pct": 2.81
+  "daily_change_pct": 2.81,
+  "cum_change_pct": 40.37
  },
  {
   "date": "2025-12-15",
@@ -543,7 +584,8 @@
   "aum_ccy": "USD",
   "premium": 0.16,
   "close_price": 11.9296,
-  "daily_change_pct": -7.17
+  "daily_change_pct": -7.17,
+  "cum_change_pct": 30.31
  },
  {
   "date": "2025-12-16",
@@ -556,7 +598,8 @@
   "aum_ccy": "USD",
   "premium": 0.61,
   "close_price": 10.9203,
-  "daily_change_pct": -8.46
+  "daily_change_pct": -8.46,
+  "cum_change_pct": 19.28
  },
  {
   "date": "2025-12-17",
@@ -569,7 +612,8 @@
   "aum_ccy": "USD",
   "premium": 0.66,
   "close_price": 11.7895,
-  "daily_change_pct": 7.96
+  "daily_change_pct": 7.96,
+  "cum_change_pct": 28.78
  },
  {
   "date": "2025-12-18",
@@ -582,7 +626,8 @@
   "aum_ccy": "USD",
   "premium": 0.72,
   "close_price": 11.8305,
-  "daily_change_pct": 0.35
+  "daily_change_pct": 0.35,
+  "cum_change_pct": 29.22
  },
  {
   "date": "2025-12-19",
@@ -595,7 +640,8 @@
   "aum_ccy": "USD",
   "premium": 2.53,
   "close_price": 11.8205,
-  "daily_change_pct": -0.08
+  "daily_change_pct": -0.08,
+  "cum_change_pct": 29.11
  },
  {
   "date": "2025-12-23",
@@ -608,7 +654,8 @@
   "aum_ccy": "USD",
   "premium": 0.04,
   "close_price": 13.08,
-  "daily_change_pct": 10.66
+  "daily_change_pct": 10.66,
+  "cum_change_pct": 42.87
  },
  {
   "date": "2025-12-24",
@@ -621,7 +668,8 @@
   "aum_ccy": "USD",
   "premium": 1.37,
   "close_price": 13.46,
-  "daily_change_pct": 2.91
+  "daily_change_pct": 2.91,
+  "cum_change_pct": 47.02
  },
  {
   "date": "2025-12-29",
@@ -634,7 +682,8 @@
   "aum_ccy": "USD",
   "premium": -2.33,
   "close_price": 15.2995,
-  "daily_change_pct": 13.67
+  "daily_change_pct": 13.67,
+  "cum_change_pct": 67.11
  },
  {
   "date": "2025-12-30",
@@ -647,7 +696,8 @@
   "aum_ccy": "USD",
   "premium": 1.0,
   "close_price": 16.3006,
-  "daily_change_pct": 6.54
+  "daily_change_pct": 6.54,
+  "cum_change_pct": 78.05
  },
  {
   "date": "2025-12-31",
@@ -660,7 +710,8 @@
   "aum_ccy": "USD",
   "premium": 0.07,
   "close_price": 16.1505,
-  "daily_change_pct": -0.92
+  "daily_change_pct": -0.92,
+  "cum_change_pct": 76.41
  },
  {
   "date": "2026-01-02",
@@ -673,7 +724,8 @@
   "aum_ccy": "USD",
   "premium": 0.43,
   "close_price": 17.4994,
-  "daily_change_pct": 8.35
+  "daily_change_pct": 8.35,
+  "cum_change_pct": 91.14
  },
  {
   "date": "2026-01-06",
@@ -686,7 +738,8 @@
   "aum_ccy": "USD",
   "premium": -1.76,
   "close_price": 19.5697,
-  "daily_change_pct": 11.83
+  "daily_change_pct": 11.83,
+  "cum_change_pct": 113.76
  },
  {
   "date": "2026-01-07",
@@ -699,7 +752,8 @@
   "aum_ccy": "USD",
   "premium": 0.03,
   "close_price": 20.7998,
-  "daily_change_pct": 6.29
+  "daily_change_pct": 6.29,
+  "cum_change_pct": 127.19
  },
  {
   "date": "2026-01-08",
@@ -712,7 +766,8 @@
   "aum_ccy": "USD",
   "premium": 0.6,
   "close_price": 21.6797,
-  "daily_change_pct": 4.23
+  "daily_change_pct": 4.23,
+  "cum_change_pct": 136.8
  },
  {
   "date": "2026-01-09",
@@ -725,7 +780,8 @@
   "aum_ccy": "USD",
   "premium": 0.43,
   "close_price": 20.9397,
-  "daily_change_pct": -3.41
+  "daily_change_pct": -3.41,
+  "cum_change_pct": 128.72
  },
  {
   "date": "2026-01-12",
@@ -738,7 +794,8 @@
   "aum_ccy": "USD",
   "premium": 0.83,
   "close_price": 21.2806,
-  "daily_change_pct": 1.63
+  "daily_change_pct": 1.63,
+  "cum_change_pct": 132.45
  },
  {
   "date": "2026-01-13",
@@ -751,7 +808,8 @@
   "aum_ccy": "USD",
   "premium": 0.43,
   "close_price": 20.5606,
-  "daily_change_pct": -3.38
+  "daily_change_pct": -3.38,
+  "cum_change_pct": 124.58
  },
  {
   "date": "2026-01-14",
@@ -764,7 +822,8 @@
   "aum_ccy": "USD",
   "premium": 0.33,
   "close_price": 20.7409,
-  "daily_change_pct": 0.88
+  "daily_change_pct": 0.88,
+  "cum_change_pct": 126.55
  },
  {
   "date": "2026-01-15",
@@ -777,7 +836,8 @@
   "aum_ccy": "USD",
   "premium": 2.0,
   "close_price": 21.4792,
-  "daily_change_pct": 3.56
+  "daily_change_pct": 3.56,
+  "cum_change_pct": 134.61
  },
  {
   "date": "2026-01-16",
@@ -790,7 +850,8 @@
   "aum_ccy": "USD",
   "premium": 2.22,
   "close_price": 21.9189,
-  "daily_change_pct": 2.05
+  "daily_change_pct": 2.05,
+  "cum_change_pct": 139.42
  },
  {
   "date": "2026-01-20",
@@ -803,7 +864,8 @@
   "aum_ccy": "USD",
   "premium": -0.4,
   "close_price": 20.5603,
-  "daily_change_pct": -6.2
+  "daily_change_pct": -6.2,
+  "cum_change_pct": 124.58
  },
  {
   "date": "2026-01-21",
@@ -816,7 +878,8 @@
   "aum_ccy": "USD",
   "premium": 0.51,
   "close_price": 20.5592,
-  "daily_change_pct": -0.01
+  "daily_change_pct": -0.01,
+  "cum_change_pct": 124.57
  },
  {
   "date": "2026-01-22",
@@ -829,7 +892,8 @@
   "aum_ccy": "USD",
   "premium": 1.18,
   "close_price": 21.5203,
-  "daily_change_pct": 4.67
+  "daily_change_pct": 4.67,
+  "cum_change_pct": 135.06
  },
  {
   "date": "2026-01-23",
@@ -842,7 +906,8 @@
   "aum_ccy": "USD",
   "premium": -0.08,
   "close_price": 21.9191,
-  "daily_change_pct": 1.85
+  "daily_change_pct": 1.85,
+  "cum_change_pct": 139.42
  },
  {
   "date": "2026-01-26",
@@ -855,7 +920,8 @@
   "aum_ccy": "USD",
   "premium": 2.53,
   "close_price": 20.6203,
-  "daily_change_pct": -5.93
+  "daily_change_pct": -5.93,
+  "cum_change_pct": 125.23
  },
  {
   "date": "2026-01-27",
@@ -868,7 +934,8 @@
   "aum_ccy": "USD",
   "premium": -0.57,
   "close_price": 23.4806,
-  "daily_change_pct": 13.87
+  "daily_change_pct": 13.87,
+  "cum_change_pct": 156.48
  },
  {
   "date": "2026-01-28",
@@ -881,7 +948,8 @@
   "aum_ccy": "USD",
   "premium": 8.9,
   "close_price": 28.4009,
-  "daily_change_pct": 20.95
+  "daily_change_pct": 20.95,
+  "cum_change_pct": 210.22
  },
  {
   "date": "2026-01-29",
@@ -894,7 +962,8 @@
   "aum_ccy": "USD",
   "premium": 0.02,
   "close_price": 27.2987,
-  "daily_change_pct": -3.88
+  "daily_change_pct": -3.88,
+  "cum_change_pct": 198.18
  },
  {
   "date": "2026-01-30",
@@ -907,7 +976,8 @@
   "aum_ccy": "USD",
   "premium": -2.1,
   "close_price": 29.6,
-  "daily_change_pct": 8.43
+  "daily_change_pct": 8.43,
+  "cum_change_pct": 223.32
  },
  {
   "date": "2026-02-02",
@@ -920,7 +990,8 @@
   "aum_ccy": "USD",
   "premium": 3.77,
   "close_price": 25.8997,
-  "daily_change_pct": -12.5
+  "daily_change_pct": -12.5,
+  "cum_change_pct": 182.9
  },
  {
   "date": "2026-02-03",
@@ -933,7 +1004,8 @@
   "aum_ccy": "USD",
   "premium": 0.07,
   "close_price": 29.6002,
-  "daily_change_pct": 14.29
+  "daily_change_pct": 14.29,
+  "cum_change_pct": 223.32
  },
  {
   "date": "2026-02-04",
@@ -946,7 +1018,8 @@
   "aum_ccy": "USD",
   "premium": 0.6,
   "close_price": 29.2795,
-  "daily_change_pct": -1.08
+  "daily_change_pct": -1.08,
+  "cum_change_pct": 219.82
  },
  {
   "date": "2026-02-05",
@@ -959,7 +1032,8 @@
   "aum_ccy": "USD",
   "premium": 2.34,
   "close_price": 25.9402,
-  "daily_change_pct": -11.4
+  "daily_change_pct": -11.4,
+  "cum_change_pct": 183.34
  },
  {
   "date": "2026-02-06",
@@ -972,7 +1046,8 @@
   "aum_ccy": "USD",
   "premium": -0.37,
   "close_price": 25.0392,
-  "daily_change_pct": -3.47
+  "daily_change_pct": -3.47,
+  "cum_change_pct": 173.5
  },
  {
   "date": "2026-02-09",
@@ -985,7 +1060,8 @@
   "aum_ccy": "USD",
   "premium": -0.63,
   "close_price": 27.8395,
-  "daily_change_pct": 11.18
+  "daily_change_pct": 11.18,
+  "cum_change_pct": 204.09
  },
  {
   "date": "2026-02-10",
@@ -998,7 +1074,8 @@
   "aum_ccy": "USD",
   "premium": 1.17,
   "close_price": 27.6004,
-  "daily_change_pct": -0.86
+  "daily_change_pct": -0.86,
+  "cum_change_pct": 201.48
  },
  {
   "date": "2026-02-11",
@@ -1011,7 +1088,8 @@
   "aum_ccy": "USD",
   "premium": 1.98,
   "close_price": 26.7788,
-  "daily_change_pct": -2.98
+  "daily_change_pct": -2.98,
+  "cum_change_pct": 192.5
  },
  {
   "date": "2026-02-12",
@@ -1024,7 +1102,8 @@
   "aum_ccy": "USD",
   "premium": 1.92,
   "close_price": 28.5012,
-  "daily_change_pct": 6.43
+  "daily_change_pct": 6.43,
+  "cum_change_pct": 211.32
  },
  {
   "date": "2026-02-13",
@@ -1037,7 +1116,8 @@
   "aum_ccy": "USD",
   "premium": 0.58,
   "close_price": 27.6002,
-  "daily_change_pct": -3.16
+  "daily_change_pct": -3.16,
+  "cum_change_pct": 201.47
  },
  {
   "date": "2026-02-16",
@@ -1050,7 +1130,8 @@
   "aum_ccy": "USD",
   "premium": 3.69,
   "close_price": 28.4196,
-  "daily_change_pct": 2.97
+  "daily_change_pct": 2.97,
+  "cum_change_pct": 210.42
  },
  {
   "date": "2026-02-20",
@@ -1063,7 +1144,8 @@
   "aum_ccy": "USD",
   "premium": 0.42,
   "close_price": 31.7785,
-  "daily_change_pct": 11.82
+  "daily_change_pct": 11.82,
+  "cum_change_pct": 247.11
  },
  {
   "date": "2026-02-23",
@@ -1076,7 +1158,8 @@
   "aum_ccy": "USD",
   "premium": 1.39,
   "close_price": 32.1589,
-  "daily_change_pct": 1.2
+  "daily_change_pct": 1.2,
+  "cum_change_pct": 251.27
  },
  {
   "date": "2026-02-24",
@@ -1089,7 +1172,8 @@
   "aum_ccy": "USD",
   "premium": 0.07,
   "close_price": 35.3187,
-  "daily_change_pct": 9.83
+  "daily_change_pct": 9.83,
+  "cum_change_pct": 285.78
  },
  {
   "date": "2026-02-25",
@@ -1102,7 +1186,8 @@
   "aum_ccy": "USD",
   "premium": 3.28,
   "close_price": 37.3993,
-  "daily_change_pct": 5.89
+  "daily_change_pct": 5.89,
+  "cum_change_pct": 308.51
  },
  {
   "date": "2026-02-26",
@@ -1115,7 +1200,8 @@
   "aum_ccy": "USD",
   "premium": 1.6,
   "close_price": 42.8016,
-  "daily_change_pct": 14.44
+  "daily_change_pct": 14.44,
+  "cum_change_pct": 367.52
  },
  {
   "date": "2026-02-27",
@@ -1128,7 +1214,8 @@
   "aum_ccy": "USD",
   "premium": 1.56,
   "close_price": 39.7413,
-  "daily_change_pct": -7.15
+  "daily_change_pct": -7.15,
+  "cum_change_pct": 334.09
  },
  {
   "date": "2026-03-02",
@@ -1141,7 +1228,8 @@
   "aum_ccy": "USD",
   "premium": -6.47,
   "close_price": 36.5991,
-  "daily_change_pct": -7.91
+  "daily_change_pct": -7.91,
+  "cum_change_pct": 299.77
  },
  {
   "date": "2026-03-03",
@@ -1154,7 +1242,8 @@
   "aum_ccy": "USD",
   "premium": 3.55,
   "close_price": 31.18,
-  "daily_change_pct": -14.81
+  "daily_change_pct": -14.81,
+  "cum_change_pct": 240.58
  },
  {
   "date": "2026-03-04",
@@ -1167,7 +1256,8 @@
   "aum_ccy": "USD",
   "premium": 3.27,
   "close_price": 25.0809,
-  "daily_change_pct": -19.56
+  "daily_change_pct": -19.56,
+  "cum_change_pct": 173.96
  },
  {
   "date": "2026-03-05",
@@ -1180,7 +1270,8 @@
   "aum_ccy": "USD",
   "premium": 1.3,
   "close_price": 29.8593,
-  "daily_change_pct": 19.05
+  "daily_change_pct": 19.05,
+  "cum_change_pct": 226.15
  },
  {
   "date": "2026-03-06",
@@ -1193,7 +1284,8 @@
   "aum_ccy": "USD",
   "premium": 0.3,
   "close_price": 28.4603,
-  "daily_change_pct": -4.69
+  "daily_change_pct": -4.69,
+  "cum_change_pct": 210.87
  },
  {
   "date": "2026-03-09",
@@ -1206,7 +1298,8 @@
   "aum_ccy": "USD",
   "premium": 3.09,
   "close_price": 23.6808,
-  "daily_change_pct": -16.79
+  "daily_change_pct": -16.79,
+  "cum_change_pct": 158.66
  },
  {
   "date": "2026-03-10",
@@ -1219,7 +1312,8 @@
   "aum_ccy": "USD",
   "premium": 1.4,
   "close_price": 28.8987,
-  "daily_change_pct": 22.03
+  "daily_change_pct": 22.03,
+  "cum_change_pct": 215.66
  },
  {
   "date": "2026-03-11",
@@ -1232,7 +1326,8 @@
   "aum_ccy": "USD",
   "premium": -2.74,
   "close_price": 28.7205,
-  "daily_change_pct": -0.62
+  "daily_change_pct": -0.62,
+  "cum_change_pct": 213.71
  },
  {
   "date": "2026-03-12",
@@ -1245,7 +1340,8 @@
   "aum_ccy": "USD",
   "premium": 1.93,
   "close_price": 28.5003,
-  "daily_change_pct": -0.77
+  "daily_change_pct": -0.77,
+  "cum_change_pct": 211.31
  },
  {
   "date": "2026-03-13",
@@ -1258,7 +1354,8 @@
   "aum_ccy": "USD",
   "premium": -1.31,
   "close_price": 26.4003,
-  "daily_change_pct": -7.37
+  "daily_change_pct": -7.37,
+  "cum_change_pct": 188.37
  },
  {
   "date": "2026-03-16",
@@ -1271,7 +1368,8 @@
   "aum_ccy": "USD",
   "premium": -1.67,
   "close_price": 29.9595,
-  "daily_change_pct": 13.48
+  "daily_change_pct": 13.48,
+  "cum_change_pct": 227.24
  },
  {
   "date": "2026-03-17",
@@ -1284,7 +1382,8 @@
   "aum_ccy": "USD",
   "premium": -0.36,
   "close_price": 30.0993,
-  "daily_change_pct": 0.47
+  "daily_change_pct": 0.47,
+  "cum_change_pct": 228.77
  },
  {
   "date": "2026-03-18",
@@ -1297,7 +1396,8 @@
   "aum_ccy": "USD",
   "premium": -0.52,
   "close_price": 35.4187,
-  "daily_change_pct": 17.67
+  "daily_change_pct": 17.67,
+  "cum_change_pct": 286.87
  },
  {
   "date": "2026-03-19",
@@ -1310,7 +1410,8 @@
   "aum_ccy": "USD",
   "premium": -1.19,
   "close_price": 32.2213,
-  "daily_change_pct": -9.03
+  "daily_change_pct": -9.03,
+  "cum_change_pct": 251.95
  },
  {
   "date": "2026-03-20",
@@ -1323,7 +1424,8 @@
   "aum_ccy": "USD",
   "premium": -1.33,
   "close_price": 31.759,
-  "daily_change_pct": -1.43
+  "daily_change_pct": -1.43,
+  "cum_change_pct": 246.9
  },
  {
   "date": "2026-03-23",
@@ -1336,7 +1438,8 @@
   "aum_ccy": "USD",
   "premium": -1.06,
   "close_price": 27.1194,
-  "daily_change_pct": -14.61
+  "daily_change_pct": -14.61,
+  "cum_change_pct": 196.22
  },
  {
   "date": "2026-03-24",
@@ -1349,7 +1452,8 @@
   "aum_ccy": "USD",
   "premium": 1.55,
   "close_price": 30.9205,
-  "daily_change_pct": 14.02
+  "daily_change_pct": 14.02,
+  "cum_change_pct": 237.74
  },
  {
   "date": "2026-03-25",
@@ -1362,7 +1466,8 @@
   "aum_ccy": "USD",
   "premium": 1.14,
   "close_price": 31.2793,
-  "daily_change_pct": 1.16
+  "daily_change_pct": 1.16,
+  "cum_change_pct": 241.66
  },
  {
   "date": "2026-03-26",
@@ -1375,7 +1480,8 @@
   "aum_ccy": "USD",
   "premium": 1.32,
   "close_price": 27.3798,
-  "daily_change_pct": -12.47
+  "daily_change_pct": -12.47,
+  "cum_change_pct": 199.07
  },
  {
   "date": "2026-03-27",
@@ -1388,7 +1494,8 @@
   "aum_ccy": "USD",
   "premium": -0.79,
   "close_price": 26.1999,
-  "daily_change_pct": -4.31
+  "daily_change_pct": -4.31,
+  "cum_change_pct": 186.18
  },
  {
   "date": "2026-03-30",
@@ -1401,7 +1508,8 @@
   "aum_ccy": "USD",
   "premium": -0.49,
   "close_price": 23.4611,
-  "daily_change_pct": -10.45
+  "daily_change_pct": -10.45,
+  "cum_change_pct": 156.26
  },
  {
   "date": "2026-03-31",
@@ -1414,7 +1522,8 @@
   "aum_ccy": "USD",
   "premium": 1.46,
   "close_price": 20.3202,
-  "daily_change_pct": -13.39
+  "daily_change_pct": -13.39,
+  "cum_change_pct": 121.95
  },
  {
   "date": "2026-04-01",
@@ -1427,7 +1536,8 @@
   "aum_ccy": "USD",
   "premium": -1.14,
   "close_price": 23.9992,
-  "daily_change_pct": 18.11
+  "daily_change_pct": 18.11,
+  "cum_change_pct": 162.14
  },
  {
   "date": "2026-04-02",
@@ -1440,7 +1550,8 @@
   "aum_ccy": "USD",
   "premium": 1.93,
   "close_price": 21.2397,
-  "daily_change_pct": -11.5
+  "daily_change_pct": -11.5,
+  "cum_change_pct": 132.0
  },
  {
   "date": "2026-04-09",
@@ -1453,7 +1564,8 @@
   "aum_ccy": "USD",
   "premium": -1.18,
   "close_price": 28.7398,
-  "daily_change_pct": 35.31
+  "daily_change_pct": 35.31,
+  "cum_change_pct": 213.92
  },
  {
   "date": "2026-04-10",
@@ -1466,7 +1578,8 @@
   "aum_ccy": "USD",
   "premium": -1.78,
   "close_price": 30.1792,
-  "daily_change_pct": 5.01
+  "daily_change_pct": 5.01,
+  "cum_change_pct": 229.64
  },
  {
   "date": "2026-04-13",
@@ -1479,7 +1592,8 @@
   "aum_ccy": "USD",
   "premium": -1.07,
   "close_price": 31.0991,
-  "daily_change_pct": 3.05
+  "daily_change_pct": 3.05,
+  "cum_change_pct": 239.69
  },
  {
   "date": "2026-04-14",
@@ -1492,7 +1606,8 @@
   "aum_ccy": "USD",
   "premium": 0.62,
   "close_price": 35.4399,
-  "daily_change_pct": 13.96
+  "daily_change_pct": 13.96,
+  "cum_change_pct": 287.11
  },
  {
   "date": "2026-04-15",
@@ -1505,7 +1620,8 @@
   "aum_ccy": "USD",
   "premium": -1.18,
   "close_price": 36.9004,
-  "daily_change_pct": 4.12
+  "daily_change_pct": 4.12,
+  "cum_change_pct": 303.06
  },
  {
   "date": "2026-04-16",
@@ -1518,7 +1634,8 @@
   "aum_ccy": "USD",
   "premium": -0.14,
   "close_price": 38.4784,
-  "daily_change_pct": 4.28
+  "daily_change_pct": 4.28,
+  "cum_change_pct": 320.29
  },
  {
   "date": "2026-04-17",
@@ -1531,7 +1648,8 @@
   "aum_ccy": "USD",
   "premium": 0.91,
   "close_price": 37.0007,
-  "daily_change_pct": -3.84
+  "daily_change_pct": -3.84,
+  "cum_change_pct": 304.15
  },
  {
   "date": "2026-04-20",
@@ -1544,7 +1662,8 @@
   "aum_ccy": "USD",
   "premium": -0.2,
   "close_price": 39.0191,
-  "daily_change_pct": 5.46
+  "daily_change_pct": 5.46,
+  "cum_change_pct": 326.2
  },
  {
   "date": "2026-04-21",
@@ -1557,7 +1676,8 @@
   "aum_ccy": "USD",
   "premium": -0.54,
   "close_price": 42.7187,
-  "daily_change_pct": 9.48
+  "daily_change_pct": 9.48,
+  "cum_change_pct": 366.61
  },
  {
   "date": "2026-04-22",
@@ -1570,7 +1690,8 @@
   "aum_ccy": "USD",
   "premium": 0.97,
   "close_price": 43.2207,
-  "daily_change_pct": 1.18
+  "daily_change_pct": 1.18,
+  "cum_change_pct": 372.09
  },
  {
   "date": "2026-04-23",
@@ -1583,7 +1704,8 @@
   "aum_ccy": "USD",
   "premium": -0.93,
   "close_price": 42.4995,
-  "daily_change_pct": -1.67
+  "daily_change_pct": -1.67,
+  "cum_change_pct": 364.22
  },
  {
   "date": "2026-04-24",
@@ -1596,7 +1718,8 @@
   "aum_ccy": "USD",
   "premium": 0.04,
   "close_price": 42.6796,
-  "daily_change_pct": 0.42
+  "daily_change_pct": 0.42,
+  "cum_change_pct": 366.18
  },
  {
   "date": "2026-04-27",
@@ -1609,7 +1732,8 @@
   "aum_ccy": "USD",
   "premium": -0.97,
   "close_price": 47.0623,
-  "daily_change_pct": 10.27
+  "daily_change_pct": 10.27,
+  "cum_change_pct": 414.06
  },
  {
   "date": "2026-04-28",
@@ -1622,7 +1746,8 @@
   "aum_ccy": "USD",
   "premium": -2.01,
   "close_price": 47.0623,
-  "daily_change_pct": 0.0
+  "daily_change_pct": 0.0,
+  "cum_change_pct": 414.06
  },
  {
   "date": "2026-04-29",
@@ -1635,7 +1760,8 @@
   "aum_ccy": "USD",
   "premium": -0.14,
   "close_price": 47.401,
-  "daily_change_pct": 0.72
+  "daily_change_pct": 0.72,
+  "cum_change_pct": 417.76
  },
  {
   "date": "2026-04-30",
@@ -1648,7 +1774,8 @@
   "aum_ccy": "USD",
   "premium": 1.52,
   "close_price": 47.5988,
-  "daily_change_pct": 0.42
+  "daily_change_pct": 0.42,
+  "cum_change_pct": 419.92
  },
  {
   "date": "2026-05-04",
@@ -1661,7 +1788,8 @@
   "aum_ccy": "USD",
   "premium": -0.19,
   "close_price": 58.5401,
-  "daily_change_pct": 22.99
+  "daily_change_pct": 22.99,
+  "cum_change_pct": 539.43
  },
  {
   "date": "2026-05-05",
@@ -1674,7 +1802,8 @@
   "aum_ccy": "USD",
   "premium": 2.3,
   "close_price": 60.0005,
-  "daily_change_pct": 2.49
+  "daily_change_pct": 2.49,
+  "cum_change_pct": 555.38
  },
  {
   "date": "2026-05-06",
@@ -1687,7 +1816,8 @@
   "aum_ccy": "USD",
   "premium": 0.97,
   "close_price": 71.9023,
-  "daily_change_pct": 19.84
+  "daily_change_pct": 19.84,
+  "cum_change_pct": 685.38
  },
  {
   "date": "2026-05-07",
@@ -1700,7 +1830,8 @@
   "aum_ccy": "USD",
   "premium": 1.31,
   "close_price": 76.8803,
-  "daily_change_pct": 6.92
+  "daily_change_pct": 6.92,
+  "cum_change_pct": 739.75
  },
  {
   "date": "2026-05-08",
@@ -1713,7 +1844,8 @@
   "aum_ccy": "USD",
   "premium": 0.18,
   "close_price": 78.4803,
-  "daily_change_pct": 2.08
+  "daily_change_pct": 2.08,
+  "cum_change_pct": 757.23
  },
  {
   "date": "2026-05-11",
@@ -1726,7 +1858,8 @@
   "aum_ccy": "USD",
   "premium": 1.0,
   "close_price": 96.9998,
-  "daily_change_pct": 23.6
+  "daily_change_pct": 23.6,
+  "cum_change_pct": 959.52
  },
  {
   "date": "2026-05-12",
@@ -1739,7 +1872,8 @@
   "aum_ccy": "USD",
   "premium": 1.75,
   "close_price": 91.9835,
-  "daily_change_pct": -5.17
+  "daily_change_pct": -5.17,
+  "cum_change_pct": 904.72
  },
  {
   "date": "2026-05-13",
@@ -1752,7 +1886,8 @@
   "aum_ccy": "USD",
   "premium": 1.63,
   "close_price": 105.6035,
-  "daily_change_pct": 14.81
+  "daily_change_pct": 14.81,
+  "cum_change_pct": 1053.49
  },
  {
   "date": "2026-05-14",
@@ -1765,7 +1900,8 @@
   "aum_ccy": "USD",
   "premium": 1.92,
   "close_price": 105.001,
-  "daily_change_pct": -0.57
+  "daily_change_pct": -0.57,
+  "cum_change_pct": 1046.91
  },
  {
   "date": "2026-05-15",
@@ -1778,7 +1914,8 @@
   "aum_ccy": "USD",
   "premium": 4.15,
   "close_price": 90.9193,
-  "daily_change_pct": -13.41
+  "daily_change_pct": -13.41,
+  "cum_change_pct": 893.1
  },
  {
   "date": "2026-05-18",
@@ -1791,7 +1928,8 @@
   "aum_ccy": "USD",
   "premium": 1.82,
   "close_price": 90.5427,
-  "daily_change_pct": -0.41
+  "daily_change_pct": -0.41,
+  "cum_change_pct": 888.99
  },
  {
   "date": "2026-05-19",
@@ -1804,7 +1942,8 @@
   "aum_ccy": "USD",
   "premium": 2.18,
   "close_price": 81.1384,
-  "daily_change_pct": -10.39
+  "daily_change_pct": -10.39,
+  "cum_change_pct": 786.26
  },
  {
   "date": "2026-05-20",
@@ -1817,7 +1956,8 @@
   "aum_ccy": "USD",
   "premium": 2.94,
   "close_price": 81.8219,
-  "daily_change_pct": 0.84
+  "daily_change_pct": 0.84,
+  "cum_change_pct": 793.73
  },
  {
   "date": "2026-05-21",
@@ -1830,7 +1970,8 @@
   "aum_ccy": "USD",
   "premium": -4.18,
   "close_price": 93.056,
-  "daily_change_pct": 13.73
+  "daily_change_pct": 13.73,
+  "cum_change_pct": 916.44
  },
  {
   "date": "2026-05-22",
@@ -1843,7 +1984,8 @@
   "aum_ccy": "USD",
   "premium": 0.36,
   "close_price": 97.023,
-  "daily_change_pct": 4.26
+  "daily_change_pct": 4.26,
+  "cum_change_pct": 959.77
  },
  {
   "date": "2026-05-26",
@@ -1856,7 +1998,8 @@
   "aum_ccy": "USD",
   "premium": -0.01,
   "close_price": 108.6033,
-  "daily_change_pct": 11.94
+  "daily_change_pct": 11.94,
+  "cum_change_pct": 1086.26
  },
  {
   "date": "2026-05-27",
@@ -1869,7 +2012,8 @@
   "aum_ccy": "USD",
   "premium": 2.45,
   "close_price": 132.4972,
-  "daily_change_pct": 22.0
+  "daily_change_pct": 22.0,
+  "cum_change_pct": 1347.25
  },
  {
   "date": "2026-05-28",
@@ -1882,7 +2026,8 @@
   "aum_ccy": "USD",
   "premium": -0.45,
   "close_price": 133.5547,
-  "daily_change_pct": 0.8
+  "daily_change_pct": 0.8,
+  "cum_change_pct": 1358.8
  },
  {
   "date": "2026-05-29",
@@ -1895,7 +2040,8 @@
   "aum_ccy": "USD",
   "premium": -1.06,
   "close_price": 137.6477,
-  "daily_change_pct": 3.06
+  "daily_change_pct": 3.06,
+  "cum_change_pct": 1403.51
  },
  {
   "date": "2026-06-01",
@@ -1908,7 +2054,8 @@
   "aum_ccy": "USD",
   "premium": 2.19,
   "close_price": 144.3033,
-  "daily_change_pct": 4.84
+  "daily_change_pct": 4.84,
+  "cum_change_pct": 1476.21
  },
  {
   "date": "2026-06-02",
@@ -1921,7 +2068,8 @@
   "aum_ccy": "USD",
   "premium": -0.31,
   "close_price": 139.054,
-  "daily_change_pct": -3.64
+  "daily_change_pct": -3.64,
+  "cum_change_pct": 1418.87
  },
  {
   "date": "2026-06-03",
@@ -1934,7 +2082,8 @@
   "aum_ccy": "USD",
   "premium": 4.81,
   "close_price": 146.1957,
-  "daily_change_pct": 5.14
+  "daily_change_pct": 5.14,
+  "cum_change_pct": 1496.88
  },
  {
   "date": "2026-06-04",
@@ -1947,7 +2096,8 @@
   "aum_ccy": "USD",
   "premium": 1.06,
   "close_price": 132.4992,
-  "daily_change_pct": -9.37
+  "daily_change_pct": -9.37,
+  "cum_change_pct": 1347.27
  },
  {
   "date": "2026-06-05",
@@ -1960,7 +2110,8 @@
   "aum_ccy": "USD",
   "premium": 2.31,
   "close_price": 106.9037,
-  "daily_change_pct": -19.32
+  "daily_change_pct": -19.32,
+  "cum_change_pct": 1067.7
  },
  {
   "date": "2026-06-08",
@@ -1973,7 +2124,8 @@
   "aum_ccy": "USD",
   "premium": 12.3,
   "close_price": 98.5983,
-  "daily_change_pct": -7.77
+  "daily_change_pct": -7.77,
+  "cum_change_pct": 976.98
  },
  {
   "date": "2026-06-09",
@@ -1986,7 +2138,8 @@
   "aum_ccy": "USD",
   "premium": -2.1,
   "close_price": 113.7458,
-  "daily_change_pct": 15.36
+  "daily_change_pct": 15.36,
+  "cum_change_pct": 1142.43
  },
  {
   "date": "2026-06-10",
@@ -1999,7 +2152,8 @@
   "aum_ccy": "USD",
   "premium": 1.0,
   "close_price": 98.3375,
-  "daily_change_pct": -13.55
+  "daily_change_pct": -13.55,
+  "cum_change_pct": 974.13
  },
  {
   "date": "2026-06-11",
@@ -2012,7 +2166,8 @@
   "aum_ccy": "USD",
   "premium": 4.43,
   "close_price": 106.0037,
-  "daily_change_pct": 7.8
+  "daily_change_pct": 7.8,
+  "cum_change_pct": 1057.87
  },
  {
   "date": "2026-06-12",
@@ -2025,7 +2180,8 @@
   "aum_ccy": "USD",
   "premium": 0.01,
   "close_price": 106.5539,
-  "daily_change_pct": 0.52
+  "daily_change_pct": 0.52,
+  "cum_change_pct": 1063.87
  },
  {
   "date": "2026-06-15",
@@ -2038,7 +2194,8 @@
   "aum_ccy": "USD",
   "premium": 1.65,
   "close_price": 121.1992,
-  "daily_change_pct": 13.74
+  "daily_change_pct": 13.74,
+  "cum_change_pct": 1223.84
  },
  {
   "date": "2026-06-16",
@@ -2051,7 +2208,8 @@
   "aum_ccy": "USD",
   "premium": -0.89,
   "close_price": 128.4522,
-  "daily_change_pct": 5.98
+  "daily_change_pct": 5.98,
+  "cum_change_pct": 1303.07
  },
  {
   "date": "2026-06-17",
@@ -2064,7 +2222,8 @@
   "aum_ccy": "USD",
   "premium": 0.51,
   "close_price": 144.802,
-  "daily_change_pct": 12.73
+  "daily_change_pct": 12.73,
+  "cum_change_pct": 1481.65
  },
  {
   "date": "2026-06-18",
@@ -2077,7 +2236,8 @@
   "aum_ccy": "USD",
   "premium": -0.05,
   "close_price": 160.9987,
-  "daily_change_pct": 11.19
+  "daily_change_pct": 11.19,
+  "cum_change_pct": 1658.57
  },
  {
   "date": "2026-06-22",
@@ -2090,7 +2250,8 @@
   "aum_ccy": "USD",
   "premium": -0.76,
   "close_price": 187.6429,
-  "daily_change_pct": 16.55
+  "daily_change_pct": 16.55,
+  "cum_change_pct": 1949.6
  },
  {
   "date": "2026-06-23",
@@ -2103,7 +2264,8 @@
   "aum_ccy": "USD",
   "premium": 2.77,
   "close_price": 143.8009,
-  "daily_change_pct": -23.36
+  "daily_change_pct": -23.36,
+  "cum_change_pct": 1470.72
  },
  {
   "date": "2026-06-24",
@@ -2116,7 +2278,8 @@
   "aum_ccy": "USD",
   "premium": 7.81,
   "close_price": 153.9962,
-  "daily_change_pct": 7.09
+  "daily_change_pct": 7.09,
+  "cum_change_pct": 1582.08
  },
  {
   "date": "2026-06-25",
@@ -2129,7 +2292,8 @@
   "aum_ccy": "USD",
   "premium": 0.56,
   "close_price": 182.4058,
-  "daily_change_pct": 18.45
+  "daily_change_pct": 18.45,
+  "cum_change_pct": 1892.4
  },
  {
   "date": "2026-06-26",
@@ -2142,7 +2306,8 @@
   "aum_ccy": "USD",
   "premium": 5.56,
   "close_price": 157.0035,
-  "daily_change_pct": -13.93
+  "daily_change_pct": -13.93,
+  "cum_change_pct": 1614.93
  },
  {
   "date": "2026-06-29",
@@ -2155,7 +2320,8 @@
   "aum_ccy": "USD",
   "premium": 2.28,
   "close_price": 146.8046,
-  "daily_change_pct": -6.5
+  "daily_change_pct": -6.5,
+  "cum_change_pct": 1503.53
  },
  {
   "date": "2026-06-30",
@@ -2168,7 +2334,8 @@
   "aum_ccy": "USD",
   "premium": 1.97,
   "close_price": 148.9939,
-  "daily_change_pct": 1.49
+  "daily_change_pct": 1.49,
+  "cum_change_pct": 1527.44
  },
  {
   "date": "2026-07-02",
@@ -2181,7 +2348,8 @@
   "aum_ccy": "USD",
   "premium": 17.07,
   "close_price": 109.5967,
-  "daily_change_pct": -26.44
+  "daily_change_pct": -26.44,
+  "cum_change_pct": 1097.11
  },
  {
   "date": "2026-07-03",
@@ -2194,7 +2362,8 @@
   "aum_ccy": "USD",
   "premium": 2.16,
   "close_price": 116.7971,
-  "daily_change_pct": 6.57
+  "daily_change_pct": 6.57,
+  "cum_change_pct": 1175.76
  },
  {
   "date": "2026-07-06",
@@ -2207,7 +2376,8 @@
   "aum_ccy": "USD",
   "premium": 5.27,
   "close_price": 108.696,
-  "daily_change_pct": -6.94
+  "daily_change_pct": -6.94,
+  "cum_change_pct": 1087.27
  },
  {
   "date": "2026-07-07",
@@ -2220,7 +2390,8 @@
   "aum_ccy": "USD",
   "premium": -0.13,
   "close_price": 91.7006,
-  "daily_change_pct": -15.64
+  "daily_change_pct": -15.64,
+  "cum_change_pct": 901.63
  },
  {
   "date": "2026-07-08",
@@ -2233,7 +2404,8 @@
   "aum_ccy": "USD",
   "premium": 2.1,
   "close_price": 82.743,
-  "daily_change_pct": -9.77
+  "daily_change_pct": -9.77,
+  "cum_change_pct": 803.79
  },
  {
   "date": "2026-07-09",
@@ -2246,7 +2418,8 @@
   "aum_ccy": "USD",
   "premium": 7.58,
   "close_price": 96.0003,
-  "daily_change_pct": 16.02
+  "daily_change_pct": 16.02,
+  "cum_change_pct": 948.6
  },
  {
   "date": "2026-07-10",
@@ -2259,7 +2432,8 @@
   "aum_ccy": "USD",
   "premium": 0.6,
   "close_price": 89.3985,
-  "daily_change_pct": -6.88
+  "daily_change_pct": -6.88,
+  "cum_change_pct": 876.49
  },
  {
   "date": "2026-07-13",
@@ -2272,7 +2446,8 @@
   "aum_ccy": "USD",
   "premium": -1.36,
   "close_price": 59.9009,
-  "daily_change_pct": -33.0
+  "daily_change_pct": -33.0,
+  "cum_change_pct": 554.29
  },
  {
   "date": "2026-07-14",
@@ -2285,7 +2460,8 @@
   "aum_ccy": "USD",
   "premium": 0.54,
   "close_price": 65.1976,
-  "daily_change_pct": 8.84
+  "daily_change_pct": 8.84,
+  "cum_change_pct": 612.15
  },
  {
   "date": "2026-07-15",
@@ -2298,7 +2474,8 @@
   "aum_ccy": "USD",
   "premium": -6.03,
   "close_price": 71.7818,
-  "daily_change_pct": 10.1
+  "daily_change_pct": 10.1,
+  "cum_change_pct": 684.06
  },
  {
   "date": "2026-07-16",
@@ -2311,7 +2488,8 @@
   "aum_ccy": "USD",
   "premium": -3.35,
   "close_price": 56.4815,
-  "daily_change_pct": -21.32
+  "daily_change_pct": -21.32,
+  "cum_change_pct": 516.94
  },
  {
   "date": "2026-07-17",
@@ -2324,7 +2502,8 @@
   "aum_ccy": "USD",
   "premium": -23.34,
   "close_price": 44.7995,
-  "daily_change_pct": -20.68
+  "daily_change_pct": -20.68,
+  "cum_change_pct": 389.34
  },
  {
   "date": "2026-07-20",
@@ -2337,7 +2516,8 @@
   "aum_ccy": "USD",
   "premium": -0.59,
   "close_price": 52.5801,
-  "daily_change_pct": 17.37
+  "daily_change_pct": 17.37,
+  "cum_change_pct": 474.33
  },
  {
   "date": "2026-07-21",
@@ -2350,7 +2530,8 @@
   "aum_ccy": "USD",
   "premium": 1.49,
   "close_price": 57.8023,
-  "daily_change_pct": 9.93
+  "daily_change_pct": 9.93,
+  "cum_change_pct": 531.37
  },
  {
   "date": "2026-07-22",
@@ -2363,7 +2544,8 @@
   "aum_ccy": "USD",
   "premium": -1.3,
   "close_price": 55.7613,
-  "daily_change_pct": -3.53
+  "daily_change_pct": -3.53,
+  "cum_change_pct": 509.07
  },
  {
   "date": "2026-07-23",
@@ -2376,7 +2558,8 @@
   "aum_ccy": "USD",
   "premium": -2.3,
   "close_price": 60.5004,
-  "daily_change_pct": 8.5
+  "daily_change_pct": 8.5,
+  "cum_change_pct": 560.84
  },
  {
   "date": "2026-07-24",
@@ -2389,7 +2572,8 @@
   "aum_ccy": "USD",
   "premium": 2.4,
   "close_price": 52.7391,
-  "daily_change_pct": -12.83
+  "daily_change_pct": -12.83,
+  "cum_change_pct": 476.06
  },
  {
   "date": "2026-07-27",
@@ -2402,7 +2586,8 @@
   "aum_ccy": "USD",
   "premium": -0.32,
   "close_price": 54.4981,
-  "daily_change_pct": 3.34
+  "daily_change_pct": 3.34,
+  "cum_change_pct": 495.28
  },
  {
   "date": "2026-07-28",
@@ -2415,7 +2600,8 @@
   "aum_ccy": "USD",
   "premium": -1.61,
   "close_price": 38.0209,
-  "daily_change_pct": -30.23
+  "daily_change_pct": -30.23,
+  "cum_change_pct": 315.3
  },
  {
   "date": "2026-07-29",
@@ -2428,7 +2614,8 @@
   "aum_ccy": "USD",
   "premium": 5.33,
   "close_price": 32.6988,
-  "daily_change_pct": -14.0
+  "daily_change_pct": -14.0,
+  "cum_change_pct": 257.16
  },
  {
   "date": "2026-07-30",
@@ -2441,7 +2628,8 @@
   "aum_ccy": "USD",
   "premium": -6.93,
   "close_price": 25.3606,
-  "daily_change_pct": -22.44
+  "daily_change_pct": -22.44,
+  "cum_change_pct": 177.01
  },
  {
   "date": "2026-07-31",
@@ -2454,7 +2642,8 @@
   "aum_ccy": "USD",
   "premium": -2.93,
   "close_price": 42.5214,
-  "daily_change_pct": 67.67
+  "daily_change_pct": 67.67,
+  "cum_change_pct": 364.46
  },
  {
   "date": "2026-08-03",
@@ -2467,7 +2656,8 @@
   "aum_ccy": "USD",
   "premium": -1.42,
   "close_price": 35.4389,
-  "daily_change_pct": -16.66
+  "daily_change_pct": -16.66,
+  "cum_change_pct": 287.09
  },
  {
   "date": "2026-08-04",
@@ -2480,7 +2670,8 @@
   "aum_ccy": "USD",
   "premium": 2.14,
   "close_price": 37.1002,
-  "daily_change_pct": 4.69
+  "daily_change_pct": 4.69,
+  "cum_change_pct": 305.24
  },
  {
   "date": "2026-08-05",
@@ -2493,7 +2684,8 @@
   "aum_ccy": "USD",
   "premium": -3.73,
   "close_price": 38.9404,
-  "daily_change_pct": 4.96
+  "daily_change_pct": 4.96,
+  "cum_change_pct": 325.34
  },
  {
   "date": "2026-08-06",
@@ -2506,6 +2698,7 @@
   "aum_ccy": "USD",
   "premium": -1.05,
   "close_price": 31.4992,
-  "daily_change_pct": -19.11
+  "daily_change_pct": -19.11,
+  "cum_change_pct": 244.06
  }
 ]

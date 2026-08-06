@@ -341,6 +341,42 @@ function renderKoreaLights(signals, latest, aum7709) {
     }
   }
 
+  // 渲染 7709 溢价率信号卡片：今日 vs 昨日 + 阈值告警色
+  if (aum7709 && aum7709.length >= 2) {
+    const lastP = aum7709[aum7709.length - 1];
+    const prevP = aum7709[aum7709.length - 2];
+    const premToday = lastP.premium;
+    const premYest = prevP ? prevP.premium : null;
+    let premStatus = 'green';
+    if (premToday != null && premToday > 5) premStatus = 'red';
+    else if (premToday != null && premToday < -5) premStatus = 'yellow';
+    const premStr = premToday != null ? premToday.toFixed(2) + '%' : '-';
+    const yestStr = premYest != null ? premYest.toFixed(2) + '%' : '-';
+    const premCard = document.createElement('div');
+    premCard.className = 'light-card ' + premStatus;
+    premCard.title = '7709 (CSOP SK Hynix 2x) 溢价率：今日 ' + premStr + ' vs 昨日 ' + yestStr + '（>5% 高溢价风险）';
+    premCard.innerHTML = `
+      <div class="light-dot"></div>
+      <div class="light-label">7709 溢价率 <span class="dd-inline">今 ${premStr} · 昨 ${yestStr}</span></div>
+      <span class="fresh-tag t0">T+0</span>
+    `;
+    grid.appendChild(premCard);
+
+    // 渲染 7709 今日涨跌% 信号卡片：收市价日涨跌幅（红涨绿跌）
+    const chgToday = lastP.daily_change_pct;
+    const chgStatus = chgToday != null && chgToday >= 0 ? 'red' : 'green';
+    const chgStr = chgToday != null ? (chgToday >= 0 ? '+' : '') + chgToday.toFixed(1) + '%' : '-';
+    const chgCard = document.createElement('div');
+    chgCard.className = 'light-card ' + chgStatus;
+    chgCard.title = '7709 (CSOP SK Hynix 2x) 今日收市价涨跌：' + chgStr;
+    chgCard.innerHTML = `
+      <div class="light-dot"></div>
+      <div class="light-label">7709 今日涨跌 <span class="dd-inline">${chgStr}</span></div>
+      <span class="fresh-tag t0">T+0</span>
+    `;
+    grid.appendChild(chgCard);
+  }
+
   // 渲染折叠式判定标准说明
   renderLeverageScenarioExplainer();
 
@@ -1805,7 +1841,7 @@ function renderAum7709(history) {
         <div class="dim-chart aum-subchart-canvas" id="chart-premium-7709"></div>
       </div>
       <div class="aum-subchart">
-        <div class="aum-subchart-title">每日涨跌（%）· 红涨绿跌</div>
+        <div class="aum-subchart-title">累计涨跌幅（%）· 从上市首日</div>
         <div class="dim-chart aum-subchart-canvas" id="chart-change-7709"></div>
       </div>
     </div>
@@ -1927,11 +1963,11 @@ function createChangeChart(history) {
   if (!dom || !window.echarts) return;
   const chart = echarts.init(dom);
   const dates = formatChartDates(history);
-  const chg = history.map(h => (h.daily_change_pct != null ? +h.daily_change_pct.toFixed(2) : null));
+  const cum = history.map(h => (h.cum_change_pct != null ? +h.cum_change_pct.toFixed(2) : null));
   chart.setOption({
     grid: { left: 38, right: 12, top: 12, bottom: 24 },
     xAxis: {
-      type: 'category', data: dates, boundaryGap: true,
+      type: 'category', data: dates, boundaryGap: false,
       axisLabel: { fontSize: 9, color: '#9ca3af', interval: Math.floor(dates.length / 6) },
       axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
     },
@@ -1942,20 +1978,26 @@ function createChangeChart(history) {
       axisLine: { show: false }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
     },
     series: [{
-      name: '涨跌', type: 'bar', data: chg,
-      itemStyle: { color: p => (p.value != null && p.value >= 0 ? '#ef4444' : '#22c55e') },
+      name: '累计涨跌幅', type: 'line', data: cum, smooth: true, symbol: 'none',
+      lineStyle: { width: 1.8, color: '#f472b6' },
+      areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: 'rgba(244,114,182,0.20)' },
+        { offset: 1, color: 'rgba(244,114,182,0.01)' }
+      ]) },
       markLine: { silent: true, symbol: 'none',
         data: [{ yAxis: 0, lineStyle: { color: '#6b7280', type: 'solid', width: 1 } }], z: 2 },
       z: 1
     }],
     tooltip: {
       trigger: 'axis',
-      axisPointer: { type: 'shadow' },
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
       formatter: params => {
         const i = params[0].dataIndex; const h = history[i];
-        const v = h.daily_change_pct;
-        const col = v != null && v >= 0 ? '#ef4444' : '#22c55e';
-        return `${h.date}<br/>涨跌: <b style="color:${col}">${v != null ? (v >= 0 ? '+' : '') + v.toFixed(2) : '-'}%</b>`;
+        const v = h.cum_change_pct;
+        const dv = h.daily_change_pct;
+        return `${h.date}<br/>累计涨跌幅: <b>${v != null ? (v >= 0 ? '+' : '') + v.toFixed(2) : '-'}%</b>`
+          + `<br/>收市价: ${h.close_price != null ? h.close_price.toFixed(2) : '-'}`
+          + `<br/>当日涨跌: ${dv != null ? (dv >= 0 ? '+' : '') + dv.toFixed(2) + '%' : '-'}`;
       },
       confine: true, backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
       textStyle: { color: '#d1d5db', fontSize: 11 }, extraCssText: 'border-radius:6px;padding:4px 10px;'

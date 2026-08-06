@@ -193,6 +193,11 @@ def main():
             rec["daily_change_pct"] = None
         if cp is not None:
             prev_close = cp
+    # 累计涨跌幅：以首个有效收市价为基准（上市首日），(今日收盘/基准-1)*100
+    base_close = next((r.get("close_price") for r in out if r.get("close_price") is not None), None)
+    for rec in out:
+        cp = rec.get("close_price")
+        rec["cum_change_pct"] = round((cp / base_close - 1) * 100, 2) if (cp is not None and base_close) else None
     os.makedirs(os.path.dirname(os.path.abspath(args.history)), exist_ok=True)
     with open(args.history, "w") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)

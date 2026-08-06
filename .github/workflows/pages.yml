@@ -24,6 +24,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Remove non-web files
+        run: |
+          rm -rf data/history/ scripts/ .github/ requirements.txt .gitignore .workbuddy/
+          ls -la
+          du -sh .
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
@@ -35,3 +41,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1200000

@@ -390,6 +390,31 @@ body {
   width: 100%;
 }
 
+/* 7709 两张图并排（左：AUM+累计涨跌幅 / 右：每日溢价率），显示在散户总杠杆水位下方 */
+.korea-7709-charts {
+  margin-top: 18px;
+}
+.korea-7709-charts-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.korea-7709-chart-col {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  padding: 8px 6px 2px;
+}
+.korea-7709-chart-title {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  padding-left: 4px;
+}
+@media (max-width: 760px) {
+  .korea-7709-charts-inner { grid-template-columns: 1fr; }
+}
+
 .dim-chart.lev-chart-amount,
 .dim-chart.lev-chart-r2trend {
   height: 260px;

@@ -1,13 +1,13 @@
 {
   "date": "2026-08-06",
-  "update_time": "2026-08-06 12:25:03",
+  "update_time": "2026-08-06 12:38:17",
   "korea": {
     "signals": {
       "vkospi": {
         "status": "red",
         "label": "危险",
-        "note": "VKOSPI=80.78，过度恐慌",
-        "current_value": 80.78,
+        "note": "VKOSPI=77.17，过度恐慌",
+        "current_value": 77.17,
         "unit": "",
         "name": "VKOSPI",
         "subtitle": "韩国波动率指数"

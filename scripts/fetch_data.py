@@ -452,9 +452,9 @@ def _fetch_index_via_investing(overview_url, history_url, name, exclude_today=Fa
         if before_count != len(history):
             print(f"      {name} T+1 策略: 过滤掉今日 {kr_today} 数据")
 
-    # 只有1条数据（仅实时值无历史）时返回空，让调用方继续尝试其他数据源
-    if len(history) <= 1:
-        print(f"      {name} 历史数据不足（仅 {len(history)} 条），跳过此数据源")
+    # 历史数据过少时（默认页仅1个月≈23条）返回空，让调用方 fallback 到 yfinance 拿半年历史
+    if len(history) < 50:
+        print(f"      {name} 历史数据不足50条（仅 {len(history)} 条），跳过此数据源，fallback 到 yfinance")
         return []
 
     return history

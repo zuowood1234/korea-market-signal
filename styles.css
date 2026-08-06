@@ -177,7 +177,7 @@ body {
 .light-card.orange .dd-inline { color: var(--orange); }
 .light-card.darkred .dd-inline { color: var(--darkred); }
 
-/* T+0/T+2 时效角标 */
+/* T+0/T+1 时效角标 */
 .fresh-tag {
   position: absolute;
   top: 3px;
@@ -189,11 +189,11 @@ body {
   line-height: 1.4;
   white-space: nowrap;
 }
-.fresh-tag.t1 {
+.fresh-tag.t0 {
   background: rgba(59, 130, 246, 0.16);
   color: #1d4ed8;
 }
-.fresh-tag.t2 {
+.fresh-tag.t1 {
   background: rgba(100, 116, 139, 0.16);
   color: #64748b;
 }

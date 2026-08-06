@@ -550,10 +550,10 @@ def fetch_korea_kospi():
         "history": [],
     }
 
-    # 1. Yahoo chart API 直连（CI 环境最稳定）— T+1 策略：排除今日盘中数据
+    # 1. Yahoo chart API 直连（CI 环境最稳定）— T+0 策略：保留当日收盘价
     try:
         print("    尝试从 Yahoo Finance 获取 KOSPI (^KS11)...")
-        history = _fetch_index_via_yahoo_direct("^KS11", "KOSPI", exclude_today=True)
+        history = _fetch_index_via_yahoo_direct("^KS11", "KOSPI", exclude_today=False)
         if history:
             result["history"] = history[-500:]
             result["current_value"] = history[-1]["value"]
@@ -562,14 +562,14 @@ def fetch_korea_kospi():
     except Exception as e:
         print(f"      Yahoo Finance KOSPI 失败: {e}")
 
-    # 2. Investing.com（curl_cffi/cloudscraper，本地可用）— T+1 策略
+    # 2. Investing.com（curl_cffi/cloudscraper，本地可用）— T+0 策略
     try:
         print("    尝试从 Investing.com 获取 KOSPI...")
         history = _fetch_index_via_investing(
             "https://cn.investing.com/indices/kospi",
             "https://cn.investing.com/indices/kospi-historical-data",
             "KOSPI",
-            exclude_today=True,
+            exclude_today=False,
         )
         if history:
             result["history"] = history[-500:]
@@ -580,17 +580,16 @@ def fetch_korea_kospi():
     except Exception as e:
         print(f"      Investing.com KOSPI 失败: {e}")
 
-    # 3. yfinance（最后备用，CI 环境可能被限流）— 同样排除今日盘中数据
+    # 3. yfinance（最后备用，CI 环境可能被限流）— T+0 策略：保留当日收盘价
     try:
         print("    尝试从 yfinance 获取 KOSPI (^KS11)...")
         ticker = yf.Ticker("^KS11")
         hist = ticker.history(period="6mo")
         if hist is not None and len(hist) > 0:
-            today_str = dt.date.today().strftime("%Y-%m-%d")
             history = [
                 {"date": idx.strftime("%Y-%m-%d"), "value": round(float(row["Close"]), 2)}
                 for idx, row in hist.iterrows()
-                if row["Close"] == row["Close"] and idx.strftime("%Y-%m-%d") != today_str
+                if row["Close"] == row["Close"]
             ]
             if history:
                 result["history"] = history[-500:]
@@ -616,10 +615,10 @@ def fetch_korea_kosdaq():
         "history": [],
     }
 
-    # 1. Yahoo chart API 直连（CI 环境最稳定）— T+1 策略：排除今日盘中数据
+    # 1. Yahoo chart API 直连（CI 环境最稳定）— T+0 策略：保留当日收盘价
     try:
         print("    尝试从 Yahoo Finance 获取 KOSDAQ (^KQ11)...")
-        history = _fetch_index_via_yahoo_direct("^KQ11", "KOSDAQ", exclude_today=True)
+        history = _fetch_index_via_yahoo_direct("^KQ11", "KOSDAQ", exclude_today=False)
         if history:
             result["history"] = history[-500:]
             result["current_value"] = history[-1]["value"]
@@ -628,14 +627,14 @@ def fetch_korea_kosdaq():
     except Exception as e:
         print(f"      Yahoo Finance KOSDAQ 失败: {e}")
 
-    # 2. Investing.com（curl_cffi/cloudscraper，本地可用）— T+1 策略
+    # 2. Investing.com（curl_cffi/cloudscraper，本地可用）— T+0 策略
     try:
         print("    尝试从 Investing.com 获取 KOSDAQ...")
         history = _fetch_index_via_investing(
             "https://cn.investing.com/indices/kosdaq",
             "https://cn.investing.com/indices/kosdaq-historical-data",
             "KOSDAQ",
-            exclude_today=True,
+            exclude_today=False,
         )
         if history:
             result["history"] = history[-500:]
@@ -646,17 +645,16 @@ def fetch_korea_kosdaq():
     except Exception as e:
         print(f"      Investing.com KOSDAQ 失败: {e}")
 
-    # 3. yfinance（最后备用，CI 环境可能被限流）— 同样排除今日盘中数据
+    # 3. yfinance（最后备用，CI 环境可能被限流）— T+0 策略：保留当日收盘价
     try:
         print("    尝试从 yfinance 获取 KOSDAQ (^KQ11)...")
         ticker = yf.Ticker("^KQ11")
         hist = ticker.history(period="6mo")
         if hist is not None and len(hist) > 0:
-            today_str = dt.date.today().strftime("%Y-%m-%d")
             history = [
                 {"date": idx.strftime("%Y-%m-%d"), "value": round(float(row["Close"]), 2)}
                 for idx, row in hist.iterrows()
-                if row["Close"] == row["Close"] and idx.strftime("%Y-%m-%d") != today_str
+                if row["Close"] == row["Close"]
             ]
             if history:
                 result["history"] = history[-500:]
@@ -891,10 +889,10 @@ def fetch_korea_vkospi():
     auto_history = []
     auto_source_name = ""
 
-    # 1. 优先 Investing.com（cloudscraper 绕过 CloudFlare，稳定可用）
+    # 1. 优先 Investing.com（cloudscraper 绕过 CloudFlare，稳定可用）— T+0 策略：保留当日收盘价
     try:
         print("    尝试从 Investing.com 获取 VKOSPI...")
-        auto_history = _fetch_vkospi_via_investing(exclude_today=True)
+        auto_history = _fetch_vkospi_via_investing(exclude_today=False)
         if auto_history:
             auto_source_name = "Investing.com"
     except Exception as e:

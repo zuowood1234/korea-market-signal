@@ -117,13 +117,22 @@ def parse_xlsx(path):
         except (TypeError, ValueError):
             return None
 
+    nav_n = num(nav)
+    prem_n = num(premium)
+    # 溢价率定义 = (收市价 - NAV) / NAV，故收市价 = NAV * (1 + 溢价率/100)
+    # 反推的收市价与港交所披露口径一致，用于计算每日涨跌幅（同源、官方）
+    close = None
+    if nav_n is not None and prem_n is not None:
+        close = round(nav_n * (1 + prem_n / 100), 4)
+
     return {
-        "nav": num(nav),
+        "nav": nav_n,
         "nav_ccy": (str(nav_ccy).strip() if nav_ccy else None),
         "units": num(units),
         "aum_usd": num(aum),
         "aum_ccy": (str(aum_ccy).strip() if aum_ccy else None),
-        "premium": num(premium),
+        "premium": prem_n,
+        "close_price": close,
     }
 
 
@@ -174,6 +183,16 @@ def main():
             print(f"  ERR {l['date']}: {e}")
 
     out = [hist[d] for d in sorted(hist.keys())]
+    # 按日期升序计算每日涨跌幅（基于反推收市价序列）
+    prev_close = None
+    for rec in out:
+        cp = rec.get("close_price")
+        if prev_close is not None and cp is not None and prev_close > 0:
+            rec["daily_change_pct"] = round((cp - prev_close) / prev_close * 100, 2)
+        else:
+            rec["daily_change_pct"] = None
+        if cp is not None:
+            prev_close = cp
     os.makedirs(os.path.dirname(os.path.abspath(args.history)), exist_ok=True)
     with open(args.history, "w") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)

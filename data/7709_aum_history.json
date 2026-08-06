@@ -8,7 +8,9 @@
   "units": 3000000.0,
   "aum_usd": 3426482.48,
   "aum_ccy": "USD",
-  "premium": 3.13
+  "premium": 3.13,
+  "close_price": 9.1551,
+  "daily_change_pct": null
  },
  {
   "date": "2025-10-17",
@@ -19,7 +21,9 @@
   "units": 3000000.0,
   "aum_usd": 3622000.91,
   "aum_ccy": "USD",
-  "premium": 1.28
+  "premium": 1.28,
+  "close_price": 9.4996,
+  "daily_change_pct": 3.76
  },
  {
   "date": "2025-10-20",
@@ -30,7 +34,9 @@
   "units": 4500000.0,
   "aum_usd": 5894353.07,
   "aum_ccy": "USD",
-  "premium": 8.12
+  "premium": 8.12,
+  "close_price": 11.0003,
+  "daily_change_pct": 15.8
  },
  {
   "date": "2025-10-21",
@@ -41,7 +47,9 @@
   "units": 7500000.0,
   "aum_usd": 9548059.97,
   "aum_ccy": "USD",
-  "premium": 3.05
+  "premium": 3.05,
+  "close_price": 10.1897,
+  "daily_change_pct": -7.37
  },
  {
   "date": "2025-10-22",
@@ -52,7 +60,9 @@
   "units": 16500000.0,
   "aum_usd": 21211908.23,
   "aum_ccy": "USD",
-  "premium": 0.31
+  "premium": 0.31,
+  "close_price": 10.0196,
+  "daily_change_pct": -1.67
  },
  {
   "date": "2025-10-23",
@@ -63,7 +73,9 @@
   "units": 20500000.0,
   "aum_usd": 26006903.9,
   "aum_ccy": "USD",
-  "premium": 1.38
+  "premium": 1.38,
+  "close_price": 9.9954,
+  "daily_change_pct": -0.24
  },
  {
   "date": "2025-10-24",
@@ -74,7 +86,9 @@
   "units": 20500000.0,
   "aum_usd": 29435166.6,
   "aum_ccy": "USD",
-  "premium": 2.16
+  "premium": 2.16,
+  "close_price": 11.4002,
+  "daily_change_pct": 14.05
  },
  {
   "date": "2025-10-27",
@@ -85,7 +99,9 @@
   "units": 25500000.0,
   "aum_usd": 40177153.71,
   "aum_ccy": "USD",
-  "premium": 5.64
+  "premium": 5.64,
+  "close_price": 12.93,
+  "daily_change_pct": 13.42
  },
  {
   "date": "2025-10-28",
@@ -96,7 +112,9 @@
   "units": 32000000.0,
   "aum_usd": 47699617.35,
   "aum_ccy": "USD",
-  "premium": 2.17
+  "premium": 2.17,
+  "close_price": 11.8301,
+  "daily_change_pct": -8.51
  },
  {
   "date": "2025-10-30",
@@ -107,7 +125,9 @@
   "units": 59000000.0,
   "aum_usd": 103837283.78,
   "aum_ccy": "USD",
-  "premium": 1.94
+  "premium": 1.94,
+  "close_price": 13.9401,
+  "daily_change_pct": 17.84
  },
  {
   "date": "2025-10-31",
@@ -118,7 +138,9 @@
   "units": 68000000.0,
   "aum_usd": 115759922.83,
   "aum_ccy": "USD",
-  "premium": 1.01
+  "premium": 1.01,
+  "close_price": 13.3601,
+  "daily_change_pct": -4.16
  },
  {
   "date": "2025-11-03",
@@ -129,7 +151,9 @@
   "units": 74500000.0,
   "aum_usd": 154425306.17,
   "aum_ccy": "USD",
-  "premium": 4.09
+  "premium": 4.09,
+  "close_price": 16.77,
+  "daily_change_pct": 25.52
  },
  {
   "date": "2025-11-04",
@@ -140,7 +164,9 @@
   "units": 79500000.0,
   "aum_usd": 146429419.08,
   "aum_ccy": "USD",
-  "premium": 3.44
+  "premium": 3.44,
+  "close_price": 14.8098,
+  "daily_change_pct": -11.69
  },
  {
   "date": "2025-11-05",
@@ -151,7 +177,9 @@
   "units": 111500000.0,
   "aum_usd": 200276040.62,
   "aum_ccy": "USD",
-  "premium": -0.46
+  "premium": -0.46,
+  "close_price": 13.8994,
+  "daily_change_pct": -6.15
  },
  {
   "date": "2025-11-06",
@@ -162,7 +190,9 @@
   "units": 149000000.0,
   "aum_usd": 280458373.44,
   "aum_ccy": "USD",
-  "premium": -0.09
+  "premium": -0.09,
+  "close_price": 14.6203,
+  "daily_change_pct": 5.19
  },
  {
   "date": "2025-11-07",
@@ -173,7 +203,9 @@
   "units": 168500000.0,
   "aum_usd": 302943548.93,
   "aum_ccy": "USD",
-  "premium": 0.72
+  "premium": 0.72,
+  "close_price": 14.0795,
+  "daily_change_pct": -3.7
  },
  {
   "date": "2025-11-10",
@@ -184,7 +216,9 @@
   "units": 176500000.0,
   "aum_usd": 345704294.31,
   "aum_ccy": "USD",
-  "premium": 2.97
+  "premium": 2.97,
+  "close_price": 15.6807,
+  "daily_change_pct": 11.37
  },
  {
   "date": "2025-11-11",
@@ -195,7 +229,9 @@
   "units": 185000000.0,
   "aum_usd": 376774205.17,
   "aum_ccy": "USD",
-  "premium": 0.89
+  "premium": 0.89,
+  "close_price": 15.9701,
+  "daily_change_pct": 1.85
  },
  {
   "date": "2025-11-12",
@@ -206,7 +242,9 @@
   "units": 209500000.0,
   "aum_usd": 423869251.19,
   "aum_ccy": "USD",
-  "premium": 1.84
+  "premium": 1.84,
+  "close_price": 16.0107,
+  "daily_change_pct": 0.25
  },
  {
   "date": "2025-11-13",
@@ -217,7 +255,9 @@
   "units": 219000000.0,
   "aum_usd": 435732241.1,
   "aum_ccy": "USD",
-  "premium": -1.74
+  "premium": -1.74,
+  "close_price": 15.1904,
+  "daily_change_pct": -5.12
  },
  {
   "date": "2025-11-14",
@@ -228,7 +268,9 @@
   "units": 222500000.0,
   "aum_usd": 366410189.29,
   "aum_ccy": "USD",
-  "premium": 0.81
+  "premium": 0.81,
+  "close_price": 12.9002,
+  "daily_change_pct": -15.08
  },
  {
   "date": "2025-11-17",
@@ -239,7 +281,9 @@
   "units": 237000000.0,
   "aum_usd": 453446439.2,
   "aum_ccy": "USD",
-  "premium": -0.41
+  "premium": -0.41,
+  "close_price": 14.8106,
+  "daily_change_pct": 14.81
  },
  {
   "date": "2025-11-18",
@@ -250,7 +294,9 @@
   "units": 247500000.0,
   "aum_usd": 416433947.27,
   "aum_ccy": "USD",
-  "premium": 0.66
+  "premium": 0.66,
+  "close_price": 13.1802,
+  "daily_change_pct": -11.01
  },
  {
   "date": "2025-11-19",
@@ -261,7 +307,9 @@
   "units": 252500000.0,
   "aum_usd": 412505437.62,
   "aum_ccy": "USD",
-  "premium": 3.26
+  "premium": 3.26,
+  "close_price": 13.1394,
+  "daily_change_pct": -0.31
  },
  {
   "date": "2025-11-20",
@@ -272,7 +320,9 @@
   "units": 254500000.0,
   "aum_usd": 428729768.71,
   "aum_ccy": "USD",
-  "premium": -0.45
+  "premium": -0.45,
+  "close_price": 13.0505,
+  "daily_change_pct": -0.68
  },
  {
   "date": "2025-11-21",
@@ -283,7 +333,9 @@
   "units": 263000000.0,
   "aum_usd": 365225944.49,
   "aum_ccy": "USD",
-  "premium": -2.23
+  "premium": -2.23,
+  "close_price": 10.57,
+  "daily_change_pct": -19.01
  },
  {
   "date": "2025-11-24",
@@ -294,7 +346,9 @@
   "units": 268000000.0,
   "aum_usd": 370090451.69,
   "aum_ccy": "USD",
-  "premium": 1.6
+  "premium": 1.6,
+  "close_price": 10.9202,
+  "daily_change_pct": 3.31
  },
  {
   "date": "2025-11-25",
@@ -305,7 +359,9 @@
   "units": 269500000.0,
   "aum_usd": 370141146.04,
   "aum_ccy": "USD",
-  "premium": -0.81
+  "premium": -0.81,
+  "close_price": 10.5896,
+  "daily_change_pct": -3.03
  },
  {
   "date": "2025-11-26",
@@ -316,7 +372,9 @@
   "units": 276500000.0,
   "aum_usd": 386827522.33,
   "aum_ccy": "USD",
-  "premium": 0.74
+  "premium": 0.74,
+  "close_price": 10.9604,
+  "daily_change_pct": 3.5
  },
  {
   "date": "2025-11-27",
@@ -327,7 +385,9 @@
   "units": 284000000.0,
   "aum_usd": 427908476.97,
   "aum_ccy": "USD",
-  "premium": -1.44
+  "premium": -1.44,
+  "close_price": 11.5501,
+  "daily_change_pct": 5.38
  },
  {
   "date": "2025-11-28",
@@ -338,7 +398,9 @@
   "units": 285000000.0,
   "aum_usd": 407068464.46,
   "aum_ccy": "USD",
-  "premium": 1.73
+  "premium": 1.73,
+  "close_price": 11.3098,
+  "daily_change_pct": -2.08
  },
  {
   "date": "2025-12-01",
@@ -349,7 +411,9 @@
   "units": 286000000.0,
   "aum_usd": 420388492.79,
   "aum_ccy": "USD",
-  "premium": 0.45
+  "premium": 0.45,
+  "close_price": 11.4996,
+  "daily_change_pct": 1.68
  },
  {
   "date": "2025-12-02",
@@ -360,7 +424,9 @@
   "units": 286000000.0,
   "aum_usd": 451219231.61,
   "aum_ccy": "USD",
-  "premium": -0.23
+  "premium": -0.23,
+  "close_price": 12.2603,
+  "daily_change_pct": 6.62
  },
  {
   "date": "2025-12-03",
@@ -371,7 +437,9 @@
   "units": 287000000.0,
   "aum_usd": 442774645.87,
   "aum_ccy": "USD",
-  "premium": 0.01
+  "premium": 0.01,
+  "close_price": 12.0096,
+  "daily_change_pct": -2.04
  },
  {
   "date": "2025-12-04",
@@ -382,7 +450,9 @@
   "units": 285000000.0,
   "aum_usd": 423387155.16,
   "aum_ccy": "USD",
-  "premium": -0.56
+  "premium": -0.56,
+  "close_price": 11.4996,
+  "daily_change_pct": -4.25
  },
  {
   "date": "2025-12-05",
@@ -393,7 +463,9 @@
   "units": 285000000.0,
   "aum_usd": 426176146.62,
   "aum_ccy": "USD",
-  "premium": -1.21
+  "premium": -1.21,
+  "close_price": 11.5,
+  "daily_change_pct": 0.0
  },
  {
   "date": "2025-12-08",
@@ -404,7 +476,9 @@
   "units": 285000000.0,
   "aum_usd": 477494242.08,
   "aum_ccy": "USD",
-  "premium": -0.66
+  "premium": -0.66,
+  "close_price": 12.9506,
+  "daily_change_pct": 12.61
  },
  {
   "date": "2025-12-09",
@@ -415,7 +489,9 @@
   "units": 283000000.0,
   "aum_usd": 455035077.21,
   "aum_ccy": "USD",
-  "premium": 0.17
+  "premium": 0.17,
+  "close_price": 12.5302,
+  "daily_change_pct": -3.25
  },
  {
   "date": "2025-12-10",
@@ -426,7 +502,9 @@
   "units": 283000000.0,
   "aum_usd": 488787852.93,
   "aum_ccy": "USD",
-  "premium": -0.67
+  "premium": -0.67,
+  "close_price": 13.3498,
+  "daily_change_pct": 6.54
  },
  {
   "date": "2025-12-11",
@@ -437,7 +515,9 @@
   "units": 277000000.0,
   "aum_usd": 442282970.62,
   "aum_ccy": "USD",
-  "premium": 0.63
+  "premium": 0.63,
+  "close_price": 12.4998,
+  "daily_change_pct": -6.37
  },
  {
   "date": "2025-12-12",
@@ -448,7 +528,9 @@
   "units": 278000000.0,
   "aum_usd": 452921601.64,
   "aum_ccy": "USD",
-  "premium": 1.33
+  "premium": 1.33,
+  "close_price": 12.8506,
+  "daily_change_pct": 2.81
  },
  {
   "date": "2025-12-15",
@@ -459,7 +541,9 @@
   "units": 283500000.0,
   "aum_usd": 433924609.34,
   "aum_ccy": "USD",
-  "premium": 0.16
+  "premium": 0.16,
+  "close_price": 11.9296,
+  "daily_change_pct": -7.17
  },
  {
   "date": "2025-12-16",
@@ -470,7 +554,9 @@
   "units": 288000000.0,
   "aum_usd": 401860403.28,
   "aum_ccy": "USD",
-  "premium": 0.61
+  "premium": 0.61,
+  "close_price": 10.9203,
+  "daily_change_pct": -8.46
  },
  {
   "date": "2025-12-17",
@@ -481,7 +567,9 @@
   "units": 295000000.0,
   "aum_usd": 444193963.54,
   "aum_ccy": "USD",
-  "premium": 0.66
+  "premium": 0.66,
+  "close_price": 11.7895,
+  "daily_change_pct": 7.96
  },
  {
   "date": "2025-12-18",
@@ -492,7 +580,9 @@
   "units": 299000000.0,
   "aum_usd": 451452585.91,
   "aum_ccy": "USD",
-  "premium": 0.72
+  "premium": 0.72,
+  "close_price": 11.8305,
+  "daily_change_pct": 0.35
  },
  {
   "date": "2025-12-19",
@@ -503,7 +593,9 @@
   "units": 301000000.0,
   "aum_usd": 445930595.81,
   "aum_ccy": "USD",
-  "premium": 2.53
+  "premium": 2.53,
+  "close_price": 11.8205,
+  "daily_change_pct": -0.08
  },
  {
   "date": "2025-12-23",
@@ -514,7 +606,9 @@
   "units": 303000000.0,
   "aum_usd": 509402136.62,
   "aum_ccy": "USD",
-  "premium": 0.04
+  "premium": 0.04,
+  "close_price": 13.08,
+  "daily_change_pct": 10.66
  },
  {
   "date": "2025-12-24",
@@ -525,7 +619,9 @@
   "units": 311000000.0,
   "aum_usd": 531125425.56,
   "aum_ccy": "USD",
-  "premium": 1.37
+  "premium": 1.37,
+  "close_price": 13.46,
+  "daily_change_pct": 2.91
  },
  {
   "date": "2025-12-29",
@@ -536,7 +632,9 @@
   "units": 314500000.0,
   "aum_usd": 633710520.45,
   "aum_ccy": "USD",
-  "premium": -2.33
+  "premium": -2.33,
+  "close_price": 15.2995,
+  "daily_change_pct": 13.67
  },
  {
   "date": "2025-12-30",
@@ -547,7 +645,9 @@
   "units": 306500000.0,
   "aum_usd": 636013644.58,
   "aum_ccy": "USD",
-  "premium": 1.0
+  "premium": 1.0,
+  "close_price": 16.3006,
+  "daily_change_pct": 6.54
  },
  {
   "date": "2025-12-31",
@@ -558,7 +658,9 @@
   "units": 306500000.0,
   "aum_usd": 636013644.58,
   "aum_ccy": "USD",
-  "premium": 0.07
+  "premium": 0.07,
+  "close_price": 16.1505,
+  "daily_change_pct": -0.92
  },
  {
   "date": "2026-01-02",
@@ -569,7 +671,9 @@
   "units": 303500000.0,
   "aum_usd": 678813341.84,
   "aum_ccy": "USD",
-  "premium": 0.43
+  "premium": 0.43,
+  "close_price": 17.4994,
+  "daily_change_pct": 8.35
  },
  {
   "date": "2026-01-06",
@@ -580,7 +684,9 @@
   "units": 303500000.0,
   "aum_usd": 776343539.77,
   "aum_ccy": "USD",
-  "premium": -1.76
+  "premium": -1.76,
+  "close_price": 19.5697,
+  "daily_change_pct": 11.83
  },
  {
   "date": "2026-01-07",
@@ -591,7 +697,9 @@
   "units": 307000000.0,
   "aum_usd": 819591264.49,
   "aum_ccy": "USD",
-  "premium": 0.03
+  "premium": 0.03,
+  "close_price": 20.7998,
+  "daily_change_pct": 6.29
  },
  {
   "date": "2026-01-08",
@@ -602,7 +710,9 @@
   "units": 307000000.0,
   "aum_usd": 849345411.16,
   "aum_ccy": "USD",
-  "premium": 0.6
+  "premium": 0.6,
+  "close_price": 21.6797,
+  "daily_change_pct": 4.23
  },
  {
   "date": "2026-01-09",
@@ -613,7 +723,9 @@
   "units": 305500000.0,
   "aum_usd": 817203483.51,
   "aum_ccy": "USD",
-  "premium": 0.43
+  "premium": 0.43,
+  "close_price": 20.9397,
+  "daily_change_pct": -3.41
  },
  {
   "date": "2026-01-12",
@@ -624,7 +736,9 @@
   "units": 304000000.0,
   "aum_usd": 823136195.91,
   "aum_ccy": "USD",
-  "premium": 0.83
+  "premium": 0.83,
+  "close_price": 21.2806,
+  "daily_change_pct": 1.63
  },
  {
   "date": "2026-01-13",
@@ -635,7 +749,9 @@
   "units": 306000000.0,
   "aum_usd": 803256035.9,
   "aum_ccy": "USD",
-  "premium": 0.43
+  "premium": 0.43,
+  "close_price": 20.5606,
+  "daily_change_pct": -3.38
  },
  {
   "date": "2026-01-14",
@@ -646,7 +762,9 @@
   "units": 313000000.0,
   "aum_usd": 829967721.35,
   "aum_ccy": "USD",
-  "premium": 0.33
+  "premium": 0.33,
+  "close_price": 20.7409,
+  "daily_change_pct": 0.88
  },
  {
   "date": "2026-01-15",
@@ -657,7 +775,9 @@
   "units": 317000000.0,
   "aum_usd": 856046531.8,
   "aum_ccy": "USD",
-  "premium": 2.0
+  "premium": 2.0,
+  "close_price": 21.4792,
+  "daily_change_pct": 3.56
  },
  {
   "date": "2026-01-16",
@@ -668,7 +788,9 @@
   "units": 321500000.0,
   "aum_usd": 883915134.89,
   "aum_ccy": "USD",
-  "premium": 2.22
+  "premium": 2.22,
+  "close_price": 21.9189,
+  "daily_change_pct": 2.05
  },
  {
   "date": "2026-01-20",
@@ -679,7 +801,9 @@
   "units": 341000000.0,
   "aum_usd": 902697975.36,
   "aum_ccy": "USD",
-  "premium": -0.4
+  "premium": -0.4,
+  "close_price": 20.5603,
+  "daily_change_pct": -6.2
  },
  {
   "date": "2026-01-21",
@@ -690,7 +814,9 @@
   "units": 343500000.0,
   "aum_usd": 901095855.92,
   "aum_ccy": "USD",
-  "premium": 0.51
+  "premium": 0.51,
+  "close_price": 20.5592,
+  "daily_change_pct": -0.01
  },
  {
   "date": "2026-01-22",
@@ -701,7 +827,9 @@
   "units": 350000000.0,
   "aum_usd": 954805979.86,
   "aum_ccy": "USD",
-  "premium": 1.18
+  "premium": 1.18,
+  "close_price": 21.5203,
+  "daily_change_pct": 4.67
  },
  {
   "date": "2026-01-23",
@@ -712,7 +840,9 @@
   "units": 361500000.0,
   "aum_usd": 1016929649.34,
   "aum_ccy": "USD",
-  "premium": -0.08
+  "premium": -0.08,
+  "close_price": 21.9191,
+  "daily_change_pct": 1.85
  },
  {
   "date": "2026-01-26",
@@ -723,7 +853,9 @@
   "units": 368500000.0,
   "aum_usd": 950682284.81,
   "aum_ccy": "USD",
-  "premium": 2.53
+  "premium": 2.53,
+  "close_price": 20.6203,
+  "daily_change_pct": -5.93
  },
  {
   "date": "2026-01-27",
@@ -734,7 +866,9 @@
   "units": 379000000.0,
   "aum_usd": 1147632034.87,
   "aum_ccy": "USD",
-  "premium": -0.57
+  "premium": -0.57,
+  "close_price": 23.4806,
+  "daily_change_pct": 13.87
  },
  {
   "date": "2026-01-28",
@@ -745,7 +879,9 @@
   "units": 377500000.0,
   "aum_usd": 1261955858.77,
   "aum_ccy": "USD",
-  "premium": 8.9
+  "premium": 8.9,
+  "close_price": 28.4009,
+  "daily_change_pct": 20.95
  },
  {
   "date": "2026-01-29",
@@ -756,7 +892,9 @@
   "units": 377500000.0,
   "aum_usd": 1320469823.82,
   "aum_ccy": "USD",
-  "premium": 0.02
+  "premium": 0.02,
+  "close_price": 27.2987,
+  "daily_change_pct": -3.88
  },
  {
   "date": "2026-01-30",
@@ -767,7 +905,9 @@
   "units": 383500000.0,
   "aum_usd": 1485205867.18,
   "aum_ccy": "USD",
-  "premium": -2.1
+  "premium": -2.1,
+  "close_price": 29.6,
+  "daily_change_pct": 8.43
  },
  {
   "date": "2026-02-02",
@@ -778,7 +918,9 @@
   "units": 390000000.0,
   "aum_usd": 1246532737.82,
   "aum_ccy": "USD",
-  "premium": 3.77
+  "premium": 3.77,
+  "close_price": 25.8997,
+  "daily_change_pct": -12.5
  },
  {
   "date": "2026-02-03",
@@ -789,7 +931,9 @@
   "units": 395000000.0,
   "aum_usd": 1495520737.41,
   "aum_ccy": "USD",
-  "premium": 0.07
+  "premium": 0.07,
+  "close_price": 29.6002,
+  "daily_change_pct": 14.29
  },
  {
   "date": "2026-02-04",
@@ -800,7 +944,9 @@
   "units": 383000000.0,
   "aum_usd": 1426653864.52,
   "aum_ccy": "USD",
-  "premium": 0.6
+  "premium": 0.6,
+  "close_price": 29.2795,
+  "daily_change_pct": -1.08
  },
  {
   "date": "2026-02-05",
@@ -811,7 +957,9 @@
   "units": 376500000.0,
   "aum_usd": 1222010736.39,
   "aum_ccy": "USD",
-  "premium": 2.34
+  "premium": 2.34,
+  "close_price": 25.9402,
+  "daily_change_pct": -11.4
  },
  {
   "date": "2026-02-06",
@@ -822,7 +970,9 @@
   "units": 379500000.0,
   "aum_usd": 1221133460.57,
   "aum_ccy": "USD",
-  "premium": -0.37
+  "premium": -0.37,
+  "close_price": 25.0392,
+  "daily_change_pct": -3.47
  },
  {
   "date": "2026-02-09",
@@ -833,7 +983,9 @@
   "units": 379500000.0,
   "aum_usd": 1360178514.09,
   "aum_ccy": "USD",
-  "premium": -0.63
+  "premium": -0.63,
+  "close_price": 27.8395,
+  "daily_change_pct": 11.18
  },
  {
   "date": "2026-02-10",
@@ -844,7 +996,9 @@
   "units": 386000000.0,
   "aum_usd": 1347121482.82,
   "aum_ccy": "USD",
-  "premium": 1.17
+  "premium": 1.17,
+  "close_price": 27.6004,
+  "daily_change_pct": -0.86
  },
  {
   "date": "2026-02-11",
@@ -855,7 +1009,9 @@
   "units": 386000000.0,
   "aum_usd": 1296895762.69,
   "aum_ccy": "USD",
-  "premium": 1.98
+  "premium": 1.98,
+  "close_price": 26.7788,
+  "daily_change_pct": -2.98
  },
  {
   "date": "2026-02-12",
@@ -866,7 +1022,9 @@
   "units": 392500000.0,
   "aum_usd": 1403891987.88,
   "aum_ccy": "USD",
-  "premium": 1.92
+  "premium": 1.92,
+  "close_price": 28.5012,
+  "daily_change_pct": 6.43
  },
  {
   "date": "2026-02-13",
@@ -877,7 +1035,9 @@
   "units": 399000000.0,
   "aum_usd": 1400852348.88,
   "aum_ccy": "USD",
-  "premium": 0.58
+  "premium": 0.58,
+  "close_price": 27.6002,
+  "daily_change_pct": -3.16
  },
  {
   "date": "2026-02-16",
@@ -888,7 +1048,9 @@
   "units": 405500000.0,
   "aum_usd": 1421952379.26,
   "aum_ccy": "USD",
-  "premium": 3.69
+  "premium": 3.69,
+  "close_price": 28.4196,
+  "daily_change_pct": 2.97
  },
  {
   "date": "2026-02-20",
@@ -899,7 +1061,9 @@
   "units": 411500000.0,
   "aum_usd": 1666387834.53,
   "aum_ccy": "USD",
-  "premium": 0.42
+  "premium": 0.42,
+  "close_price": 31.7785,
+  "daily_change_pct": 11.82
  },
  {
   "date": "2026-02-23",
@@ -910,7 +1074,9 @@
   "units": 410500000.0,
   "aum_usd": 1665485342.78,
   "aum_ccy": "USD",
-  "premium": 1.39
+  "premium": 1.39,
+  "close_price": 32.1589,
+  "daily_change_pct": 1.2
  },
  {
   "date": "2026-02-24",
@@ -921,7 +1087,9 @@
   "units": 418000000.0,
   "aum_usd": 1886162672.25,
   "aum_ccy": "USD",
-  "premium": 0.07
+  "premium": 0.07,
+  "close_price": 35.3187,
+  "daily_change_pct": 9.83
  },
  {
   "date": "2026-02-25",
@@ -932,7 +1100,9 @@
   "units": 423500000.0,
   "aum_usd": 1960909354.08,
   "aum_ccy": "USD",
-  "premium": 3.28
+  "premium": 3.28,
+  "close_price": 37.3993,
+  "daily_change_pct": 5.89
  },
  {
   "date": "2026-02-26",
@@ -943,7 +1113,9 @@
   "units": 425500000.0,
   "aum_usd": 2291345467.62,
   "aum_ccy": "USD",
-  "premium": 1.6
+  "premium": 1.6,
+  "close_price": 42.8016,
+  "daily_change_pct": 14.44
  },
  {
   "date": "2026-02-27",
@@ -954,7 +1126,9 @@
   "units": 437500000.0,
   "aum_usd": 2188067791.54,
   "aum_ccy": "USD",
-  "premium": 1.56
+  "premium": 1.56,
+  "close_price": 39.7413,
+  "daily_change_pct": -7.15
  },
  {
   "date": "2026-03-02",
@@ -965,7 +1139,9 @@
   "units": 437500000.0,
   "aum_usd": 2188067791.54,
   "aum_ccy": "USD",
-  "premium": -6.47
+  "premium": -6.47,
+  "close_price": 36.5991,
+  "daily_change_pct": -7.91
  },
  {
   "date": "2026-03-03",
@@ -976,7 +1152,9 @@
   "units": 458500000.0,
   "aum_usd": 1767793111.45,
   "aum_ccy": "USD",
-  "premium": 3.55
+  "premium": 3.55,
+  "close_price": 31.18,
+  "daily_change_pct": -14.81
  },
  {
   "date": "2026-03-04",
@@ -987,7 +1165,9 @@
   "units": 485000000.0,
   "aum_usd": 1507544175.32,
   "aum_ccy": "USD",
-  "premium": 3.27
+  "premium": 3.27,
+  "close_price": 25.0809,
+  "daily_change_pct": -19.56
  },
  {
   "date": "2026-03-05",
@@ -998,7 +1178,9 @@
   "units": 555500000.0,
   "aum_usd": 2094236928.26,
   "aum_ccy": "USD",
-  "premium": 1.3
+  "premium": 1.3,
+  "close_price": 29.8593,
+  "daily_change_pct": 19.05
  },
  {
   "date": "2026-03-06",
@@ -1009,7 +1191,9 @@
   "units": 580500000.0,
   "aum_usd": 2105733920.74,
   "aum_ccy": "USD",
-  "premium": 0.3
+  "premium": 0.3,
+  "close_price": 28.4603,
+  "daily_change_pct": -4.69
  },
  {
   "date": "2026-03-09",
@@ -1020,7 +1204,9 @@
   "units": 635000000.0,
   "aum_usd": 1866551667.09,
   "aum_ccy": "USD",
-  "premium": 3.09
+  "premium": 3.09,
+  "close_price": 23.6808,
+  "daily_change_pct": -16.79
  },
  {
   "date": "2026-03-10",
@@ -1031,7 +1217,9 @@
   "units": 696000000.0,
   "aum_usd": 2535044578.2,
   "aum_ccy": "USD",
-  "premium": 1.4
+  "premium": 1.4,
+  "close_price": 28.8987,
+  "daily_change_pct": 22.03
  },
  {
   "date": "2026-03-11",
@@ -1042,7 +1230,9 @@
   "units": 707500000.0,
   "aum_usd": 2669015127.55,
   "aum_ccy": "USD",
-  "premium": -2.74
+  "premium": -2.74,
+  "close_price": 28.7205,
+  "daily_change_pct": -0.62
  },
  {
   "date": "2026-03-12",
@@ -1053,7 +1243,9 @@
   "units": 712500000.0,
   "aum_usd": 2545518150.64,
   "aum_ccy": "USD",
-  "premium": 1.93
+  "premium": 1.93,
+  "close_price": 28.5003,
+  "daily_change_pct": -0.77
  },
  {
   "date": "2026-03-13",
@@ -1064,7 +1256,9 @@
   "units": 703000000.0,
   "aum_usd": 2402119390.44,
   "aum_ccy": "USD",
-  "premium": -1.31
+  "premium": -1.31,
+  "close_price": 26.4003,
+  "daily_change_pct": -7.37
  },
  {
   "date": "2026-03-16",
@@ -1075,7 +1269,9 @@
   "units": 696500000.0,
   "aum_usd": 2710116731.06,
   "aum_ccy": "USD",
-  "premium": -1.67
+  "premium": -1.67,
+  "close_price": 29.9595,
+  "daily_change_pct": 13.48
  },
  {
   "date": "2026-03-17",
@@ -1086,7 +1282,9 @@
   "units": 700500000.0,
   "aum_usd": 2700755661.48,
   "aum_ccy": "USD",
-  "premium": -0.36
+  "premium": -0.36,
+  "close_price": 30.0993,
+  "daily_change_pct": 0.47
  },
  {
   "date": "2026-03-18",
@@ -1097,7 +1295,9 @@
   "units": 697000000.0,
   "aum_usd": 3166062491.53,
   "aum_ccy": "USD",
-  "premium": -0.52
+  "premium": -0.52,
+  "close_price": 35.4187,
+  "daily_change_pct": 17.67
  },
  {
   "date": "2026-03-19",
@@ -1108,7 +1308,9 @@
   "units": 691000000.0,
   "aum_usd": 2875455134.69,
   "aum_ccy": "USD",
-  "premium": -1.19
+  "premium": -1.19,
+  "close_price": 32.2213,
+  "daily_change_pct": -9.03
  },
  {
   "date": "2026-03-20",
@@ -1119,7 +1321,9 @@
   "units": 688000000.0,
   "aum_usd": 2826590353.0,
   "aum_ccy": "USD",
-  "premium": -1.33
+  "premium": -1.33,
+  "close_price": 31.759,
+  "daily_change_pct": -1.43
  },
  {
   "date": "2026-03-23",
@@ -1130,7 +1334,9 @@
   "units": 693000000.0,
   "aum_usd": 2426666841.03,
   "aum_ccy": "USD",
-  "premium": -1.06
+  "premium": -1.06,
+  "close_price": 27.1194,
+  "daily_change_pct": -14.61
  },
  {
   "date": "2026-03-24",
@@ -1141,7 +1347,9 @@
   "units": 707500000.0,
   "aum_usd": 2748850768.91,
   "aum_ccy": "USD",
-  "premium": 1.55
+  "premium": 1.55,
+  "close_price": 30.9205,
+  "daily_change_pct": 14.02
  },
  {
   "date": "2026-03-25",
@@ -1152,7 +1360,9 @@
   "units": 701000000.0,
   "aum_usd": 2771036090.3,
   "aum_ccy": "USD",
-  "premium": 1.14
+  "premium": 1.14,
+  "close_price": 31.2793,
+  "daily_change_pct": 1.16
  },
  {
   "date": "2026-03-26",
@@ -1163,7 +1373,9 @@
   "units": 694000000.0,
   "aum_usd": 2399763629.55,
   "aum_ccy": "USD",
-  "premium": 1.32
+  "premium": 1.32,
+  "close_price": 27.3798,
+  "daily_change_pct": -12.47
  },
  {
   "date": "2026-03-27",
@@ -1174,7 +1386,9 @@
   "units": 716500000.0,
   "aum_usd": 2415836877.05,
   "aum_ccy": "USD",
-  "premium": -0.79
+  "premium": -0.79,
+  "close_price": 26.1999,
+  "daily_change_pct": -4.31
  },
  {
   "date": "2026-03-30",
@@ -1185,7 +1399,9 @@
   "units": 744500000.0,
   "aum_usd": 2240637545.87,
   "aum_ccy": "USD",
-  "premium": -0.49
+  "premium": -0.49,
+  "close_price": 23.4611,
+  "daily_change_pct": -10.45
  },
  {
   "date": "2026-03-31",
@@ -1196,7 +1412,9 @@
   "units": 769000000.0,
   "aum_usd": 1964968760.73,
   "aum_ccy": "USD",
-  "premium": 1.46
+  "premium": 1.46,
+  "close_price": 20.3202,
+  "daily_change_pct": -13.39
  },
  {
   "date": "2026-04-01",
@@ -1207,7 +1425,9 @@
   "units": 809500000.0,
   "aum_usd": 2507781634.22,
   "aum_ccy": "USD",
-  "premium": -1.14
+  "premium": -1.14,
+  "close_price": 23.9992,
+  "daily_change_pct": 18.11
  },
  {
   "date": "2026-04-02",
@@ -1218,7 +1438,9 @@
   "units": 818000000.0,
   "aum_usd": 2175002739.21,
   "aum_ccy": "USD",
-  "premium": 1.93
+  "premium": 1.93,
+  "close_price": 21.2397,
+  "daily_change_pct": -11.5
  },
  {
   "date": "2026-04-09",
@@ -1229,7 +1451,9 @@
   "units": 833000000.0,
   "aum_usd": 3092566328.05,
   "aum_ccy": "USD",
-  "premium": -1.18
+  "premium": -1.18,
+  "close_price": 28.7398,
+  "daily_change_pct": 35.31
  },
  {
   "date": "2026-04-10",
@@ -1240,7 +1464,9 @@
   "units": 768000000.0,
   "aum_usd": 3012457570.75,
   "aum_ccy": "USD",
-  "premium": -1.78
+  "premium": -1.78,
+  "close_price": 30.1792,
+  "daily_change_pct": 5.01
  },
  {
   "date": "2026-04-13",
@@ -1251,7 +1477,9 @@
   "units": 747000000.0,
   "aum_usd": 2998368897.01,
   "aum_ccy": "USD",
-  "premium": -1.07
+  "premium": -1.07,
+  "close_price": 31.0991,
+  "daily_change_pct": 3.05
  },
  {
   "date": "2026-04-14",
@@ -1262,7 +1490,9 @@
   "units": 726500000.0,
   "aum_usd": 3266428302.99,
   "aum_ccy": "USD",
-  "premium": 0.62
+  "premium": 0.62,
+  "close_price": 35.4399,
+  "daily_change_pct": 13.96
  },
  {
   "date": "2026-04-15",
@@ -1273,7 +1503,9 @@
   "units": 709500000.0,
   "aum_usd": 3380657814.44,
   "aum_ccy": "USD",
-  "premium": -1.18
+  "premium": -1.18,
+  "close_price": 36.9004,
+  "daily_change_pct": 4.12
  },
  {
   "date": "2026-04-16",
@@ -1284,7 +1516,9 @@
   "units": 686500000.0,
   "aum_usd": 3378912610.65,
   "aum_ccy": "USD",
-  "premium": -0.14
+  "premium": -0.14,
+  "close_price": 38.4784,
+  "daily_change_pct": 4.28
  },
  {
   "date": "2026-04-17",
@@ -1295,7 +1529,9 @@
   "units": 651500000.0,
   "aum_usd": 3051398460.4,
   "aum_ccy": "USD",
-  "premium": 0.91
+  "premium": 0.91,
+  "close_price": 37.0007,
+  "daily_change_pct": -3.84
  },
  {
   "date": "2026-04-20",
@@ -1306,7 +1542,9 @@
   "units": 641500000.0,
   "aum_usd": 3202312515.28,
   "aum_ccy": "USD",
-  "premium": -0.2
+  "premium": -0.2,
+  "close_price": 39.0191,
+  "daily_change_pct": 5.46
  },
  {
   "date": "2026-04-21",
@@ -1317,7 +1555,9 @@
   "units": 637500000.0,
   "aum_usd": 3496678984.27,
   "aum_ccy": "USD",
-  "premium": -0.54
+  "premium": -0.54,
+  "close_price": 42.7187,
+  "daily_change_pct": 9.48
  },
  {
   "date": "2026-04-22",
@@ -1328,7 +1568,9 @@
   "units": 621500000.0,
   "aum_usd": 3397396216.74,
   "aum_ccy": "USD",
-  "premium": 0.97
+  "premium": 0.97,
+  "close_price": 43.2207,
+  "daily_change_pct": 1.18
  },
  {
   "date": "2026-04-23",
@@ -1339,7 +1581,9 @@
   "units": 612500000.0,
   "aum_usd": 3354756871.89,
   "aum_ccy": "USD",
-  "premium": -0.93
+  "premium": -0.93,
+  "close_price": 42.4995,
+  "daily_change_pct": -1.67
  },
  {
   "date": "2026-04-24",
@@ -1350,7 +1594,9 @@
   "units": 604000000.0,
   "aum_usd": 3288577443.26,
   "aum_ccy": "USD",
-  "premium": 0.04
+  "premium": 0.04,
+  "close_price": 42.6796,
+  "daily_change_pct": 0.42
  },
  {
   "date": "2026-04-27",
@@ -1361,7 +1607,9 @@
   "units": 578500000.0,
   "aum_usd": 3508001922.42,
   "aum_ccy": "USD",
-  "premium": -0.97
+  "premium": -0.97,
+  "close_price": 47.0623,
+  "daily_change_pct": 10.27
  },
  {
   "date": "2026-04-28",
@@ -1372,7 +1620,9 @@
   "units": 569000000.0,
   "aum_usd": 3487566144.29,
   "aum_ccy": "USD",
-  "premium": -2.01
+  "premium": -2.01,
+  "close_price": 47.0623,
+  "daily_change_pct": 0.0
  },
  {
   "date": "2026-04-29",
@@ -1383,7 +1633,9 @@
   "units": 568000000.0,
   "aum_usd": 3440403899.93,
   "aum_ccy": "USD",
-  "premium": -0.14
+  "premium": -0.14,
+  "close_price": 47.401,
+  "daily_change_pct": 0.72
  },
  {
   "date": "2026-04-30",
@@ -1394,7 +1646,9 @@
   "units": 561000000.0,
   "aum_usd": 3357173621.81,
   "aum_ccy": "USD",
-  "premium": 1.52
+  "premium": 1.52,
+  "close_price": 47.5988,
+  "daily_change_pct": 0.42
  },
  {
   "date": "2026-05-04",
@@ -1405,7 +1659,9 @@
   "units": 562000000.0,
   "aum_usd": 4208097933.11,
   "aum_ccy": "USD",
-  "premium": -0.19
+  "premium": -0.19,
+  "close_price": 58.5401,
+  "daily_change_pct": 22.99
  },
  {
   "date": "2026-05-05",
@@ -1416,7 +1672,9 @@
   "units": 562000000.0,
   "aum_usd": 4208097933.11,
   "aum_ccy": "USD",
-  "premium": 2.3
+  "premium": 2.3,
+  "close_price": 60.0005,
+  "daily_change_pct": 2.49
  },
  {
   "date": "2026-05-06",
@@ -1427,7 +1685,9 @@
   "units": 552500000.0,
   "aum_usd": 5021013482.89,
   "aum_ccy": "USD",
-  "premium": 0.97
+  "premium": 0.97,
+  "close_price": 71.9023,
+  "daily_change_pct": 19.84
  },
  {
   "date": "2026-05-07",
@@ -1438,7 +1698,9 @@
   "units": 555000000.0,
   "aum_usd": 5377829241.28,
   "aum_ccy": "USD",
-  "premium": 1.31
+  "premium": 1.31,
+  "close_price": 76.8803,
+  "daily_change_pct": 6.92
  },
  {
   "date": "2026-05-08",
@@ -1449,7 +1711,9 @@
   "units": 558000000.0,
   "aum_usd": 5583415300.82,
   "aum_ccy": "USD",
-  "premium": 0.18
+  "premium": 0.18,
+  "close_price": 78.4803,
+  "daily_change_pct": 2.08
  },
  {
   "date": "2026-05-11",
@@ -1460,7 +1724,9 @@
   "units": 551000000.0,
   "aum_usd": 6759656888.79,
   "aum_ccy": "USD",
-  "premium": 1.0
+  "premium": 1.0,
+  "close_price": 96.9998,
+  "daily_change_pct": 23.6
  },
  {
   "date": "2026-05-12",
@@ -1471,7 +1737,9 @@
   "units": 536000000.0,
   "aum_usd": 6189379351.96,
   "aum_ccy": "USD",
-  "premium": 1.75
+  "premium": 1.75,
+  "close_price": 91.9835,
+  "daily_change_pct": -5.17
  },
  {
   "date": "2026-05-13",
@@ -1482,7 +1750,9 @@
   "units": 547000000.0,
   "aum_usd": 7259782232.27,
   "aum_ccy": "USD",
-  "premium": 1.63
+  "premium": 1.63,
+  "close_price": 105.6035,
+  "daily_change_pct": 14.81
  },
  {
   "date": "2026-05-14",
@@ -1493,7 +1763,9 @@
   "units": 551500000.0,
   "aum_usd": 7253939303.02,
   "aum_ccy": "USD",
-  "premium": 1.92
+  "premium": 1.92,
+  "close_price": 105.001,
+  "daily_change_pct": -0.57
  },
  {
   "date": "2026-05-15",
@@ -1504,7 +1776,9 @@
   "units": 559000000.0,
   "aum_usd": 6232525790.46,
   "aum_ccy": "USD",
-  "premium": 4.15
+  "premium": 4.15,
+  "close_price": 90.9193,
+  "daily_change_pct": -13.41
  },
  {
   "date": "2026-05-18",
@@ -1515,7 +1789,9 @@
   "units": 592500000.0,
   "aum_usd": 6729389930.21,
   "aum_ccy": "USD",
-  "premium": 1.82
+  "premium": 1.82,
+  "close_price": 90.5427,
+  "daily_change_pct": -0.41
  },
  {
   "date": "2026-05-19",
@@ -1526,7 +1802,9 @@
   "units": 595000000.0,
   "aum_usd": 6033163323.25,
   "aum_ccy": "USD",
-  "premium": 2.18
+  "premium": 2.18,
+  "close_price": 81.1384,
+  "daily_change_pct": -10.39
  },
  {
   "date": "2026-05-20",
@@ -1537,7 +1815,9 @@
   "units": 610500000.0,
   "aum_usd": 6195399520.43,
   "aum_ccy": "USD",
-  "premium": 2.94
+  "premium": 2.94,
+  "close_price": 81.8219,
+  "daily_change_pct": 0.84
  },
  {
   "date": "2026-05-21",
@@ -1548,7 +1828,9 @@
   "units": 631500000.0,
   "aum_usd": 7829100576.74,
   "aum_ccy": "USD",
-  "premium": -4.18
+  "premium": -4.18,
+  "close_price": 93.056,
+  "daily_change_pct": 13.73
  },
  {
   "date": "2026-05-22",
@@ -1559,7 +1841,9 @@
   "units": 627000000.0,
   "aum_usd": 7735674816.31,
   "aum_ccy": "USD",
-  "premium": 0.36
+  "premium": 0.36,
+  "close_price": 97.023,
+  "daily_change_pct": 4.26
  },
  {
   "date": "2026-05-26",
@@ -1570,7 +1854,9 @@
   "units": 624000000.0,
   "aum_usd": 8649329662.45,
   "aum_ccy": "USD",
-  "premium": -0.01
+  "premium": -0.01,
+  "close_price": 108.6033,
+  "daily_change_pct": 11.94
  },
  {
   "date": "2026-05-27",
@@ -1581,7 +1867,9 @@
   "units": 619000000.0,
   "aum_usd": 10217362643.38,
   "aum_ccy": "USD",
-  "premium": 2.45
+  "premium": 2.45,
+  "close_price": 132.4972,
+  "daily_change_pct": 22.0
  },
  {
   "date": "2026-05-28",
@@ -1592,7 +1880,9 @@
   "units": 607500000.0,
   "aum_usd": 10406752429.03,
   "aum_ccy": "USD",
-  "premium": -0.45
+  "premium": -0.45,
+  "close_price": 133.5547,
+  "daily_change_pct": 0.8
  },
  {
   "date": "2026-05-29",
@@ -1603,7 +1893,9 @@
   "units": 608500000.0,
   "aum_usd": 10805190014.19,
   "aum_ccy": "USD",
-  "premium": -1.06
+  "premium": -1.06,
+  "close_price": 137.6477,
+  "daily_change_pct": 3.06
  },
  {
   "date": "2026-06-01",
@@ -1614,7 +1906,9 @@
   "units": 605000000.0,
   "aum_usd": 10900817797.9,
   "aum_ccy": "USD",
-  "premium": 2.19
+  "premium": 2.19,
+  "close_price": 144.3033,
+  "daily_change_pct": 4.84
  },
  {
   "date": "2026-06-02",
@@ -1625,7 +1919,9 @@
   "units": 609500000.0,
   "aum_usd": 10846398092.64,
   "aum_ccy": "USD",
-  "premium": -0.31
+  "premium": -0.31,
+  "close_price": 139.054,
+  "daily_change_pct": -3.64
  },
  {
   "date": "2026-06-03",
@@ -1636,7 +1932,9 @@
   "units": 609500000.0,
   "aum_usd": 10846398092.64,
   "aum_ccy": "USD",
-  "premium": 4.81
+  "premium": 4.81,
+  "close_price": 146.1957,
+  "daily_change_pct": 5.14
  },
  {
   "date": "2026-06-04",
@@ -1647,7 +1945,9 @@
   "units": 613500000.0,
   "aum_usd": 10265093477.49,
   "aum_ccy": "USD",
-  "premium": 1.06
+  "premium": 1.06,
+  "close_price": 132.4992,
+  "daily_change_pct": -9.37
  },
  {
   "date": "2026-06-05",
@@ -1658,7 +1958,9 @@
   "units": 636000000.0,
   "aum_usd": 8483058798.49,
   "aum_ccy": "USD",
-  "premium": 2.31
+  "premium": 2.31,
+  "close_price": 106.9037,
+  "daily_change_pct": -19.32
  },
  {
   "date": "2026-06-08",
@@ -1669,7 +1971,9 @@
   "units": 658000000.0,
   "aum_usd": 7373562238.52,
   "aum_ccy": "USD",
-  "premium": 12.3
+  "premium": 12.3,
+  "close_price": 98.5983,
+  "daily_change_pct": -7.77
  },
  {
   "date": "2026-06-09",
@@ -1680,7 +1984,9 @@
   "units": 691000000.0,
   "aum_usd": 10245249034.93,
   "aum_ccy": "USD",
-  "premium": -2.1
+  "premium": -2.1,
+  "close_price": 113.7458,
+  "daily_change_pct": 15.36
  },
  {
   "date": "2026-06-10",
@@ -1691,7 +1997,9 @@
   "units": 699000000.0,
   "aum_usd": 8685193378.16,
   "aum_ccy": "USD",
-  "premium": 1.0
+  "premium": 1.0,
+  "close_price": 98.3375,
+  "daily_change_pct": -13.55
  },
  {
   "date": "2026-06-11",
@@ -1702,7 +2010,9 @@
   "units": 707000000.0,
   "aum_usd": 9158100133.47,
   "aum_ccy": "USD",
-  "premium": 4.43
+  "premium": 4.43,
+  "close_price": 106.0037,
+  "daily_change_pct": 7.8
  },
  {
   "date": "2026-06-12",
@@ -1713,7 +2023,9 @@
   "units": 707000000.0,
   "aum_usd": 9612928661.21,
   "aum_ccy": "USD",
-  "premium": 0.01
+  "premium": 0.01,
+  "close_price": 106.5539,
+  "daily_change_pct": 0.52
  },
  {
   "date": "2026-06-15",
@@ -1724,7 +2036,9 @@
   "units": 707500000.0,
   "aum_usd": 10765595999.62,
   "aum_ccy": "USD",
-  "premium": 1.65
+  "premium": 1.65,
+  "close_price": 121.1992,
+  "daily_change_pct": 13.74
  },
  {
   "date": "2026-06-16",
@@ -1735,7 +2049,9 @@
   "units": 707500000.0,
   "aum_usd": 11707515220.89,
   "aum_ccy": "USD",
-  "premium": -0.89
+  "premium": -0.89,
+  "close_price": 128.4522,
+  "daily_change_pct": 5.98
  },
  {
   "date": "2026-06-17",
@@ -1746,7 +2062,9 @@
   "units": 707500000.0,
   "aum_usd": 13010899819.99,
   "aum_ccy": "USD",
-  "premium": 0.51
+  "premium": 0.51,
+  "close_price": 144.802,
+  "daily_change_pct": 12.73
  },
  {
   "date": "2026-06-18",
@@ -1757,7 +2075,9 @@
   "units": 701500000.0,
   "aum_usd": 14417840440.68,
   "aum_ccy": "USD",
-  "premium": -0.05
+  "premium": -0.05,
+  "close_price": 160.9987,
+  "daily_change_pct": 11.19
  },
  {
   "date": "2026-06-22",
@@ -1768,7 +2088,9 @@
   "units": 698500000.0,
   "aum_usd": 16847645395.01,
   "aum_ccy": "USD",
-  "premium": -0.76
+  "premium": -0.76,
+  "close_price": 187.6429,
+  "daily_change_pct": 16.55
  },
  {
   "date": "2026-06-23",
@@ -1779,7 +2101,9 @@
   "units": 685500000.0,
   "aum_usd": 12234699326.07,
   "aum_ccy": "USD",
-  "premium": 2.77
+  "premium": 2.77,
+  "close_price": 143.8009,
+  "daily_change_pct": -23.36
  },
  {
   "date": "2026-06-24",
@@ -1790,7 +2114,9 @@
   "units": 685500000.0,
   "aum_usd": 12487252837.68,
   "aum_ccy": "USD",
-  "premium": 7.81
+  "premium": 7.81,
+  "close_price": 153.9962,
+  "daily_change_pct": 7.09
  },
  {
   "date": "2026-06-25",
@@ -1801,7 +2127,9 @@
   "units": 688500000.0,
   "aum_usd": 15928844740.97,
   "aum_ccy": "USD",
-  "premium": 0.56
+  "premium": 0.56,
+  "close_price": 182.4058,
+  "daily_change_pct": 18.45
  },
  {
   "date": "2026-06-26",
@@ -1812,7 +2140,9 @@
   "units": 688500000.0,
   "aum_usd": 13059382228.08,
   "aum_ccy": "USD",
-  "premium": 5.56
+  "premium": 5.56,
+  "close_price": 157.0035,
+  "daily_change_pct": -13.93
  },
  {
   "date": "2026-06-29",
@@ -1823,7 +2153,9 @@
   "units": 693000000.0,
   "aum_usd": 12682048208.39,
   "aum_ccy": "USD",
-  "premium": 2.28
+  "premium": 2.28,
+  "close_price": 146.8046,
+  "daily_change_pct": -6.5
  },
  {
   "date": "2026-06-30",
@@ -1834,7 +2166,9 @@
   "units": 701500000.0,
   "aum_usd": 13070132637.49,
   "aum_ccy": "USD",
-  "premium": 1.97
+  "premium": 1.97,
+  "close_price": 148.9939,
+  "daily_change_pct": 1.49
  },
  {
   "date": "2026-07-02",
@@ -1845,7 +2179,9 @@
   "units": 703500000.0,
   "aum_usd": 8395877755.37,
   "aum_ccy": "USD",
-  "premium": 17.07
+  "premium": 17.07,
+  "close_price": 109.5967,
+  "daily_change_pct": -26.44
  },
  {
   "date": "2026-07-03",
@@ -1856,7 +2192,9 @@
   "units": 715000000.0,
   "aum_usd": 10422754439.96,
   "aum_ccy": "USD",
-  "premium": 2.16
+  "premium": 2.16,
+  "close_price": 116.7971,
+  "daily_change_pct": 6.57
  },
  {
   "date": "2026-07-06",
@@ -1867,7 +2205,9 @@
   "units": 729000000.0,
   "aum_usd": 9598094220.34,
   "aum_ccy": "USD",
-  "premium": 5.27
+  "premium": 5.27,
+  "close_price": 108.696,
+  "daily_change_pct": -6.94
  },
  {
   "date": "2026-07-07",
@@ -1878,7 +2218,9 @@
   "units": 737000000.0,
   "aum_usd": 8628813743.4,
   "aum_ccy": "USD",
-  "premium": -0.13
+  "premium": -0.13,
+  "close_price": 91.7006,
+  "daily_change_pct": -15.64
  },
  {
   "date": "2026-07-08",
@@ -1889,7 +2231,9 @@
   "units": 764500000.0,
   "aum_usd": 7903434989.85,
   "aum_ccy": "USD",
-  "premium": 2.1
+  "premium": 2.1,
+  "close_price": 82.743,
+  "daily_change_pct": -9.77
  },
  {
   "date": "2026-07-09",
@@ -1900,7 +2244,9 @@
   "units": 774000000.0,
   "aum_usd": 8812572407.98,
   "aum_ccy": "USD",
-  "premium": 7.58
+  "premium": 7.58,
+  "close_price": 96.0003,
+  "daily_change_pct": 16.02
  },
  {
   "date": "2026-07-10",
@@ -1911,7 +2257,9 @@
   "units": 780000000.0,
   "aum_usd": 8842934168.56,
   "aum_ccy": "USD",
-  "premium": 0.6
+  "premium": 0.6,
+  "close_price": 89.3985,
+  "daily_change_pct": -6.88
  },
  {
   "date": "2026-07-13",
@@ -1922,7 +2270,9 @@
   "units": 798500000.0,
   "aum_usd": 6186097512.63,
   "aum_ccy": "USD",
-  "premium": -1.36
+  "premium": -1.36,
+  "close_price": 59.9009,
+  "daily_change_pct": -33.0
  },
  {
   "date": "2026-07-14",
@@ -1933,7 +2283,9 @@
   "units": 893500000.0,
   "aum_usd": 7392101839.84,
   "aum_ccy": "USD",
-  "premium": 0.54
+  "premium": 0.54,
+  "close_price": 65.1976,
+  "daily_change_pct": 8.84
  },
  {
   "date": "2026-07-15",
@@ -1944,7 +2296,9 @@
   "units": 927500000.0,
   "aum_usd": 9039991661.4,
   "aum_ccy": "USD",
-  "premium": -6.03
+  "premium": -6.03,
+  "close_price": 71.7818,
+  "daily_change_pct": 10.1
  },
  {
   "date": "2026-07-16",
@@ -1955,7 +2309,9 @@
   "units": 885500000.0,
   "aum_usd": 6600941105.38,
   "aum_ccy": "USD",
-  "premium": -3.35
+  "premium": -3.35,
+  "close_price": 56.4815,
+  "daily_change_pct": -21.32
  },
  {
   "date": "2026-07-17",
@@ -1966,7 +2322,9 @@
   "units": 885500000.0,
   "aum_usd": 6600941105.38,
   "aum_ccy": "USD",
-  "premium": -23.34
+  "premium": -23.34,
+  "close_price": 44.7995,
+  "daily_change_pct": -20.68
  },
  {
   "date": "2026-07-20",
@@ -1977,7 +2335,9 @@
   "units": 887500000.0,
   "aum_usd": 5987499098.42,
   "aum_ccy": "USD",
-  "premium": -0.59
+  "premium": -0.59,
+  "close_price": 52.5801,
+  "daily_change_pct": 17.37
  },
  {
   "date": "2026-07-21",
@@ -1988,7 +2348,9 @@
   "units": 857500000.0,
   "aum_usd": 6227803790.69,
   "aum_ccy": "USD",
-  "premium": 1.49
+  "premium": 1.49,
+  "close_price": 57.8023,
+  "daily_change_pct": 9.93
  },
  {
   "date": "2026-07-22",
@@ -1999,7 +2361,9 @@
   "units": 857500000.0,
   "aum_usd": 6179513311.14,
   "aum_ccy": "USD",
-  "premium": -1.3
+  "premium": -1.3,
+  "close_price": 55.7613,
+  "daily_change_pct": -3.53
  },
  {
   "date": "2026-07-23",
@@ -2010,7 +2374,9 @@
   "units": 840000000.0,
   "aum_usd": 6633961725.44,
   "aum_ccy": "USD",
-  "premium": -2.3
+  "premium": -2.3,
+  "close_price": 60.5004,
+  "daily_change_pct": 8.5
  },
  {
   "date": "2026-07-24",
@@ -2021,7 +2387,9 @@
   "units": 825000000.0,
   "aum_usd": 5418419911.49,
   "aum_ccy": "USD",
-  "premium": 2.4
+  "premium": 2.4,
+  "close_price": 52.7391,
+  "daily_change_pct": -12.83
  },
  {
   "date": "2026-07-27",
@@ -2032,7 +2400,9 @@
   "units": 825000000.0,
   "aum_usd": 5751690148.88,
   "aum_ccy": "USD",
-  "premium": -0.32
+  "premium": -0.32,
+  "close_price": 54.4981,
+  "daily_change_pct": 3.34
  },
  {
   "date": "2026-07-28",
@@ -2043,7 +2413,9 @@
   "units": 826000000.0,
   "aum_usd": 4070430873.63,
   "aum_ccy": "USD",
-  "premium": -1.61
+  "premium": -1.61,
+  "close_price": 38.0209,
+  "daily_change_pct": -30.23
  },
  {
   "date": "2026-07-29",
@@ -2054,7 +2426,9 @@
   "units": 826000000.0,
   "aum_usd": 3269624059.02,
   "aum_ccy": "USD",
-  "premium": 5.33
+  "premium": 5.33,
+  "close_price": 32.6988,
+  "daily_change_pct": -14.0
  },
  {
   "date": "2026-07-30",
@@ -2065,7 +2439,9 @@
   "units": 829000000.0,
   "aum_usd": 2879955391.15,
   "aum_ccy": "USD",
-  "premium": -6.93
+  "premium": -6.93,
+  "close_price": 25.3606,
+  "daily_change_pct": -22.44
  },
  {
   "date": "2026-07-31",
@@ -2076,7 +2452,9 @@
   "units": 984000000.0,
   "aum_usd": 5497561531.92,
   "aum_ccy": "USD",
-  "premium": -2.93
+  "premium": -2.93,
+  "close_price": 42.5214,
+  "daily_change_pct": 67.67
  },
  {
   "date": "2026-08-03",
@@ -2087,7 +2465,9 @@
   "units": 954000000.0,
   "aum_usd": 4372917830.05,
   "aum_ccy": "USD",
-  "premium": -1.42
+  "premium": -1.42,
+  "close_price": 35.4389,
+  "daily_change_pct": -16.66
  },
  {
   "date": "2026-08-04",
@@ -2098,7 +2478,9 @@
   "units": 954000000.0,
   "aum_usd": 4418389568.14,
   "aum_ccy": "USD",
-  "premium": 2.14
+  "premium": 2.14,
+  "close_price": 37.1002,
+  "daily_change_pct": 4.69
  },
  {
   "date": "2026-08-05",
@@ -2109,7 +2491,9 @@
   "units": 966000000.0,
   "aum_usd": 4981884945.96,
   "aum_ccy": "USD",
-  "premium": -3.73
+  "premium": -3.73,
+  "close_price": 38.9404,
+  "daily_change_pct": 4.96
  },
  {
   "date": "2026-08-06",
@@ -2120,6 +2504,8 @@
   "units": 980000000.0,
   "aum_usd": 3977362890.16,
   "aum_ccy": "USD",
-  "premium": -1.05
+  "premium": -1.05,
+  "close_price": 31.4992,
+  "daily_change_pct": -19.11
  }
 ]

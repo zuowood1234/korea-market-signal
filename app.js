@@ -1799,9 +1799,23 @@ function renderAum7709(history) {
     <div class="dim-note">截至 ${latest.date} · 份额 ${(latest.units / 1e8).toFixed(2)} 亿份 · NAV ${latest.nav} ${latest.nav_ccy} · 溢价 ${latest.premium}%</div>
     <div class="dim-chart" id="chart-aum-7709"></div>
     <div class="dim-note">峰值 ${yi(peak.aum_usd).toFixed(2)} 亿美元 (${peak.date}) · 上市首日 ${yi(first.aum_usd).toFixed(2)} 亿美元 (${first.date})</div>
+    <div class="aum-subcharts">
+      <div class="aum-subchart">
+        <div class="aum-subchart-title">每日溢价率（%）</div>
+        <div class="dim-chart aum-subchart-canvas" id="chart-premium-7709"></div>
+      </div>
+      <div class="aum-subchart">
+        <div class="aum-subchart-title">每日涨跌（%）· 红涨绿跌</div>
+        <div class="dim-chart aum-subchart-canvas" id="chart-change-7709"></div>
+      </div>
+    </div>
   `;
   grid.appendChild(card);
-  setTimeout(() => createAum7709Chart(history), 80);
+  setTimeout(() => {
+    createAum7709Chart(history);
+    createPremiumChart(history);
+    createChangeChart(history);
+  }, 80);
 }
 
 function createAum7709Chart(history) {
@@ -1855,6 +1869,96 @@ function createAum7709Chart(history) {
       backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
       textStyle: { color: '#d1d5db', fontSize: 12 },
       extraCssText: 'border-radius:6px;padding:4px 10px;'
+    },
+    animationDuration: 600
+  });
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+function createPremiumChart(history) {
+  const dom = document.getElementById('chart-premium-7709');
+  if (!dom || !window.echarts) return;
+  const chart = echarts.init(dom);
+  const dates = formatChartDates(history);
+  const prem = history.map(h => (h.premium != null ? +h.premium.toFixed(2) : null));
+  chart.setOption({
+    grid: { left: 38, right: 12, top: 12, bottom: 24 },
+    xAxis: {
+      type: 'category', data: dates, boundaryGap: false,
+      axisLabel: { fontSize: 9, color: '#9ca3af', interval: Math.floor(dates.length / 6) },
+      axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value', name: '%', scale: true,
+      nameTextStyle: { fontSize: 9, color: '#c084fc' },
+      axisLabel: { fontSize: 9, color: '#c084fc' },
+      axisLine: { show: false }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
+    },
+    series: [{
+      name: '溢价率', type: 'line', data: prem, smooth: true, symbol: 'none',
+      lineStyle: { width: 1.6, color: '#c084fc' },
+      areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: 'rgba(192,132,252,0.18)' },
+        { offset: 1, color: 'rgba(192,132,252,0.01)' }
+      ]) },
+      markLine: { silent: true, symbol: 'none',
+        data: [{ yAxis: 0, lineStyle: { color: '#6b7280', type: 'solid', width: 1 } }], z: 2 },
+      z: 1
+    }],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
+      formatter: params => {
+        const i = params[0].dataIndex; const h = history[i];
+        return `${h.date}<br/>溢价率: <b>${h.premium != null ? h.premium.toFixed(2) : '-'}%</b>`;
+      },
+      confine: true, backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 11 }, extraCssText: 'border-radius:6px;padding:4px 10px;'
+    },
+    animationDuration: 600
+  });
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+function createChangeChart(history) {
+  const dom = document.getElementById('chart-change-7709');
+  if (!dom || !window.echarts) return;
+  const chart = echarts.init(dom);
+  const dates = formatChartDates(history);
+  const chg = history.map(h => (h.daily_change_pct != null ? +h.daily_change_pct.toFixed(2) : null));
+  chart.setOption({
+    grid: { left: 38, right: 12, top: 12, bottom: 24 },
+    xAxis: {
+      type: 'category', data: dates, boundaryGap: true,
+      axisLabel: { fontSize: 9, color: '#9ca3af', interval: Math.floor(dates.length / 6) },
+      axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value', name: '%', scale: true,
+      nameTextStyle: { fontSize: 9, color: '#f472b6' },
+      axisLabel: { fontSize: 9, color: '#f472b6' },
+      axisLine: { show: false }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
+    },
+    series: [{
+      name: '涨跌', type: 'bar', data: chg,
+      itemStyle: { color: p => (p.value != null && p.value >= 0 ? '#ef4444' : '#22c55e') },
+      markLine: { silent: true, symbol: 'none',
+        data: [{ yAxis: 0, lineStyle: { color: '#6b7280', type: 'solid', width: 1 } }], z: 2 },
+      z: 1
+    }],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' },
+      formatter: params => {
+        const i = params[0].dataIndex; const h = history[i];
+        const v = h.daily_change_pct;
+        const col = v != null && v >= 0 ? '#ef4444' : '#22c55e';
+        return `${h.date}<br/>涨跌: <b style="color:${col}">${v != null ? (v >= 0 ? '+' : '') + v.toFixed(2) : '-'}%</b>`;
+      },
+      confine: true, backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 11 }, extraCssText: 'border-radius:6px;padding:4px 10px;'
     },
     animationDuration: 600
   });

@@ -137,7 +137,7 @@ function renderThresholdBar(data, sig, direction) {
   `;
 }
 
-function renderKoreaLights(signals, latest) {
+function renderKoreaLights(signals, latest, aum7709) {
   const koreaSignals = signals.korea || {};
   const koreaLatest = latest.korea || {};
   const grid = document.getElementById('korea-lights-grid');
@@ -313,6 +313,31 @@ function renderKoreaLights(signals, latest) {
         <span class="fresh-tag t1">T+1</span>
       `;
       grid.appendChild(ddCard);
+    }
+  }
+
+  // 渲染 7709 AUM 信号卡片：从峰值回落% + 日环比%
+  if (aum7709 && aum7709.length >= 2) {
+    const aumHist = aum7709.map(r => ({ value: r.aum_usd, date: r.date }));
+    const ps = computePeakStatus(aumHist);
+    const dodStr = getDayOverDayStr(aumHist);
+    if (ps) {
+      let ddStatus;
+      if (ps.type === 'up') ddStatus = 'green';
+      else if (ps.pct > 30) ddStatus = 'red';
+      else if (ps.pct > 10) ddStatus = 'yellow';
+      else ddStatus = 'green';
+      const dropStr = ps.type === 'up' ? '0.0%' : ('-' + ps.pct.toFixed(1) + '%');
+      const labelTxt = ps.type === 'up' ? '7709 AUM 创新高' : '7709 AUM 峰值回落';
+      const card7709 = document.createElement('div');
+      card7709.className = 'light-card ' + ddStatus;
+      card7709.title = '7709 (CSOP SK Hynix 2x) AUM：峰值 ' + ps.prevPeakDate + ' → 当前回落 ' + ps.pct.toFixed(1) + '% · 日环比 ' + dodStr.replace(/^，/, '');
+      card7709.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">${labelTxt} <span class="dd-inline">${dropStr}${dodStr}</span></div>
+        <span class="fresh-tag t0">T+0</span>
+      `;
+      grid.appendChild(card7709);
     }
   }
 
@@ -1728,7 +1753,7 @@ async function init() {
   if (!loaded) return;
   const { latest, signals, aum7709 } = loaded;
   renderHeader(latest);
-  renderKoreaLights(signals, latest);
+  renderKoreaLights(signals, latest, aum7709);
   renderKoreaSummary(signals);
   renderKoreaDimensions(latest, signals);
   renderKoreaTrendDimensions(latest);
@@ -1748,8 +1773,11 @@ function renderAum7709(history) {
   }
   const latest = history[history.length - 1];
   const first = history[0];
+  const prev = history.length >= 2 ? history[history.length - 2] : null;
   const peak = history.reduce((m, h) => (h.aum_usd > m.aum_usd ? h : m), history[0]);
   const yi = v => v / 1e8;
+  const peakDropPct = peak.aum_usd > 0 ? (latest.aum_usd - peak.aum_usd) / peak.aum_usd * 100 : 0;
+  const dodPct = prev && prev.aum_usd ? (latest.aum_usd - prev.aum_usd) / prev.aum_usd * 100 : 0;
   const card = document.createElement('div');
   card.className = 'dim-card aum-7709-card';
   card.innerHTML = `
@@ -1764,6 +1792,10 @@ function renderAum7709(history) {
       </div>
     </div>
     <div class="dim-value">${yi(latest.aum_usd).toFixed(2)}<span class="dim-value-unit">亿美元</span></div>
+    <div class="aum-submetrics">
+      <span class="aum-sub">从峰值回落 <b class="${peakDropPct >= 0 ? 'pos' : 'neg'}">${peakDropPct >= 0 ? '+' : ''}${peakDropPct.toFixed(1)}%</b></span>
+      <span class="aum-sub">日环比 <b class="${dodPct >= 0 ? 'pos' : 'neg'}">${dodPct >= 0 ? '+' : ''}${dodPct.toFixed(1)}%</b></span>
+    </div>
     <div class="dim-note">截至 ${latest.date} · 份额 ${(latest.units / 1e8).toFixed(2)} 亿份 · NAV ${latest.nav} ${latest.nav_ccy} · 溢价 ${latest.premium}%</div>
     <div class="dim-chart" id="chart-aum-7709"></div>
     <div class="dim-note">峰值 ${yi(peak.aum_usd).toFixed(2)} 亿美元 (${peak.date}) · 上市首日 ${yi(first.aum_usd).toFixed(2)} 亿美元 (${first.date})</div>

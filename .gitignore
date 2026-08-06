@@ -4,3 +4,4 @@ __pycache__/
 .workbuddy/
 .DS_Store
 *.log
+data/cache_7709/

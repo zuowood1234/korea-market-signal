@@ -87,7 +87,12 @@ async function loadData() {
     ]);
     const latest = await latestRes.json();
     const signals = await signalsRes.json();
-    return { latest, signals };
+    let aum7709 = [];
+    try {
+      const aumRes = await fetch('data/7709_aum_history.json' + v);
+      aum7709 = await aumRes.json();
+    } catch (e) { aum7709 = []; }
+    return { latest, signals, aum7709 };
   } catch (e) {
     document.getElementById('date').textContent = '数据加载失败';
     document.getElementById('date').style.color = '#dc2626';
@@ -1721,13 +1726,106 @@ function toggleTrendChartRange(key, btn) {
 async function init() {
   const loaded = await loadData();
   if (!loaded) return;
-  const { latest, signals } = loaded;
+  const { latest, signals, aum7709 } = loaded;
   renderHeader(latest);
   renderKoreaLights(signals, latest);
   renderKoreaSummary(signals);
   renderKoreaDimensions(latest, signals);
   renderKoreaTrendDimensions(latest);
+  renderAum7709(aum7709);
   window.addEventListener('resize', handleResize);
 }
 
 init();
+
+function renderAum7709(history) {
+  const grid = document.getElementById('aum-7709-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  if (!history || history.length === 0) {
+    grid.innerHTML = '<div class="dim-card"><div class="dim-note">暂无 7709 AUM 数据</div></div>';
+    return;
+  }
+  const latest = history[history.length - 1];
+  const first = history[0];
+  const peak = history.reduce((m, h) => (h.aum_usd > m.aum_usd ? h : m), history[0]);
+  const yi = v => v / 1e8;
+  const card = document.createElement('div');
+  card.className = 'dim-card aum-7709-card';
+  card.innerHTML = `
+    <div class="dim-card-header">
+      <div>
+        <div class="dim-card-title">7709 · CSOP SK Hynix 2x 杠杆 ETF</div>
+        <div class="dim-card-sub">Asset Under Management (AUM) · 港交所披露易每日披露</div>
+      </div>
+      <div class="dim-badge green">
+        <div class="dim-badge-dot"></div>
+        <span>追踪中</span>
+      </div>
+    </div>
+    <div class="dim-value">${yi(latest.aum_usd).toFixed(2)}<span class="dim-value-unit">亿美元</span></div>
+    <div class="dim-note">截至 ${latest.date} · 份额 ${(latest.units / 1e8).toFixed(2)} 亿份 · NAV ${latest.nav} ${latest.nav_ccy} · 溢价 ${latest.premium}%</div>
+    <div class="dim-chart" id="chart-aum-7709"></div>
+    <div class="dim-note">峰值 ${yi(peak.aum_usd).toFixed(2)} 亿美元 (${peak.date}) · 上市首日 ${yi(first.aum_usd).toFixed(2)} 亿美元 (${first.date})</div>
+  `;
+  grid.appendChild(card);
+  setTimeout(() => createAum7709Chart(history), 80);
+}
+
+function createAum7709Chart(history) {
+  const dom = document.getElementById('chart-aum-7709');
+  if (!dom || !window.echarts) return;
+  const chart = echarts.init(dom);
+  const dates = formatChartDates(history);
+  const aumYi = history.map(h => +(h.aum_usd / 1e8).toFixed(3));
+  const peakVal = Math.max(...aumYi);
+  chart.setOption({
+    grid: { left: 52, right: 18, top: 20, bottom: 30 },
+    xAxis: {
+      type: 'category', data: dates, boundaryGap: false,
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value', name: '亿美元', scale: true,
+      nameTextStyle: { fontSize: 10, color: '#60a5fa', padding: [0, 0, 0, -6] },
+      axisLabel: { fontSize: 10, color: '#60a5fa' },
+      axisLine: { show: false },
+      splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
+    },
+    series: [{
+      name: 'AUM', type: 'line', data: aumYi, smooth: true, symbol: 'none',
+      lineStyle: { width: 2.2, color: '#60a5fa' },
+      areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: 'rgba(96,165,250,0.28)' },
+        { offset: 1, color: 'rgba(96,165,250,0.02)' }
+      ]) },
+      markLine: {
+        silent: true, symbol: 'none',
+        data: [{ yAxis: peakVal, lineStyle: { color: '#f59e0b', type: 'dashed', width: 1.5 },
+          label: { formatter: '峰值 ' + peakVal.toFixed(1) + '亿', color: '#f59e0b', fontSize: 10, position: 'insideEndTop' } }],
+        z: 2
+      },
+      z: 1
+    }],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
+      formatter: params => {
+        const i = params[0].dataIndex;
+        const h = history[i];
+        return `${h.date}<br/>AUM: <b>${aumYi[i].toFixed(2)}</b> 亿美元`
+          + `<br/>份额: ${(h.units / 1e8).toFixed(2)} 亿份`
+          + `<br/>NAV: ${h.nav} ${h.nav_ccy}`
+          + `<br/>溢价: ${h.premium}%`;
+      },
+      confine: true,
+      backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 12 },
+      extraCssText: 'border-radius:6px;padding:4px 10px;'
+    },
+    animationDuration: 600
+  });
+  dom._chartInstance = chart;
+  charts.push(chart);
+}

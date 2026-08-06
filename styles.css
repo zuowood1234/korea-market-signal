@@ -96,8 +96,14 @@ body {
 .section-title {
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   color: var(--text-primary);
+}
+
+.section-update-note {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin: 0 0 10px 0;
 }
 
 .light-card {

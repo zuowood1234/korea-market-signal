@@ -442,8 +442,6 @@ def _fetch_index_via_investing(overview_url, history_url, name, exclude_today=Fa
 
     except Exception as e:
         print(f"      Investing.com {name} 历史数据抓取失败: {e}")
-        if current_value is not None:
-            return [{"date": dt.date.today().strftime("%Y-%m-%d"), "value": current_value}]
 
     # T+1 策略：过滤掉今日数据（盘中实时价），只保留已收盘的交易日
     if exclude_today and history:
@@ -453,6 +451,11 @@ def _fetch_index_via_investing(overview_url, history_url, name, exclude_today=Fa
         history = [h for h in history if h["date"] != kr_today]
         if before_count != len(history):
             print(f"      {name} T+1 策略: 过滤掉今日 {kr_today} 数据")
+
+    # 只有1条数据（仅实时值无历史）时返回空，让调用方继续尝试其他数据源
+    if len(history) <= 1:
+        print(f"      {name} 历史数据不足（仅 {len(history)} 条），跳过此数据源")
+        return []
 
     return history
 

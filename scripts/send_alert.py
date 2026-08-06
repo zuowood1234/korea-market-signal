@@ -385,7 +385,7 @@ def build_report(latest, signals):
     # 数据来源
     lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*")
     lines.append("\n*数据来源: KOFIA（kimpremium.com）+ Investing.com（VKOSPI）*")
-    lines.append("\n*每日15:00自动推送*")
+    lines.append("\n*每天下午3:00自动推送*")
 
     return title, "".join(lines)
 

@@ -339,6 +339,14 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
     }
   }
 
+  // VKOSPI 三档恐慌着色：>40 红（恐慌红线）/ 25–40 黄（升温预警）/ ≤25 绿（平稳）；与顶部杠杆比率灯卡同款红黄绿逻辑
+  function vkospiStatus(val) {
+    if (val == null) return 'green';
+    if (val > 40) return 'red';
+    if (val > 25) return 'yellow';
+    return 'green';
+  }
+
   // 三张指数白卡（KOSPI/KOSDAQ/VKOSPI）：紧跟「融资最高点回落」之后，与 7709/7747 等 12 张同处顶端信号灯区（共 15 张）
   ['kospi', 'kosdaq', 'vkospi'].forEach(k => {
     const idxData = koreaLatest[k];
@@ -348,11 +356,11 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
     const tagHtml = `<span class="fresh-tag ${isT0 ? 't0' : 't1'}">${isT0 ? 'T+0' : 'T+1'}</span>`;
 
     if (k === 'vkospi') {
-      // VKOSPI：恐慌指数，当前值 vs 警戒线 40，>40 红灯；描述改为「VKOSPI 75.59 > 40, -2.0%」
+      // VKOSPI：恐慌指数三档着色（>40 红 / 25–40 黄 / ≤25 绿），>40 红灯；描述保持「VKOSPI 75.59 > 40, -2.0%」
       const val = idxData.current_value;
       const chg = historyDodPct(idxData.history);
       const chgStr = chg == null ? '' : (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%';
-      const statusCls = (val != null && val > 40) ? 'red' : 'green';
+      const statusCls = vkospiStatus(val);
       const labelTxt = `${idxData.name} ${val} > 40, ${chgStr}`;
       const card = document.createElement('div');
       card.className = `light-card ${statusCls} korea-index-light`;

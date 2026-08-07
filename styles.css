@@ -474,7 +474,7 @@ body {
 }
 .korea-index-light .light-label {
   font-size: 12.5px !important;
-  font-weight: 400 !important;           /* 常规字重，不加粗 */
+  font-weight: 600 !important;           /* 加粗（与常规灯卡一致） */
   color: #44403c !important;             /* KOSPI/KOSDAQ 深灰字；VKOSPI 由下方状态规则覆盖 */
 }
 .korea-index-light .light-dot {
@@ -483,9 +483,14 @@ body {
   margin: 0 auto 6px !important;
   background: #a8a29e !important;         /* 灰点（KOSPI/KOSDAQ 用；VKOSPI 由下方状态规则覆盖） */
 }
-/* VKOSPI：恐慌指数 >40 红灯，状态色优先于上面的强制灰 */
+/* VKOSPI：恐慌指数三档状态色，优先于上面的强制白底（卡片背景同步染红/黄/绿，对齐顶部杠杆比率灯卡设计） */
+.light-card.red.korea-index-light { background: var(--red-bg) !important; border-color: var(--red-border) !important; }
+.light-card.yellow.korea-index-light { background: var(--yellow-bg) !important; border-color: var(--yellow-border) !important; }
+.light-card.green.korea-index-light { background: var(--green-bg) !important; border-color: var(--green-border) !important; }
 .light-card.red.korea-index-light .light-label { color: var(--red-text) !important; }
 .light-card.red.korea-index-light .light-dot { background: var(--red) !important; }
+.light-card.yellow.korea-index-light .light-label { color: var(--yellow-text) !important; }
+.light-card.yellow.korea-index-light .light-dot { background: var(--yellow) !important; }
 .light-card.green.korea-index-light .light-label { color: var(--green-text) !important; }
 .light-card.green.korea-index-light .light-dot { background: var(--green) !important; }
 

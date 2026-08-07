@@ -1153,7 +1153,7 @@ function buildVkospiOption(history) {
         },
         markLine: {
           silent: true, symbol: 'none',
-          data: [{ yAxis: 30, lineStyle: { color: '#dc2626', type: 'dashed', width: 1.4 }, label: { formatter: '高位 30', color: '#dc2626', fontSize: 10, position: 'insideEndTop' } }]
+          data: [{ yAxis: 40, lineStyle: { color: '#dc2626', type: 'dashed', width: 1.4 }, label: { formatter: '高位 40', color: '#dc2626', fontSize: 10, position: 'insideEndTop' } }]
         },
         z: 3
       }

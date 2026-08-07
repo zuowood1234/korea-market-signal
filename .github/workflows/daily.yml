@@ -48,5 +48,6 @@ jobs:
           git add data/
           git diff --cached --quiet && echo "no changes to commit" || ( \
             git commit -m "auto update $(date -u +%Y-%m-%d)" && \
+            git pull --rebase origin main && \
             git push \
           )

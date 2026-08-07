@@ -34,5 +34,6 @@ jobs:
           git add data/7747_aum_history.json
           git diff --cached --quiet && echo "no changes to commit" || ( \
             git commit -m "auto update 7747 AUM $(date -u +%Y-%m-%d)" && \
+            git pull --rebase origin main && \
             git push \
           )

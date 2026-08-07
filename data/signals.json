@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-06",
-  "update_time": "2026-08-06 23:37:26",
+  "date": "2026-08-07",
+  "update_time": "2026-08-07 15:42:06",
   "korea": {
     "signals": {
       "vkospi": {
@@ -15,8 +15,8 @@
       "liquidation": {
         "status": "green",
         "label": "安全",
-        "note": "强平117.7亿韩元，市场稳定",
-        "current_value": 117.7,
+        "note": "强平106.9亿韩元，市场稳定",
+        "current_value": 106.9,
         "unit": "亿韩元",
         "name": "强平金额",
         "subtitle": "韩国信用强平"

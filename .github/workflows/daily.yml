@@ -35,8 +35,8 @@ jobs:
         run: python scripts/compute_signals.py
 
       - name: Send WeChat alert
-        # 仅在 14:35 的 schedule 触发时推送，push 触发不推送
-        if: github.event_name == 'schedule'
+        # 定时触发(schedule) 或 手动触发(workflow_dispatch) 时推送；push 触发不推送（避免提交历史里反复发）
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
         run: python scripts/send_alert.py

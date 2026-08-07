@@ -343,21 +343,43 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
   ['kospi', 'kosdaq', 'vkospi'].forEach(k => {
     const idxData = koreaLatest[k];
     if (!idxData || !idxData.history || idxData.history.length < 2) return;
+    const isT0 = T0_KEYS.includes(k);
+    const heat = dailyHeatEmoji(historyDodPct(idxData.history));
+    const tagHtml = `<span class="fresh-tag ${isT0 ? 't0' : 't1'}">${isT0 ? 'T+0' : 'T+1'}</span>`;
+
+    if (k === 'vkospi') {
+      // VKOSPI：恐慌指数，当前值 vs 警戒线 40，>40 红灯；描述改为「VKOSPI 75.59 > 40, -2.0%」
+      const val = idxData.current_value;
+      const chg = historyDodPct(idxData.history);
+      const chgStr = chg == null ? '' : (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%';
+      const statusCls = (val != null && val > 40) ? 'red' : 'green';
+      const labelTxt = `${idxData.name} ${val} > 40, ${chgStr}`;
+      const card = document.createElement('div');
+      card.className = `light-card ${statusCls} korea-index-light`;
+      card.title = labelTxt;
+      card.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">${labelTxt}${heat}</div>
+        ${tagHtml}
+      `;
+      grid.appendChild(card);
+      return;
+    }
+
+    // KOSPI / KOSDAQ：保留「高点回落 / 最高点上升」描述
     const ps = computePeakStatus(idxData.history);
     if (!ps) return;
     const pctStr = ps.type === 'up'
       ? `最高点上升 +${ps.pct.toFixed(1)}%`
       : `高点回落 ${ps.pct.toFixed(1)}%`;
     const dodStr = getDayOverDayStr(idxData.history);
-    const heat = dailyHeatEmoji(historyDodPct(idxData.history));
-    const isT0 = T0_KEYS.includes(k);
     const card = document.createElement('div');
     card.className = 'light-card gray korea-index-light';
     card.title = `${idxData.name} ${pctStr}${dodStr.replace(/^，/, '')}`;
     card.innerHTML = `
       <div class="light-dot"></div>
       <div class="light-label">${idxData.name} ${pctStr}${dodStr}${heat}</div>
-      <span class="fresh-tag ${isT0 ? 't0' : 't1'}">${isT0 ? 'T+0' : 'T+1'}</span>
+      ${tagHtml}
     `;
     grid.appendChild(card);
   });

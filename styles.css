@@ -474,15 +474,20 @@ body {
 }
 .korea-index-light .light-label {
   font-size: 12.5px !important;
-  font-weight: 600 !important;           /* 加粗一点方便一眼找到 */
-  color: #44403c !important;
+  font-weight: 400 !important;           /* 常规字重，不加粗 */
+  color: #44403c !important;             /* KOSPI/KOSDAQ 深灰字；VKOSPI 由下方状态规则覆盖 */
 }
 .korea-index-light .light-dot {
   width: 11px !important;
   height: 11px !important;
   margin: 0 auto 6px !important;
-  background: #a8a29e !important;         /* 灰点加深一点 */
+  background: #a8a29e !important;         /* 灰点（KOSPI/KOSDAQ 用；VKOSPI 由下方状态规则覆盖） */
 }
+/* VKOSPI：恐慌指数 >40 红灯，状态色优先于上面的强制灰 */
+.light-card.red.korea-index-light .light-label { color: var(--red-text) !important; }
+.light-card.red.korea-index-light .light-dot { background: var(--red) !important; }
+.light-card.green.korea-index-light .light-label { color: var(--green-text) !important; }
+.light-card.green.korea-index-light .light-dot { background: var(--green) !important; }
 
 /* —— 杠杆温度计拆解条 —— */
 .lev-thermo-section {

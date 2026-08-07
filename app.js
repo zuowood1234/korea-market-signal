@@ -178,6 +178,23 @@ function getDayOverDayStr(history) {
   return `，${sign}${pct.toFixed(1)}%`;
 }
 
+// 今日涨跌幅 emoji：涨幅 >5% 加 🔥，跌幅 >5% 加 🥶（信号卡最后 9 张用）
+function dailyHeatEmoji(pct) {
+  if (pct == null || isNaN(pct)) return '';
+  if (pct > 5) return ' 🔥';
+  if (pct < -5) return ' 🥶';
+  return '';
+}
+
+// 从 history 取最后两点算日环比百分比（数值，非字符串）
+function historyDodPct(history) {
+  if (!history || history.length < 2) return null;
+  const curr = history[history.length - 1].value;
+  const prev = history[history.length - 2].value;
+  if (prev == null || prev === 0) return null;
+  return (curr - prev) / prev * 100;
+}
+
 function renderKoreaLights(signals, latest, aum7709, aum7747) {
   const koreaSignals = signals.korea || {};
   const koreaLatest = latest.korea || {};
@@ -332,13 +349,14 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
       ? `最高点上升 +${ps.pct.toFixed(1)}%`
       : `高点回落 ${ps.pct.toFixed(1)}%`;
     const dodStr = getDayOverDayStr(idxData.history);
+    const heat = dailyHeatEmoji(historyDodPct(idxData.history));
     const isT0 = T0_KEYS.includes(k);
     const card = document.createElement('div');
     card.className = 'light-card gray korea-index-light';
     card.title = `${idxData.name} ${pctStr}${dodStr.replace(/^，/, '')}`;
     card.innerHTML = `
       <div class="light-dot"></div>
-      <div class="light-label">${idxData.name} ${pctStr}${dodStr}</div>
+      <div class="light-label">${idxData.name} ${pctStr}${dodStr}${heat}</div>
       <span class="fresh-tag ${isT0 ? 't0' : 't1'}">${isT0 ? 'T+0' : 'T+1'}</span>
     `;
     grid.appendChild(card);
@@ -357,8 +375,8 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
       card7709.title = '7709 (CSOP SK Hynix 2x) AUM：峰值 ' + ps.prevPeakDate + ' → 当前回落 ' + ps.pct.toFixed(1) + '% · 日环比 ' + dodStr.replace(/^，/, '');
       card7709.innerHTML = `
         <div class="light-dot"></div>
-        <div class="light-label">${labelTxt} ${dropStr}${dodStr}</div>
-        <span class="fresh-tag t0">T+0</span>
+      <div class="light-label">${labelTxt} ${dropStr}${dodStr}${dailyHeatEmoji(historyDodPct(aumHist))}</div>
+      <span class="fresh-tag t0">T+0</span>
       `;
       grid.appendChild(card7709);
     }
@@ -372,12 +390,13 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
     const premYest = prevP ? prevP.premium : null;
     const premStr = premToday != null ? premToday.toFixed(2) + '%' : '-';
     const yestStr = premYest != null ? premYest.toFixed(2) + '%' : '-';
+    const premChg = (premToday != null && premYest != null) ? premToday - premYest : null;
     const premCard = document.createElement('div');
     premCard.className = 'light-card gray';
     premCard.title = '7709 (CSOP SK Hynix 2x) 溢价率：今日 ' + premStr + ' vs 昨日 ' + yestStr + '（>5% 高溢价风险）';
       premCard.innerHTML = `
         <div class="light-dot"></div>
-        <div class="light-label">7709 溢价率 今 ${premStr} · 昨 ${yestStr}</div>
+        <div class="light-label">7709 溢价率 今 ${premStr} · 昨 ${yestStr}${dailyHeatEmoji(premChg)}</div>
         <span class="fresh-tag t0">T+0</span>
       `;
     grid.appendChild(premCard);
@@ -396,7 +415,7 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
     chgCard.title = '7709 (CSOP SK Hynix 2x) 今日收市价涨跌 ' + chgStr + ' · 最高点回落 ' + ddStr;
       chgCard.innerHTML = `
         <div class="light-dot"></div>
-        <div class="light-label">7709 最高点回落 ${ddStr}， ${chgStr}</div>
+        <div class="light-label">7709 最高点回落 ${ddStr}， ${chgStr}${dailyHeatEmoji(chgToday)}</div>
         <span class="fresh-tag t0">T+0</span>
       `;
     grid.appendChild(chgCard);
@@ -415,8 +434,8 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
       card7747.title = '7747 (CSOP Samsung Electronics 2x) AUM：峰值 ' + ps7.prevPeakDate + ' → 当前回落 ' + ps7.pct.toFixed(1) + '% · 日环比 ' + dodStr7.replace(/^，/, '');
       card7747.innerHTML = `
         <div class="light-dot"></div>
-        <div class="light-label">${label7} ${dropStr7}${dodStr7}</div>
-        <span class="fresh-tag t0">T+0</span>
+      <div class="light-label">${label7} ${dropStr7}${dodStr7}${dailyHeatEmoji(historyDodPct(aumHist7))}</div>
+      <span class="fresh-tag t0">T+0</span>
       `;
       grid.appendChild(card7747);
     }
@@ -426,12 +445,13 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
     const premYest7 = prevP7 ? prevP7.premium : null;
     const premStr7 = premToday7 != null ? premToday7.toFixed(2) + '%' : '-';
     const yestStr7 = premYest7 != null ? premYest7.toFixed(2) + '%' : '-';
+    const premChg7 = (premToday7 != null && premYest7 != null) ? premToday7 - premYest7 : null;
     const premCard7 = document.createElement('div');
     premCard7.className = 'light-card gray';
     premCard7.title = '7747 (CSOP Samsung Electronics 2x) 溢价率：今日 ' + premStr7 + ' vs 昨日 ' + yestStr7 + '（>5% 高溢价风险）';
       premCard7.innerHTML = `
         <div class="light-dot"></div>
-        <div class="light-label">7747 溢价率 今 ${premStr7} · 昨 ${yestStr7}</div>
+        <div class="light-label">7747 溢价率 今 ${premStr7} · 昨 ${yestStr7}${dailyHeatEmoji(premChg7)}</div>
         <span class="fresh-tag t0">T+0</span>
       `;
     grid.appendChild(premCard7);
@@ -448,7 +468,7 @@ function renderKoreaLights(signals, latest, aum7709, aum7747) {
     chgCard7.title = '7747 (CSOP Samsung Electronics 2x) 今日收市价涨跌 ' + chgStr7 + ' · 最高点回落 ' + ddStr7;
       chgCard7.innerHTML = `
         <div class="light-dot"></div>
-        <div class="light-label">7747 最高点回落 ${ddStr7}， ${chgStr7}</div>
+        <div class="light-label">7747 最高点回落 ${ddStr7}， ${chgStr7}${dailyHeatEmoji(chgToday7)}</div>
         <span class="fresh-tag t0">T+0</span>
       `;
     grid.appendChild(chgCard7);

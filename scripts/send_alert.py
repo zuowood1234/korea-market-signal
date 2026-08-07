@@ -218,6 +218,28 @@ def dod_pct(history):
     return f"，{sign}{pct:.1f}%"
 
 
+def dod_pct_val(history):
+    """日环比百分比数值（float），无法计算返回 None"""
+    if not history or len(history) < 2:
+        return None
+    curr = history[-1].get("value")
+    prev = history[-2].get("value")
+    if curr is None or prev is None or prev == 0:
+        return None
+    return (curr - prev) / prev * 100
+
+
+def heat_emoji(pct):
+    """今日涨跌幅 emoji：>5% 🔥，<-5% 🥶"""
+    if pct is None:
+        return ""
+    if pct > 5:
+        return " 🔥"
+    if pct < -5:
+        return " 🥶"
+    return ""
+
+
 def peak_status(history):
     """计算最高点状态：创新高(上升) vs 回落。
     prevPeak = 排除当前点后的历史最高值。
@@ -238,7 +260,7 @@ def peak_status(history):
     return None
 
 
-def build_report(latest, signals):
+def build_report(latest, signals, aum7709=None, aum7747=None):
     """构建包含所有卡片内容的报告（顺序与前端一致：两周杠杆→单日杠杆→存管金稳定性→…）"""
     date = signals["date"]
     korea_signals = signals.get("korea", {})
@@ -286,7 +308,8 @@ def build_report(latest, signals):
                     icon = "🟢"
                 peak_str = f"高点回落{ps['pct']:.1f}%"
             dod_s = dod_pct(kospi["history"])
-            lines.append(f"- {icon} **KOSPI** (T+0)：{kospi['current_value']}｜{peak_str}{dod_s}\n")
+            heat = heat_emoji(dod_pct_val(kospi["history"]))
+            lines.append(f"- {icon} **KOSPI** (T+0)：{kospi['current_value']}｜{peak_str}{dod_s}{heat}\n")
 
     # 2. KOSDAQ（T+0）
     kosdaq = korea_latest.get("kosdaq", {})
@@ -305,7 +328,8 @@ def build_report(latest, signals):
                     icon = "🟢"
                 peak_str = f"高点回落{ps['pct']:.1f}%"
             dod_s = dod_pct(kosdaq["history"])
-            lines.append(f"- {icon} **KOSDAQ** (T+0)：{kosdaq['current_value']}｜{peak_str}{dod_s}\n")
+            heat = heat_emoji(dod_pct_val(kosdaq["history"]))
+            lines.append(f"- {icon} **KOSDAQ** (T+0)：{kosdaq['current_value']}｜{peak_str}{dod_s}{heat}\n")
 
     # 3. VKOSPI（T+0）
     vkospi = korea_latest.get("vkospi", {})
@@ -315,7 +339,8 @@ def build_report(latest, signals):
         icon = STATUS_ICONS.get(vkospi_sig.get("status", "gray"), "⚪")
         tag = get_threshold_tag(val, vkospi.get("thresholds", {}), "low_red", "")
         dod_s = dod_pct(vkospi.get("history", []))
-        lines.append(f"- {icon} **VKOSPI** (T+0)：{val} {tag}{dod_s}\n")
+        heat = heat_emoji(dod_pct_val(vkospi.get("history", [])))
+        lines.append(f"- {icon} **VKOSPI** (T+0)：{val} {tag}{dod_s}{heat}\n")
 
     # 4. 两周杠杆比率趋势（T+1）
     lev_sigs = compute_leverage_signals(margin, deposits)
@@ -382,6 +407,55 @@ def build_report(latest, signals):
         dod_s = dod_pct(liq_ratio.get("history", []))
         lines.append(f"- {icon} **强平比例** (T+1)：{val}% {tag}{dod_s}\n")
 
+    # 10. 存管金 & R2（T+1）
+    if deposits.get("current_value") is not None:
+        dep_val = deposits["current_value"]
+        fin_val = margin.get("current_value")
+        col_val = (deposits.get("extra") or {}).get("securities_loan")
+        etf_val = korea_latest.get("leveraged_etf", {}).get("current_value")
+        if dep_val and fin_val is not None and col_val is not None and etf_val is not None:
+            r2_pct = fin_val / dep_val * 100
+            col_pct = col_val / dep_val * 100
+            etf_pct = etf_val / dep_val * 100
+            total_pct = r2_pct + col_pct + etf_pct
+            if total_pct > 75:
+                r2_icon, r2_label = "🔴", "高风险"
+            elif total_pct >= 60:
+                r2_icon, r2_label = "🟡", "警戒"
+            else:
+                r2_icon, r2_label = "🟢", "正常"
+            lines.append(f"- {r2_icon} **存管金 & R2** (T+1)：总占比 {total_pct:.1f}%（融资 {r2_pct:.1f}% · 证券抵押 {col_pct:.1f}% · 杠杆ETF {etf_pct:.1f}%）· {r2_label}\n")
+
+    # 11. 杠杆ETF累计资金净流入（T+1）
+    etf = korea_latest.get("leveraged_etf", {})
+    if etf.get("current_value") is not None:
+        etf_icon = STATUS_ICONS.get(korea_signals.get("signals", {}).get("leveraged_etf", {}).get("status", "gray"), "⚪")
+        etf_unit = etf.get("unit", "")
+        lines.append(f"- {etf_icon} **杠杆ETF累计资金净流入** (T+1)：{etf['current_value']}{etf_unit}\n")
+
+    # 12-17. 7709 / 7747 杠杆 ETF 信号（T+0，含今日涨跌 emoji）
+    lines.append("\n## 📈 7709 / 7747 杠杆 ETF 信号（T+0）\n")
+    for tag, aum in (("7709", aum7709), ("7747", aum7747)):
+        if not aum or len(aum) < 2:
+            continue
+        last = aum[-1]
+        prev = aum[-2]
+        aum_hist = [{"value": r["aum_usd"], "date": r["date"]} for r in aum]
+        ps = peak_status(aum_hist)
+        if ps:
+            drop = "0.0%" if ps["type"] == "up" else f"-{ps['pct']:.1f}%"
+            label = f"{tag} AUM 创新高" if ps["type"] == "up" else f"{tag} AUM 峰值回落"
+            lines.append(f"- ⚪ **{label}** (T+0)：{drop}｜日环比{dod_pct(aum_hist)}{heat_emoji(dod_pct_val(aum_hist))}\n")
+        prem_t = last.get("premium")
+        prem_y = prev.get("premium")
+        prem_str = f"{prem_t:.2f}%" if prem_t is not None else "-"
+        yest_str = f"{prem_y:.2f}%" if prem_y is not None else "-"
+        prem_chg = (prem_t - prem_y) if (prem_t is not None and prem_y is not None) else None
+        lines.append(f"- ⚪ **{tag} 溢价率** (T+0)：今 {prem_str} · 昨 {yest_str}{heat_emoji(prem_chg)}\n")
+        chg = last.get("daily_change_pct")
+        chg_str = f"{chg:+.1f}%" if chg is not None else "-"
+        lines.append(f"- ⚪ **{tag} 最高点回落** (T+0)：当日涨跌 {chg_str}{heat_emoji(chg)}\n")
+
     # 数据来源
     lines.append(f"\n---\n\n*更新时间: {signals['update_time']}*")
     lines.append("\n*数据来源: KOFIA（kimpremium.com）+ Investing.com（VKOSPI）*")
@@ -416,7 +490,15 @@ def send_serverchan(title, content, sendkey):
 def main():
     signals = load_json("signals.json")
     latest = load_json("latest.json")
-    title, content = build_report(latest, signals)
+    try:
+        aum7709 = load_json("7709_aum_history.json")
+    except Exception:
+        aum7709 = []
+    try:
+        aum7747 = load_json("7747_aum_history.json")
+    except Exception:
+        aum7747 = []
+    title, content = build_report(latest, signals, aum7709, aum7747)
     print(f"[告警] 标题: {title}")
     print(f"[告警] 内容预览:\n{content[:800]}...")
 

@@ -1,0 +1,9 @@
+# Netlify 静态站点配置
+# 本仓库是纯静态前端（index.html + app.js + styles.css + data/），无需构建步骤。
+# 发布目录即仓库根目录；数据通过同源 fetch('data/...') 读取，保持原样即可。
+[build]
+  publish = "."
+  command = ""
+
+# 不添加 /* -> /index.html 的 SPA 重定向：
+# 本站点非单页路由应用，加该规则会把 /data/*.json 也重写为 HTML，导致前端 fetch 数据失败。

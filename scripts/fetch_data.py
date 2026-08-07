@@ -44,7 +44,7 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 TODAY = dt.date.today().strftime("%Y-%m-%d")
-UPDATE_TIME = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+UPDATE_TIME = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")  # 北京时间(UTC+8)，避免 runner 用 UTC 导致"更新于"显示比实际早 8 小时
 
 HISTORY_DAYS = 3 * 252
 

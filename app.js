@@ -1,4 +1,11 @@
-const KOREA_DIMENSION_ORDER = ['kospi', 'kosdaq', 'vkospi', 'leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'liquidation', 'liquidation_ratio'];
+// 顶部灯卡区专用：korea-lights-grid 同时承载 12 张常规卡 + KOSPI/KOSDAQ/VKOSPI 三张白卡（紧跟融资最高点回落之后），共 15 张同处顶端
+const KOREA_DIMENSION_ORDER = ['leverage_14d', 'leverage_1d', 'stability', 'investor_deposits', 'leveraged_etf', 'margin', 'liquidation', 'liquidation_ratio'];
+
+// KOREA_DIMENSION_ORDER 同时驱动顶部信号灯区 + 下方 dim 卡片网格。
+// 但用户对 dim 卡的展示顺序有独立要求（存管金稳定性放在散户总杠杆水位+7709之后，VKOSPI 卡片放最后）。
+// dim 卡网格改用以下顺序独立渲染，信号灯区保留 KOREA_DIMENSION_ORDER 不变。
+// 注：renderKoreaDimensions 内部遇到 'investor_deposits' 后会强制插入 7709 两图，再走下一项。
+const KOREA_DIM_CARDS_ORDER = ['investor_deposits', 'stability', 'leveraged_etf', 'liquidation', 'liquidation_ratio', 'vkospi', 'margin'];
 
 // T+0 指标（KOSPI/KOSDAQ/VKOSPI，当日收盘价）；其余为 T+1（KOFIA 披露滞后）
 const T0_KEYS = ['kospi', 'kosdaq', 'vkospi'];
@@ -92,7 +99,12 @@ async function loadData() {
       const aumRes = await fetch('data/7709_aum_history.json' + v);
       aum7709 = await aumRes.json();
     } catch (e) { aum7709 = []; }
-    return { latest, signals, aum7709 };
+    let aum7747 = [];
+    try {
+      const aumRes2 = await fetch('data/7747_aum_history.json' + v);
+      aum7747 = await aumRes2.json();
+    } catch (e) { aum7747 = []; }
+    return { latest, signals, aum7709, aum7747 };
   } catch (e) {
     document.getElementById('date').textContent = '数据加载失败';
     document.getElementById('date').style.color = '#dc2626';
@@ -137,7 +149,36 @@ function renderThresholdBar(data, sig, direction) {
   `;
 }
 
-function renderKoreaLights(signals, latest, aum7709) {
+// 计算最高点状态：创新高(上升) vs 回落（提取到顶层，供 renderKoreaLights 与 renderIndexLightsRow 共用）
+// prevPeak = 排除当前点后的历史最高值
+function computePeakStatus(history) {
+  if (!history || history.length < 2) return null;
+  const curr = history[history.length - 1].value;
+  const prevHist = history.slice(0, -1);
+  const prevPeak = prevHist.reduce((m, x) => Math.max(m, x.value), -Infinity);
+  const prevPeakDate = prevHist.find(x => x.value === prevPeak)?.date || '';
+  if (curr >= prevPeak && prevPeak > 0) {
+    const risePct = (curr - prevPeak) / prevPeak * 100;
+    return { type: 'up', pct: risePct, prevPeak, prevPeakDate, curr };
+  } else if (prevPeak > 0) {
+    const dropPct = (prevPeak - curr) / prevPeak * 100;
+    return { type: 'down', pct: dropPct, prevPeak, prevPeakDate, curr };
+  }
+  return null;
+}
+
+// 计算日环比辅助函数：从 history 取当前值和上一个值，返回变化百分比字符串（逗号分隔）
+function getDayOverDayStr(history) {
+  if (!history || history.length < 2) return '';
+  const curr = history[history.length - 1].value;
+  const prev = history[history.length - 2].value;
+  if (prev == null || prev === 0) return '';
+  const pct = (curr - prev) / prev * 100;
+  const sign = pct >= 0 ? '+' : '';
+  return `，${sign}${pct.toFixed(1)}%`;
+}
+
+function renderKoreaLights(signals, latest, aum7709, aum7747) {
   const koreaSignals = signals.korea || {};
   const koreaLatest = latest.korea || {};
   const grid = document.getElementById('korea-lights-grid');
@@ -165,34 +206,7 @@ function renderKoreaLights(signals, latest, aum7709) {
   const marginData = koreaLatest.margin;
   const leverageSigs = computeLeverageScenarioSignals(marginData, depositsData);
 
-  // 计算日环比辅助函数：从 history 取当前值和上一个值，返回变化百分比字符串（逗号分隔）
-  function getDayOverDayStr(history) {
-    if (!history || history.length < 2) return '';
-    const curr = history[history.length - 1].value;
-    const prev = history[history.length - 2].value;
-    if (prev == null || prev === 0) return '';
-    const pct = (curr - prev) / prev * 100;
-    const sign = pct >= 0 ? '+' : '';
-    return `，${sign}${pct.toFixed(1)}%`;
-  }
-
-  // 计算最高点状态：创新高(上升) vs 回落
-  // prevPeak = 排除当前点后的历史最高值
-  function computePeakStatus(history) {
-    if (!history || history.length < 2) return null;
-    const curr = history[history.length - 1].value;
-    const prevHist = history.slice(0, -1);
-    const prevPeak = prevHist.reduce((m, x) => Math.max(m, x.value), -Infinity);
-    const prevPeakDate = prevHist.find(x => x.value === prevPeak)?.date || '';
-    if (curr >= prevPeak && prevPeak > 0) {
-      const risePct = (curr - prevPeak) / prevPeak * 100;
-      return { type: 'up', pct: risePct, prevPeak, prevPeakDate, curr };
-    } else if (prevPeak > 0) {
-      const dropPct = (prevPeak - curr) / prevPeak * 100;
-      return { type: 'down', pct: dropPct, prevPeak, prevPeakDate, curr };
-    }
-    return null;
-  }
+  // getDayOverDayStr 与 computePeakStatus 已提取到顶层（154/171 行），此处直接复用
 
   KOREA_DIMENSION_ORDER.forEach(key => {
     let sig = null;
@@ -202,22 +216,14 @@ function renderKoreaLights(signals, latest, aum7709) {
       sig = leverageSigs.daily;
     } else if (key === 'leverage_14d') {
       sig = leverageSigs.fourteen;
-    } else if (key === 'kospi' || key === 'kosdaq') {
-      // KOSPI/KOSDAQ：从 history 计算高点上升/回落% 判定颜色
+    } else if (key === 'kospi' || key === 'kosdaq' || key === 'vkospi') {
+      // KOSPI/KOSDAQ/VKOSPI：从 history 计算高点上升/回落% 计算数字，但不染色（中性 gray）
       const idxData = koreaLatest[key];
       if (idxData && idxData.history && idxData.history.length > 1) {
         const ps = computePeakStatus(idxData.history);
         if (ps) {
-          let status, label;
-          if (ps.type === 'up') {
-            status = 'green'; label = '创新高';
-          } else {
-            if (ps.pct > 10) { status = 'red'; label = '深度回调'; }
-            else if (ps.pct > 5) { status = 'yellow'; label = '中度回调'; }
-            else { status = 'green'; label = '健康回调'; }
-          }
           const peakLabel = ps.type === 'up' ? `上次峰值 ${ps.prevPeak} (${ps.prevPeakDate}) → 新高 ${ps.curr}，+${ps.pct.toFixed(1)}%` : `峰值 ${ps.prevPeak} (${ps.prevPeakDate}) → 当前 ${ps.curr}，回落 ${ps.pct.toFixed(1)}%`;
-          sig = { status, note: `${idxData.name} ${peakLabel} · ${label}` };
+          sig = { status: 'gray', note: `${idxData.name} ${peakLabel}` };
         }
       }
     } else {
@@ -247,15 +253,15 @@ function renderKoreaLights(signals, latest, aum7709) {
     } else if (key === 'leverage_14d' && sig && sig.label) {
       const abnStr = sig.abn ? ` ${sig.abn}` : '';
       valueSuffix = ` <span class="dd-inline">${sig.label}${abnStr}</span>`;
-    } else if (key === 'kospi' || key === 'kosdaq') {
-      // KOSPI/KOSDAQ：动态显示 高点上升/回落% + 日环比
+    } else if (key === 'kospi' || key === 'kosdaq' || key === 'vkospi') {
+      // KOSPI/KOSDAQ/VKOSPI：动态显示 高点上升/回落% + 日环比（整段与指数名同字体，回落与数字间留空格）
       if (dimData && dimData.history && dimData.history.length > 1) {
         const ps = computePeakStatus(dimData.history);
         if (ps) {
           const pctStr = ps.type === 'up'
-            ? `最高点上升+${ps.pct.toFixed(1)}%`
-            : `高点回落${ps.pct.toFixed(1)}%`;
-          valueSuffix = ` <span class="dd-inline">${pctStr}${dodStr}</span>`;
+            ? `最高点上升 +${ps.pct.toFixed(1)}%`
+            : `高点回落 ${ps.pct.toFixed(1)}%`;
+          valueSuffix = ` ${pctStr}${dodStr}`;
         }
       }
     } else if (key === 'leveraged_etf') {
@@ -316,55 +322,68 @@ function renderKoreaLights(signals, latest, aum7709) {
     }
   }
 
-  // 渲染 7709 AUM 信号卡片：从峰值回落% + 日环比%
+  // 三张指数白卡（KOSPI/KOSDAQ/VKOSPI）：紧跟「融资最高点回落」之后，与 7709/7747 等 12 张同处顶端信号灯区（共 15 张）
+  ['kospi', 'kosdaq', 'vkospi'].forEach(k => {
+    const idxData = koreaLatest[k];
+    if (!idxData || !idxData.history || idxData.history.length < 2) return;
+    const ps = computePeakStatus(idxData.history);
+    if (!ps) return;
+    const pctStr = ps.type === 'up'
+      ? `最高点上升 +${ps.pct.toFixed(1)}%`
+      : `高点回落 ${ps.pct.toFixed(1)}%`;
+    const dodStr = getDayOverDayStr(idxData.history);
+    const isT0 = T0_KEYS.includes(k);
+    const card = document.createElement('div');
+    card.className = 'light-card gray korea-index-light';
+    card.title = `${idxData.name} ${pctStr}${dodStr.replace(/^，/, '')}`;
+    card.innerHTML = `
+      <div class="light-dot"></div>
+      <div class="light-label">${idxData.name} ${pctStr}${dodStr}</div>
+      <span class="fresh-tag ${isT0 ? 't0' : 't1'}">${isT0 ? 'T+0' : 'T+1'}</span>
+    `;
+    grid.appendChild(card);
+  });
+
+  // 渲染 7709 AUM 信号卡片：从峰值回落% + 日环比%（中性灰，不染红黄绿）
   if (aum7709 && aum7709.length >= 2) {
     const aumHist = aum7709.map(r => ({ value: r.aum_usd, date: r.date }));
     const ps = computePeakStatus(aumHist);
     const dodStr = getDayOverDayStr(aumHist);
     if (ps) {
-      let ddStatus;
-      if (ps.type === 'up') ddStatus = 'green';
-      else if (ps.pct > 30) ddStatus = 'red';
-      else if (ps.pct > 10) ddStatus = 'yellow';
-      else ddStatus = 'green';
       const dropStr = ps.type === 'up' ? '0.0%' : ('-' + ps.pct.toFixed(1) + '%');
       const labelTxt = ps.type === 'up' ? '7709 AUM 创新高' : '7709 AUM 峰值回落';
       const card7709 = document.createElement('div');
-      card7709.className = 'light-card ' + ddStatus;
+      card7709.className = 'light-card gray';
       card7709.title = '7709 (CSOP SK Hynix 2x) AUM：峰值 ' + ps.prevPeakDate + ' → 当前回落 ' + ps.pct.toFixed(1) + '% · 日环比 ' + dodStr.replace(/^，/, '');
       card7709.innerHTML = `
         <div class="light-dot"></div>
-        <div class="light-label">${labelTxt} <span class="dd-inline">${dropStr}${dodStr}</span></div>
+        <div class="light-label">${labelTxt} ${dropStr}${dodStr}</div>
         <span class="fresh-tag t0">T+0</span>
       `;
       grid.appendChild(card7709);
     }
   }
 
-  // 渲染 7709 溢价率信号卡片：今日 vs 昨日 + 阈值告警色
+  // 渲染 7709 溢价率信号卡片：今日 vs 昨日（中性灰，不染色）
   if (aum7709 && aum7709.length >= 2) {
     const lastP = aum7709[aum7709.length - 1];
     const prevP = aum7709[aum7709.length - 2];
     const premToday = lastP.premium;
     const premYest = prevP ? prevP.premium : null;
-    let premStatus = 'green';
-    if (premToday != null && premToday > 5) premStatus = 'red';
-    else if (premToday != null && premToday < -5) premStatus = 'yellow';
     const premStr = premToday != null ? premToday.toFixed(2) + '%' : '-';
     const yestStr = premYest != null ? premYest.toFixed(2) + '%' : '-';
     const premCard = document.createElement('div');
-    premCard.className = 'light-card ' + premStatus;
+    premCard.className = 'light-card gray';
     premCard.title = '7709 (CSOP SK Hynix 2x) 溢价率：今日 ' + premStr + ' vs 昨日 ' + yestStr + '（>5% 高溢价风险）';
-    premCard.innerHTML = `
-      <div class="light-dot"></div>
-      <div class="light-label">7709 溢价率 <span class="dd-inline">今 ${premStr} · 昨 ${yestStr}</span></div>
-      <span class="fresh-tag t0">T+0</span>
-    `;
+      premCard.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">7709 溢价率 今 ${premStr} · 昨 ${yestStr}</div>
+        <span class="fresh-tag t0">T+0</span>
+      `;
     grid.appendChild(premCard);
 
-    // 渲染 7709 今日涨跌% 信号卡片：收市价日涨跌幅（红涨绿跌）+ 从高点回落%
+    // 渲染 7709 今日涨跌% 信号卡片：收市价日涨跌幅 + 从高点回落%（中性灰，不染红涨绿跌）
     const chgToday = lastP.daily_change_pct;
-    const chgStatus = chgToday != null && chgToday >= 0 ? 'red' : 'green';
     const chgStr = chgToday != null ? (chgToday >= 0 ? '+' : '') + chgToday.toFixed(1) + '%' : '-';
     // 7709 自身收市价从历史高点回落%（与 AUM 峰值回落区分）
     const closes = aum7709.map(r => r.close_price).filter(v => v != null);
@@ -373,14 +392,66 @@ function renderKoreaLights(signals, latest, aum7709) {
       ? (lastP.close_price - highClose) / highClose * 100 : null;
     const ddStr = ddPct != null ? (ddPct >= 0 ? '+' : '') + ddPct.toFixed(1) + '%' : '-';
     const chgCard = document.createElement('div');
-    chgCard.className = 'light-card ' + chgStatus;
+    chgCard.className = 'light-card gray';
     chgCard.title = '7709 (CSOP SK Hynix 2x) 今日收市价涨跌 ' + chgStr + ' · 最高点回落 ' + ddStr;
-    chgCard.innerHTML = `
-      <div class="light-dot"></div>
-      <div class="light-label">7709 最高点回落 <span class="dd-inline">${ddStr}</span> · 今日涨跌 <span class="dd-inline">${chgStr}</span></div>
-      <span class="fresh-tag t0">T+0</span>
-    `;
+      chgCard.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">7709 最高点回落 ${ddStr}， ${chgStr}</div>
+        <span class="fresh-tag t0">T+0</span>
+      `;
     grid.appendChild(chgCard);
+  }
+
+  // ===== 7747 信号卡片（CSOP Samsung Electronics 2x）=====
+  if (aum7747 && aum7747.length >= 2) {
+    const aumHist7 = aum7747.map(r => ({ value: r.aum_usd, date: r.date }));
+    const ps7 = computePeakStatus(aumHist7);
+    const dodStr7 = getDayOverDayStr(aumHist7);
+    if (ps7) {
+      const dropStr7 = ps7.type === 'up' ? '0.0%' : ('-' + ps7.pct.toFixed(1) + '%');
+      const label7 = ps7.type === 'up' ? '7747 AUM 创新高' : '7747 AUM 峰值回落';
+      const card7747 = document.createElement('div');
+      card7747.className = 'light-card gray';
+      card7747.title = '7747 (CSOP Samsung Electronics 2x) AUM：峰值 ' + ps7.prevPeakDate + ' → 当前回落 ' + ps7.pct.toFixed(1) + '% · 日环比 ' + dodStr7.replace(/^，/, '');
+      card7747.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">${label7} ${dropStr7}${dodStr7}</div>
+        <span class="fresh-tag t0">T+0</span>
+      `;
+      grid.appendChild(card7747);
+    }
+    const lastP7 = aum7747[aum7747.length - 1];
+    const prevP7 = aum7747[aum7747.length - 2];
+    const premToday7 = lastP7.premium;
+    const premYest7 = prevP7 ? prevP7.premium : null;
+    const premStr7 = premToday7 != null ? premToday7.toFixed(2) + '%' : '-';
+    const yestStr7 = premYest7 != null ? premYest7.toFixed(2) + '%' : '-';
+    const premCard7 = document.createElement('div');
+    premCard7.className = 'light-card gray';
+    premCard7.title = '7747 (CSOP Samsung Electronics 2x) 溢价率：今日 ' + premStr7 + ' vs 昨日 ' + yestStr7 + '（>5% 高溢价风险）';
+      premCard7.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">7747 溢价率 今 ${premStr7} · 昨 ${yestStr7}</div>
+        <span class="fresh-tag t0">T+0</span>
+      `;
+    grid.appendChild(premCard7);
+
+    const chgToday7 = lastP7.daily_change_pct;
+    const chgStr7 = chgToday7 != null ? (chgToday7 >= 0 ? '+' : '') + chgToday7.toFixed(1) + '%' : '-';
+    const closes7 = aum7747.map(r => r.close_price).filter(v => v != null);
+    const highClose7 = closes7.length ? Math.max(...closes7) : null;
+    const ddPct7 = (highClose7 != null && lastP7.close_price != null && highClose7 > 0)
+      ? (lastP7.close_price - highClose7) / highClose7 * 100 : null;
+    const ddStr7 = ddPct7 != null ? (ddPct7 >= 0 ? '+' : '') + ddPct7.toFixed(1) + '%' : '-';
+    const chgCard7 = document.createElement('div');
+    chgCard7.className = 'light-card gray';
+    chgCard7.title = '7747 (CSOP Samsung Electronics 2x) 今日收市价涨跌 ' + chgStr7 + ' · 最高点回落 ' + ddStr7;
+      chgCard7.innerHTML = `
+        <div class="light-dot"></div>
+        <div class="light-label">7747 最高点回落 ${ddStr7}， ${chgStr7}</div>
+        <span class="fresh-tag t0">T+0</span>
+      `;
+    grid.appendChild(chgCard7);
   }
 
   // 渲染折叠式判定标准说明
@@ -657,14 +728,14 @@ function renderKoreaSummary(signals) {
   `).join('');
 }
 
-function renderKoreaDimensions(latest, signals) {
+function renderKoreaDimensions(latest, signals, aum7709, aum7747) {
   const koreaLatest = latest.korea || {};
   const koreaSignals = signals.korea || {};
   const grid = document.getElementById('korea-dimensions-grid');
   if (!grid) return;
   grid.innerHTML = '';
 
-  KOREA_DIMENSION_ORDER.forEach((key, idx) => {
+  KOREA_DIM_CARDS_ORDER.forEach((key, idx) => {
     const data = koreaLatest[key];
     const sig = koreaSignals.signals ? koreaSignals.signals[key] : null;
 
@@ -673,6 +744,10 @@ function renderKoreaDimensions(latest, signals) {
       const marginData = koreaLatest.margin;
       const etfData = koreaLatest.leveraged_etf;
       renderDepositsR2Card(grid, data, marginData, etfData, idx);
+      // 紧贴散户总杠杆水位卡正下方插入 7709 图表（占整行）
+      render7709Charts(grid, aum7709, etfData);
+      // 7747 图表区块紧跟 7709 之后（同属 CSOP 杠杆 ETF，相邻展示）
+      render7747Charts(grid, aum7747, etfData);
       return;
     }
 
@@ -687,6 +762,12 @@ function renderKoreaDimensions(latest, signals) {
     if (key === 'leveraged_etf') {
       if (!data) return;
       renderLeveragedEtfCard(grid, data, idx);
+      return;
+    }
+
+    if (key === 'vkospi') {
+      if (!data) return;
+      renderVkospiCard(grid, data, idx);
       return;
     }
 
@@ -841,11 +922,7 @@ function renderDepositsR2Card(grid, depositsData, marginData, etfData, idx) {
     </div>
 
     <div class="lev-chart-block">
-      <div class="lev-chart-block-title">绝对额（万亿韩元）—— 存管金 vs 杠杆分项体量</div>
-      <div class="dim-chart lev-chart-amount" id="chart-korea-investor_deposits-amount"></div>
-    </div>
-    <div class="lev-chart-block">
-      <div class="lev-chart-block-title">R2（融资/存管金）vs 融资余额 & 存管金趋势</div>
+      <div class="lev-chart-block-title">存管金 · 融资余额 · 证券抵押 vs R2（融资/存管金）</div>
       <div class="dim-chart lev-chart-r2trend" id="chart-korea-investor_deposits-r2trend"></div>
     </div>
     <div class="dim-chart-toggle">
@@ -865,9 +942,7 @@ function renderDepositsR2Card(grid, depositsData, marginData, etfData, idx) {
     }
     // 切类后等 layout，再 resize 图表
     setTimeout(() => {
-      const a = document.getElementById('chart-korea-investor_deposits-amount');
       const b = document.getElementById('chart-korea-investor_deposits-r2trend');
-      a && a._chartInstance && a._chartInstance.resize();
       b && b._chartInstance && b._chartInstance.resize();
     }, 50);
   }, false);
@@ -936,12 +1011,119 @@ function renderLeveragedEtfCard(grid, etfData, idx) {
     <div class="dim-value">${current != null ? current : '—'}<span class="dim-value-unit">${etfData.unit || ''}</span></div>
     <div class="dim-note">注: cumFlow 仅含资金进出，不含净值涨跌，无法等同于真实AUM</div>
     <div class="dim-chart" id="chart-leveraged-etf"></div>
-    <div class="dim-chart-toggle">
-      <button class="chart-toggle-btn" data-expanded="false" onclick="toggleTrendChartRange('leveraged_etf', this)">查看更多 ▾</button>
-    </div>
   `;
   grid.appendChild(card);
   setTimeout(() => createLeveragedEtfChart(etfData), 50 + idx * 30);
+}
+
+function renderVkospiCard(grid, vkospiData, idx) {
+  const current = vkospiData.current_value;
+  const hist = vkospiData.history || [];
+  if (hist.length === 0) return;
+  const prev = hist.length >= 2 ? hist[hist.length - 2].value : null;
+  const dodStr = (prev != null && prev !== 0)
+    ? `${current >= prev ? '+' : ''}${((current - prev) / prev * 100).toFixed(1)}%`
+    : '';
+
+  const card = document.createElement('div');
+  card.className = 'dim-card';
+  card.innerHTML = `
+    <div class="dim-card-header">
+      <div>
+        <div class="dim-card-title">${vkospiData.name || 'VKOSPI'}</div>
+        <div class="dim-card-sub">${vkospiData.subtitle || '韩国波动率指数'}</div>
+      </div>
+    </div>
+    <div class="dim-value">${current != null ? current : '—'}<span class="dim-value-unit">${vkospiData.unit || ''}</span></div>
+    <div class="dim-note">日环比 ${dodStr} · 数据源 ${vkospiData.data_source || ''}（每两周披露一次）</div>
+    <div class="dim-chart" id="chart-vkospi"></div>
+  `;
+  grid.appendChild(card);
+  setTimeout(() => createVkospiChart(vkospiData), 50 + idx * 30);
+}
+
+function createVkospiChart(data) {
+  const dom = document.getElementById('chart-vkospi');
+  if (!dom || !window.echarts) return;
+  if (!data.history || data.history.length === 0) {
+    dom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:12px;">暂无历史数据</div>';
+    return;
+  }
+  const chart = echarts.init(dom);
+  chart.setOption(buildVkospiOption(data.history));
+  dom._chartFullData = data.history;
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+function buildVkospiOption(history) {
+  const dates = formatChartDates(history);
+  const values = history.map(h => h.value);
+  const color = '#8b5cf6';
+  return {
+    grid: { left: 48, right: 16, top: 36, bottom: 36 },
+    legend: {
+      data: [{ name: 'VKOSPI', textStyle: { color: '#8b5cf6' } }],
+      top: 2, left: 'center',
+      itemWidth: 14, itemHeight: 8, itemGap: 16,
+      textStyle: { fontSize: 11 }
+    },
+    xAxis: {
+      type: 'category',
+      data: dates,
+      boundaryGap: false,
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 6) },
+      axisLine: { lineStyle: { color: '#d6d3d1' } },
+      axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value',
+      name: 'VKOSPI',
+      nameTextStyle: { fontSize: 11, color: '#6b7280', padding: [0, 0, 0, -4] },
+      axisLabel: { fontSize: 10, color: '#78716c' },
+      axisLine: { show: false },
+      splitLine: { lineStyle: { color: '#e7e5e4', type: 'dashed' } },
+      scale: true
+    },
+    series: [
+      {
+        name: 'VKOSPI',
+        type: 'line',
+        data: values,
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 4,
+        lineStyle: { width: 2.2, color: color },
+        itemStyle: { color: color },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(139,92,246,0.22)' },
+            { offset: 1, color: 'rgba(139,92,246,0.02)' }
+          ])
+        },
+        markLine: {
+          silent: true, symbol: 'none',
+          data: [{ yAxis: 30, lineStyle: { color: '#dc2626', type: 'dashed', width: 1.4 }, label: { formatter: '高位 30', color: '#dc2626', fontSize: 10, position: 'insideEndTop' } }]
+        },
+        z: 3
+      }
+    ],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
+      formatter: params => {
+        const p = params[0];
+        return `<b style="color:#f3f4f6">${p.axisValue}</b><br/><span style="color:${color}">●</span> VKOSPI: <b style="color:#f3f4f6">${p.value != null ? Number(p.value).toFixed(1) : '-'}</b>`;
+      },
+      confine: true,
+      backgroundColor: 'rgba(17,24,39,0.95)',
+      borderColor: '#374151',
+      borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 12 },
+      extraCssText: 'border-radius:8px; padding:8px 12px;'
+    },
+    animationDuration: 600
+  };
 }
 
 function renderKoreaTrendDimensions(latest) {
@@ -1279,12 +1461,11 @@ function parseThresholds(thresholds) {
 
 function toggleChartRange(key, btn) {
   if (key === 'investor_deposits') {
-    const amountDom = document.getElementById('chart-korea-investor_deposits-amount');
     const r2TrendDom = document.getElementById('chart-korea-investor_deposits-r2trend');
-    if (!amountDom || !amountDom._chartInstance || !amountDom._chartFullData) return;
+    if (!r2TrendDom || !r2TrendDom._chartInstance || !r2TrendDom._chartFullData) return;
 
     const isExpanded = btn.dataset.expanded === 'true';
-    const { deposits, margin, etf, col } = amountDom._chartFullData;
+    const { deposits, margin, etf, col } = r2TrendDom._chartFullData;
 
     const filter = isExpanded
       ? (h => h.date.startsWith('2026') || h.date.startsWith('2025'))
@@ -1293,7 +1474,6 @@ function toggleChartRange(key, btn) {
     const depHist = deposits.history.filter(filter);
     const marginHist = (margin?.history || []).filter(filter);
     const colHist = (col || []).filter(filter);
-    const etfHist = (etf?.history || []).filter(filter);
 
     if (isExpanded) {
       btn.textContent = '查看更多 ▾';
@@ -1303,10 +1483,7 @@ function toggleChartRange(key, btn) {
       btn.dataset.expanded = 'true';
     }
 
-    amountDom._chartInstance.setOption(buildDepositsAmountOption(depHist, marginHist, colHist, etfHist, deposits.unit), true);
-    if (r2TrendDom && r2TrendDom._chartInstance) {
-      r2TrendDom._chartInstance.setOption(buildR2TrendOption(depHist, marginHist, deposits.unit), true);
-    }
+    r2TrendDom._chartInstance.setOption(buildR2TrendOption(depHist, marginHist, colHist, deposits.unit), true);
     return;
   }
 
@@ -1339,7 +1516,9 @@ function handleResize() {
 function createLeveragedEtfChart(data) {
   const dom = document.getElementById('chart-leveraged-etf');
   if (!dom || !window.echarts) return;
-  if (!data.history || data.history.length === 0) {
+  // 起始日期固定为 2026-01-01（胖丁偏好）
+  const history = (data.history || []).filter(h => h.date >= '2026-01-01');
+  if (history.length === 0) {
     dom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:12px;">暂无历史数据</div>';
     return;
   }
@@ -1348,10 +1527,10 @@ function createLeveragedEtfChart(data) {
   const peak = data.peak_value || 68;
   const fair = data.fair_value || 24.5;
 
-  const defaultHistory = data.history.filter(h => h.date >= '2026-01-01');
-  chart.setOption(buildLeveragedEtfOption(defaultHistory, peak, fair, data.unit));
+  // 默认全量（自 2026-01-01 起）展示，不再折叠（胖丁偏好：杠杆ETF累积净流入图不要"查看更多"）
+  chart.setOption(buildLeveragedEtfOption(history, peak, fair, data.unit));
 
-  dom._chartFullData = data;
+  dom._chartFullData = { ...data, history };
   dom._chartInstance = chart;
   charts.push(chart);
 }
@@ -1413,10 +1592,10 @@ function buildLeveragedEtfOption(history, peak, fair, unit) {
       show: true,
       top: 0,
       right: 10,
-      textStyle: { fontSize: 11, color: '#9ca3af' },
       itemWidth: 14,
       itemHeight: 8,
-      data: ['cumFlow']
+      data: [{ name: 'cumFlow', textStyle: { color: '#60a5fa' } }],
+      textStyle: { fontSize: 11 }
     },
     tooltip: {
       trigger: 'axis',
@@ -1450,28 +1629,14 @@ function createDepositsR2Chart(depositsData, marginData, etfData) {
   const defaultCol = colHistory.filter(defaultFilter);
   const defaultEtf = (etfData?.history || []).filter(defaultFilter);
 
-  // 上图：绝对额
-  const amountDom = document.getElementById('chart-korea-investor_deposits-amount');
-  if (amountDom && window.echarts) {
-    if (!depositsData.history || !depositsData.history.length) {
-      amountDom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:12px;">暂无历史数据</div>';
-    } else {
-      const amountChart = echarts.init(amountDom);
-      amountChart.setOption(buildDepositsAmountOption(defaultDep, defaultMargin, defaultCol, defaultEtf, depositsData.unit));
-      amountDom._chartFullData = full;
-      amountDom._chartInstance = amountChart;
-      charts.push(amountChart);
-    }
-  }
-
-  // 下图：R2 趋势图（R2% + 存管金 + 融资余额，双轴）
+  // 图：R2 趋势图（R2% + 存管金 + 融资余额 + 证券抵押，左轴金额、右轴 R2%）
   const r2TrendDom = document.getElementById('chart-korea-investor_deposits-r2trend');
   if (r2TrendDom && window.echarts) {
     if (!depositsData.history || !depositsData.history.length) {
       r2TrendDom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:12px;">暂无历史数据</div>';
     } else {
       const r2TrendChart = echarts.init(r2TrendDom);
-      r2TrendChart.setOption(buildR2TrendOption(defaultDep, defaultMargin, depositsData.unit));
+      r2TrendChart.setOption(buildR2TrendOption(defaultDep, defaultMargin, defaultCol, depositsData.unit));
       r2TrendDom._chartFullData = full;
       r2TrendDom._chartInstance = r2TrendChart;
       charts.push(r2TrendChart);
@@ -1479,15 +1644,13 @@ function createDepositsR2Chart(depositsData, marginData, etfData) {
   }
 }
 
-function buildDepositsAmountOption(depHistory, marginHistory, colHistory, etfHistory, unit) {
+function buildR2TrendOption(depHistory, marginHistory, colHistory, unit) {
   const depMap = {};
   depHistory.forEach(h => { depMap[h.date] = h.value; });
   const marginMap = {};
   marginHistory.forEach(h => { marginMap[h.date] = h.value; });
   const colMap = {};
-  colHistory.forEach(h => { colMap[h.date] = h.value; });
-  const etfMap = {};
-  etfHistory.forEach(h => { etfMap[h.date] = h.value; });
+  (colHistory || []).forEach(h => { colMap[h.date] = h.value; });
 
   const dates = depHistory
     .filter(h => marginMap[h.date] != null)
@@ -1496,155 +1659,12 @@ function buildDepositsAmountOption(depHistory, marginHistory, colHistory, etfHis
   const depValues = dates.map(d => depMap[d]);
   const finValues = dates.map(d => marginMap[d]);
   const colValues = dates.map(d => (colMap[d] != null ? colMap[d] : null));
-  const etfValues = dates.map(d => (etfMap[d] != null ? etfMap[d] : null));
-  const totalValues = dates.map((_, i) => {
-    const f = finValues[i] ?? 0;
-    const c = colValues[i] ?? 0;
-    const e = etfValues[i] ?? 0;
-    return (f + c + e) || null;
-  });
-
-  const chartDates = formatChartDates(dates.map(d => ({ date: d })));
-  const allNumbers = ([]).concat(depValues, finValues.filter(v=>v!=null), colValues.filter(v=>v!=null), etfValues.filter(v=>v!=null), totalValues.filter(v=>v!=null));
-  const yMin = Math.max(0, Math.floor(Math.min(...allNumbers) * 0.85));
-  const yMax = Math.ceil(Math.max(...allNumbers) * 1.08);
-
-  return {
-    grid: { left: 56, right: 24, top: 54, bottom: 28 },
-    legend: {
-      data: ['存管金','融资余额','证券抵押','杠杆ETF内嵌','杠杆合计（融+抵+ETF）'],
-      top: 4,
-      left: 'center',
-      type: 'scroll',
-      textStyle: { fontSize: 11, color: '#78716c' },
-      itemWidth: 14,
-      itemHeight: 8,
-      itemGap: 18
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
-      formatter: params => {
-        let html = `<b style="color:#f3f4f6">${params[0].axisValue}</b>`;
-        html += '<br/><span style="color:#9ca3af;font-size:11px;">单位：万亿韩元</span>';
-        params.forEach(p => {
-          if (p.value != null) {
-            html += `<br/><span style="color:${p.color}">●</span> ${p.seriesName}: <b style="color:#f3f4f6">${Number(p.value).toFixed(1)}</b>`;
-          }
-        });
-        return html;
-      },
-      confine: true,
-      backgroundColor: 'rgba(17, 24, 39, 0.95)',
-      borderColor: '#374151',
-      borderWidth: 1,
-      textStyle: { color: '#d1d5db', fontSize: 12 },
-      extraCssText: 'border-radius: 8px; padding: 8px 12px;'
-    },
-    xAxis: {
-      type: 'category',
-      data: chartDates,
-      boundaryGap: false,
-      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(chartDates.length / 7) },
-      axisLine: { lineStyle: { color: '#d6d3d1' } },
-      axisTick: { show: false }
-    },
-    yAxis: {
-      type: 'value',
-      name: unit || '万亿韩元',
-      nameTextStyle: { fontSize: 11, color: '#6b7280', padding: [0, 0, 0, -4] },
-      axisLabel: { fontSize: 10, color: '#78716c' },
-      axisLine: { show: false },
-      splitLine: { lineStyle: { color: '#e7e5e4', type: 'dashed' } },
-      min: yMin,
-      max: yMax
-    },
-    series: [
-      {
-        name: '存管金',
-        type: 'line',
-        data: depValues,
-        smooth: true,
-        symbol: 'none',
-        lineStyle: { width: 2.6, color: '#14b8a6' },
-        itemStyle: { color: '#14b8a6' },
-        z: 3
-      },
-      {
-        name: '融资余额',
-        type: 'line',
-        data: finValues,
-        smooth: true,
-        symbol: 'none',
-        lineStyle: { width: 2.2, color: '#ec4899' },
-        itemStyle: { color: '#ec4899' },
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(236,72,153,0.20)' },
-            { offset: 1, color: 'rgba(236,72,153,0.00)' }
-          ])
-        },
-        z: 3
-      },
-      {
-        name: '证券抵押',
-        type: 'line',
-        data: colValues,
-        smooth: true,
-        symbol: 'none',
-        lineStyle: { width: 2.2, color: '#a855f7' },
-        itemStyle: { color: '#a855f7' },
-        z: 3
-      },
-      {
-        name: '杠杆ETF内嵌',
-        type: 'line',
-        data: etfValues,
-        smooth: true,
-        symbol: 'none',
-        lineStyle: { width: 2.2, color: '#3b82f6' },
-        itemStyle: { color: '#3b82f6' },
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(59,130,246,0.22)' },
-            { offset: 1, color: 'rgba(59,130,246,0.00)' }
-          ])
-        },
-        z: 3
-      },
-      {
-        name: '杠杆合计（融+抵+ETF）',
-        type: 'line',
-        data: totalValues,
-        smooth: true,
-        symbol: 'none',
-        lineStyle: { width: 2.4, color: '#f97316', type: 'solid' },
-        itemStyle: { color: '#f97316' },
-        z: 3
-      }
-    ],
-    animationDuration: 600
-  };
-}
-
-function buildR2TrendOption(depHistory, marginHistory, unit) {
-  const depMap = {};
-  depHistory.forEach(h => { depMap[h.date] = h.value; });
-  const marginMap = {};
-  marginHistory.forEach(h => { marginMap[h.date] = h.value; });
-
-  const dates = depHistory
-    .filter(h => marginMap[h.date] != null)
-    .map(h => h.date);
-
-  const depValues = dates.map(d => depMap[d]);
-  const finValues = dates.map(d => marginMap[d]);
   const r2Values = dates.map((_, i) => depValues[i] ? (finValues[i] / depValues[i] * 100) : null);
 
   const chartDates = formatChartDates(dates.map(d => ({ date: d })));
 
-  // Left axis: 万亿韩元 (存管金 + 融资余额)
-  const allLeft = [].concat(depValues, finValues).filter(v => v != null);
+  // Left axis: 万亿韩元 (存管金 + 融资余额 + 证券抵押)
+  const allLeft = [].concat(depValues, finValues, colValues).filter(v => v != null);
   const leftMin = Math.max(0, Math.floor(Math.min(...allLeft) * 0.9));
   const leftMax = Math.ceil(Math.max(...allLeft) * 1.08);
 
@@ -1656,13 +1676,18 @@ function buildR2TrendOption(depHistory, marginHistory, unit) {
   return {
     grid: { left: 56, right: 60, top: 48, bottom: 28 },
     legend: {
-      data: ['存管金', '融资余额', 'R2'],
+      data: [
+        { name: '存管金', textStyle: { color: '#14b8a6' } },
+        { name: '融资余额', textStyle: { color: '#3b82f6' } },
+        { name: '证券抵押', textStyle: { color: '#a855f7' } },
+        { name: 'R2', textStyle: { color: '#ec4899' } }
+      ],
       top: 4,
       left: 'center',
-      textStyle: { fontSize: 11, color: '#78716c' },
       itemWidth: 14,
       itemHeight: 8,
-      itemGap: 20
+      itemGap: 20,
+      textStyle: { fontSize: 11 }
     },
     tooltip: {
       trigger: 'axis',
@@ -1750,6 +1775,23 @@ function buildR2TrendOption(depHistory, marginHistory, unit) {
         z: 3
       },
       {
+        name: '证券抵押',
+        type: 'line',
+        yAxisIndex: 0,
+        data: colValues,
+        smooth: true,
+        symbol: 'none',
+        lineStyle: { width: 2.2, color: '#a855f7' },
+        itemStyle: { color: '#a855f7' },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(168,85,247,0.18)' },
+            { offset: 1, color: 'rgba(168,85,247,0.00)' }
+          ])
+        },
+        z: 3
+      },
+      {
         name: 'R2',
         type: 'line',
         yAxisIndex: 1,
@@ -1793,14 +1835,12 @@ function toggleTrendChartRange(key, btn) {
 async function init() {
   const loaded = await loadData();
   if (!loaded) return;
-  const { latest, signals, aum7709 } = loaded;
+  const { latest, signals, aum7709, aum7747 } = loaded;
   renderHeader(latest);
-  renderKoreaLights(signals, latest, aum7709);
+  renderKoreaLights(signals, latest, aum7709, aum7747);
   renderKoreaSummary(signals);
-  renderKoreaDimensions(latest, signals);
-  render7709Charts(aum7709);
+  renderKoreaDimensions(latest, signals, aum7709, aum7747);
   renderKoreaTrendDimensions(latest);
-  renderAum7709(aum7709);
   window.addEventListener('resize', handleResize);
 }
 
@@ -1808,45 +1848,6 @@ init();
 
 // 7709 AUM 展示用：港币(HKD)→韩元(KRW) 近似固定汇率（标注"约"，如需精确改此常数）
 const HKD_TO_KRW = 175;
-
-function renderAum7709(history) {
-  const grid = document.getElementById('aum-7709-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  if (!history || history.length === 0) {
-    grid.innerHTML = '<div class="dim-card"><div class="dim-note">暂无 7709 AUM 数据</div></div>';
-    return;
-  }
-  const latest = history[history.length - 1];
-  const first = history[0];
-  const prev = history.length >= 2 ? history[history.length - 2] : null;
-  const peak = history.reduce((m, h) => (h.aum_usd > m.aum_usd ? h : m), history[0]);
-  const yi = v => v / 1e8;
-  const peakDropPct = peak.aum_usd > 0 ? (latest.aum_usd - peak.aum_usd) / peak.aum_usd * 100 : 0;
-  const dodPct = prev && prev.aum_usd ? (latest.aum_usd - prev.aum_usd) / prev.aum_usd * 100 : 0;
-  const card = document.createElement('div');
-  card.className = 'dim-card aum-7709-card';
-  card.innerHTML = `
-    <div class="dim-card-header">
-      <div>
-        <div class="dim-card-title">7709 · CSOP SK Hynix 2x 杠杆 ETF</div>
-        <div class="dim-card-sub">Asset Under Management (AUM) · 韩元计价(约) · 港交所披露易每日披露</div>
-      </div>
-      <div class="dim-badge green">
-        <div class="dim-badge-dot"></div>
-        <span>追踪中</span>
-      </div>
-    </div>
-    <div class="dim-value">${(latest.aum_usd * HKD_TO_KRW / 1e8).toFixed(0)}<span class="dim-value-unit">亿韩元</span></div>
-    <div class="aum-submetrics">
-      <span class="aum-sub">从峰值回落 <b class="${peakDropPct >= 0 ? 'pos' : 'neg'}">${peakDropPct >= 0 ? '+' : ''}${peakDropPct.toFixed(1)}%</b></span>
-      <span class="aum-sub">日环比 <b class="${dodPct >= 0 ? 'pos' : 'neg'}">${dodPct >= 0 ? '+' : ''}${dodPct.toFixed(1)}%</b></span>
-    </div>
-    <div class="dim-note">截至 ${latest.date} · 份额 ${(latest.units / 1e8).toFixed(2)} 亿份 · NAV ${latest.nav} ${latest.nav_ccy} · 溢价 ${latest.premium}%</div>
-    <div class="dim-note">峰值 ${(peak.aum_usd * HKD_TO_KRW / 1e8).toFixed(0)} 亿韩元 (${peak.date}) · 上市首日 ${(first.aum_usd * HKD_TO_KRW / 1e8).toFixed(0)} 亿韩元 (${first.date})</div>
-  `;
-  grid.appendChild(card);
-}
 
 function createCombined7709Chart(history) {
   const dom = document.getElementById('chart-combined-7709');
@@ -1858,9 +1859,12 @@ function createCombined7709Chart(history) {
   const cum = history.map(h => (h.cum_change_pct != null ? +h.cum_change_pct.toFixed(2) : null));
   chart.setOption({
     legend: {
-      data: ['AUM(亿韩元)', '累计涨跌幅%'],
-      textStyle: { color: '#9ca3af', fontSize: 10 },
-      top: 2, right: 8, itemWidth: 14, itemHeight: 8
+      data: [
+        { name: 'AUM(亿韩元)', textStyle: { color: '#60a5fa' } },
+        { name: '累计涨跌幅%', textStyle: { color: '#f472b6' } }
+      ],
+      top: 2, right: 8, itemWidth: 14, itemHeight: 8,
+      textStyle: { fontSize: 11 }
     },
     grid: { left: 52, right: 46, top: 34, bottom: 30 },
     xAxis: {
@@ -1937,7 +1941,11 @@ function createPremium7709Chart(history) {
   const prem = history.map(h => (h.premium != null ? +h.premium.toFixed(2) : null));
   chart.setOption({
     grid: { left: 46, right: 16, top: 30, bottom: 30 },
-    legend: { data: ['每日溢价率%'], textStyle: { color: '#9ca3af', fontSize: 10 }, top: 2, right: 8, itemWidth: 14, itemHeight: 8 },
+    legend: {
+      data: [{ name: '每日溢价率%', textStyle: { color: '#c084fc' } }],
+      top: 2, right: 8, itemWidth: 14, itemHeight: 8,
+      textStyle: { fontSize: 11 }
+    },
     xAxis: {
       type: 'category', data: dates, boundaryGap: false,
       axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
@@ -1977,30 +1985,365 @@ function createPremium7709Chart(history) {
   charts.push(chart);
 }
 
-// 7709 两张图并排：合并图（AUM+累计）在左，溢价率在右；显示在散户总杠杆水位（investor_deposits）下方
-function render7709Charts(history) {
-  const box = document.getElementById('korea-7709-charts');
-  if (!box) return;
-  box.innerHTML = '';
+// 7709 图表：第一行 合并图(AUM+累计) | 每日溢价率；第二行 份额(亿份) | 杠杆ETF累积净流入
+// 显示在散户总杠杆水位（investor_deposits）卡正下方
+function render7709Charts(grid, history, etfData) {
+  if (!grid) return;
+  // 移除旧的（避免重复）
+  const old = grid.querySelector(':scope > .korea-7709-charts');
+  if (old) old.remove();
   if (!history || history.length === 0) {
-    box.innerHTML = '<div class="dim-note">暂无 7709 图表数据</div>';
+    grid.appendChild(Object.assign(document.createElement('div'), {
+      className: 'korea-7709-charts',
+      innerHTML: '<div class="dim-note">暂无 7709 图表数据</div>'
+    }));
     return;
   }
   const wrap = document.createElement('div');
-  wrap.className = 'korea-7709-charts-inner';
+  wrap.className = 'korea-7709-charts';
   wrap.innerHTML = `
-    <div class="korea-7709-chart-col">
-      <div class="korea-7709-chart-title">7709 · AUM（亿韩元·约）与累计涨跌幅（%）</div>
-      <div class="dim-chart" id="chart-combined-7709" style="height:300px;"></div>
-    </div>
-    <div class="korea-7709-chart-col">
-      <div class="korea-7709-chart-title">7709 · 每日溢价率（%）</div>
-      <div class="dim-chart" id="chart-premium-7709" style="height:300px;"></div>
+    <div class="korea-7709-charts-section-title">7709 · CSOP SK Hynix 2x 杠杆 ETF · 跟踪曲线</div>
+    <div class="korea-7709-charts-inner">
+      <div class="korea-7709-chart-col">
+        <div class="korea-7709-chart-title">AUM（亿韩元·约）与累计涨跌幅（%）</div>
+        <div class="dim-chart" id="chart-combined-7709" style="height:300px;"></div>
+      </div>
+      <div class="korea-7709-chart-col">
+        <div class="korea-7709-chart-title">每日溢价率（%）</div>
+        <div class="dim-chart" id="chart-premium-7709" style="height:300px;"></div>
+      </div>
+      <div class="korea-7709-chart-col">
+        <div class="korea-7709-chart-title">份额（亿份）</div>
+        <div class="dim-chart" id="chart-units-7709" style="height:300px;"></div>
+      </div>
     </div>
   `;
-  box.appendChild(wrap);
+  grid.appendChild(wrap);
   setTimeout(() => {
     createCombined7709Chart(history);
     createPremium7709Chart(history);
+    createUnits7709Chart(history);
   }, 80);
+}
+
+// 7709 份额（units）折线图，单位亿份
+function createUnits7709Chart(history) {
+  const dom = document.getElementById('chart-units-7709');
+  if (!dom || !window.echarts) return;
+  const chart = echarts.init(dom);
+  const dates = formatChartDates(history);
+  const unitsYi = history.map(h => +(h.units / 1e8).toFixed(2));
+  const peakVal = Math.max(...unitsYi);
+  chart.setOption({
+    grid: { left: 46, right: 16, top: 30, bottom: 30 },
+    legend: {
+      data: [{ name: '份额(亿份)', textStyle: { color: '#f59e0b' } }],
+      top: 2, right: 8, itemWidth: 14, itemHeight: 8,
+      textStyle: { fontSize: 11 }
+    },
+    xAxis: {
+      type: 'category', data: dates, boundaryGap: false,
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value', name: '亿份', scale: true,
+      nameTextStyle: { fontSize: 10, color: '#f59e0b' },
+      axisLabel: { fontSize: 10, color: '#f59e0b' },
+      axisLine: { show: false }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
+    },
+    series: [{
+      name: '份额(亿份)', type: 'line', data: unitsYi, smooth: true, symbol: 'none',
+      lineStyle: { width: 1.8, color: '#f59e0b' },
+      areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: 'rgba(245,158,11,0.20)' },
+        { offset: 1, color: 'rgba(245,158,11,0.01)' }
+      ]) },
+      markLine: { silent: true, symbol: 'none',
+        data: [{ yAxis: peakVal, lineStyle: { color: '#f59e0b', type: 'dashed', width: 1.2 },
+          label: { formatter: '峰值 ' + peakVal.toFixed(2) + '亿份', color: '#f59e0b', fontSize: 10, position: 'insideEndTop' } }],
+        z: 2 },
+      z: 1
+    }],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
+      formatter: params => {
+        const i = params[0].dataIndex; const h = history[i];
+        const u = h.units;
+        return `${h.date}<br/>份额: <b style="color:#f59e0b">${u != null ? (u / 1e8).toFixed(2) : '-'}</b> 亿份`;
+      },
+      confine: true, backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 12 }, extraCssText: 'border-radius:6px;padding:4px 10px;'
+    },
+    animationDuration: 600
+  });
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+// ===== 7747（CSOP Samsung Electronics 2x）图表，完全镜像 7709 结构与配色（区分色）=====
+// 配色：AUM 青 #22d3ee / 累计涨跌幅 玫红 #fb7185 / 溢价率 靛 #818cf8 / 份额 青柠 #84cc16
+
+// 7747 图表区块：第一行 合并图(AUM+累计) | 每日溢价率；第二行 份额(亿份) | 杠杆ETF累积净流入
+function render7747Charts(grid, history, etfData) {
+  if (!grid) return;
+  const old = grid.querySelector(':scope > .korea-7747-charts');
+  if (old) old.remove();
+  if (!history || history.length === 0) {
+    grid.appendChild(Object.assign(document.createElement('div'), {
+      className: 'korea-7747-charts',
+      innerHTML: '<div class="dim-note">暂无 7747 图表数据</div>'
+    }));
+    return;
+  }
+  const wrap = document.createElement('div');
+  wrap.className = 'korea-7747-charts';
+  wrap.innerHTML = `
+    <div class="korea-7709-charts-section-title">7747 · CSOP Samsung Electronics 2x 杠杆 ETF · 跟踪曲线</div>
+    <div class="korea-7709-charts-inner">
+      <div class="korea-7709-chart-col">
+        <div class="korea-7709-chart-title">AUM（亿韩元·约）与累计涨跌幅（%）</div>
+        <div class="dim-chart" id="chart-combined-7747" style="height:300px;"></div>
+      </div>
+      <div class="korea-7709-chart-col">
+        <div class="korea-7709-chart-title">每日溢价率（%）</div>
+        <div class="dim-chart" id="chart-premium-7747" style="height:300px;"></div>
+      </div>
+      <div class="korea-7709-chart-col">
+        <div class="korea-7709-chart-title">份额（亿份）</div>
+        <div class="dim-chart" id="chart-units-7747" style="height:300px;"></div>
+      </div>
+    </div>
+  `;
+  grid.appendChild(wrap);
+  setTimeout(() => {
+    createCombined7747Chart(history);
+    createPremium7747Chart(history);
+    createUnits7747Chart(history);
+  }, 90);
+}
+
+function createCombined7747Chart(history) {
+  const dom = document.getElementById('chart-combined-7747');
+  if (!dom || !window.echarts) return;
+  const chart = echarts.init(dom);
+  const dates = formatChartDates(history);
+  const aumKRW = history.map(h => +(h.aum_usd * HKD_TO_KRW / 1e8).toFixed(2));
+  const peakVal = Math.max(...aumKRW);
+  const cum = history.map(h => (h.cum_change_pct != null ? +h.cum_change_pct.toFixed(2) : null));
+  chart.setOption({
+    legend: {
+      data: [
+        { name: 'AUM(亿韩元)', textStyle: { color: '#22d3ee' } },
+        { name: '累计涨跌幅%', textStyle: { color: '#fb7185' } }
+      ],
+      top: 2, right: 8, itemWidth: 14, itemHeight: 8,
+      textStyle: { fontSize: 11 }
+    },
+    grid: { left: 52, right: 46, top: 34, bottom: 30 },
+    xAxis: {
+      type: 'category', data: dates, boundaryGap: false,
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
+    },
+    yAxis: [
+      {
+        type: 'value', name: '亿韩元', scale: true, position: 'left',
+        nameTextStyle: { fontSize: 10, color: '#22d3ee' },
+        axisLabel: { fontSize: 10, color: '#22d3ee' },
+        axisLine: { show: false }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
+      },
+      {
+        type: 'value', name: '%', scale: true, position: 'right', min: 0,
+        nameTextStyle: { fontSize: 10, color: '#c084fc' },
+        axisLabel: { fontSize: 10, color: '#c084fc' },
+        axisLine: { show: false }, splitLine: { show: false }
+      }
+    ],
+    series: [
+      {
+        name: 'AUM(亿韩元)', type: 'line', yAxisIndex: 0, data: aumKRW, smooth: true, symbol: 'none',
+        lineStyle: { width: 2.2, color: '#22d3ee' },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: 'rgba(34,211,238,0.28)' },
+          { offset: 1, color: 'rgba(34,211,238,0.02)' }
+        ]) },
+        markLine: {
+          silent: true, symbol: 'none',
+          data: [{ yAxis: peakVal, lineStyle: { color: '#84cc16', type: 'dashed', width: 1.5 },
+            label: { formatter: '峰值 ' + peakVal.toFixed(0) + '亿', color: '#84cc16', fontSize: 10, position: 'insideEndTop' } }],
+          z: 2
+        },
+        z: 1
+      },
+      {
+        name: '累计涨跌幅%', type: 'line', yAxisIndex: 1, data: cum, smooth: true, symbol: 'none',
+        lineStyle: { width: 1.6, color: '#fb7185' },
+        z: 3
+      }
+    ],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
+      formatter: params => {
+        const i = params[0].dataIndex; const h = history[i];
+        const aumV = aumKRW[i];
+        const v = h.cum_change_pct; const dv = h.daily_change_pct;
+        return `${h.date}<br/>`
+          + `AUM: <b>${aumV != null ? aumV.toFixed(0) : '-'}</b> 亿韩元(约)<br/>`
+          + `累计涨跌幅: <b style="color:#fb7185">${v != null ? (v >= 0 ? '+' : '') + v.toFixed(2) : '-'}%</b><br/>`
+          + `当日涨跌: ${dv != null ? (dv >= 0 ? '+' : '') + dv.toFixed(2) + '%' : '-'}<br/>`
+          + `收市价: ${h.close_price != null ? h.close_price.toFixed(2) : '-'} · 份额: ${(h.units / 1e8).toFixed(2)} 亿份`;
+      },
+      confine: true,
+      backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 12 },
+      extraCssText: 'border-radius:6px;padding:4px 10px;'
+    },
+    animationDuration: 600
+  });
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+function createPremium7747Chart(history) {
+  const dom = document.getElementById('chart-premium-7747');
+  if (!dom || !window.echarts) return;
+  const chart = echarts.init(dom);
+  const dates = formatChartDates(history);
+  const prem = history.map(h => (h.premium != null ? +h.premium.toFixed(2) : null));
+  chart.setOption({
+    grid: { left: 46, right: 16, top: 30, bottom: 30 },
+    legend: {
+      data: [{ name: '每日溢价率%', textStyle: { color: '#818cf8' } }],
+      top: 2, right: 8, itemWidth: 14, itemHeight: 8,
+      textStyle: { fontSize: 11 }
+    },
+    xAxis: {
+      type: 'category', data: dates, boundaryGap: false,
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value', name: '%', scale: true,
+      nameTextStyle: { fontSize: 10, color: '#818cf8' },
+      axisLabel: { fontSize: 10, color: '#818cf8' },
+      axisLine: { show: false }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
+    },
+    series: [{
+      name: '每日溢价率%', type: 'line', data: prem, smooth: true, symbol: 'none',
+      lineStyle: { width: 1.6, color: '#818cf8' },
+      areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: 'rgba(129,140,248,0.18)' },
+        { offset: 1, color: 'rgba(129,140,248,0.01)' }
+      ]) },
+      markLine: { silent: true, symbol: 'none',
+        data: [{ yAxis: 0, lineStyle: { color: '#6b7280', type: 'solid', width: 1 } }], z: 2 },
+      z: 1
+    }],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
+      formatter: params => {
+        const i = params[0].dataIndex; const h = history[i];
+        const pv = h.premium;
+        return `${h.date}<br/>每日溢价率: <b style="color:#818cf8">${pv != null ? pv.toFixed(2) : '-'}%</b>`;
+      },
+      confine: true, backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 12 }, extraCssText: 'border-radius:6px;padding:4px 10px;'
+    },
+    animationDuration: 600
+  });
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+function createUnits7747Chart(history) {
+  const dom = document.getElementById('chart-units-7747');
+  if (!dom || !window.echarts) return;
+  const chart = echarts.init(dom);
+  const dates = formatChartDates(history);
+  const unitsYi = history.map(h => +(h.units / 1e8).toFixed(2));
+  const peakVal = Math.max(...unitsYi);
+  chart.setOption({
+    grid: { left: 46, right: 16, top: 30, bottom: 30 },
+    legend: {
+      data: [{ name: '份额(亿份)', textStyle: { color: '#84cc16' } }],
+      top: 2, right: 8, itemWidth: 14, itemHeight: 8,
+      textStyle: { fontSize: 11 }
+    },
+    xAxis: {
+      type: 'category', data: dates, boundaryGap: false,
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value', name: '亿份', scale: true,
+      nameTextStyle: { fontSize: 10, color: '#84cc16' },
+      axisLabel: { fontSize: 10, color: '#84cc16' },
+      axisLine: { show: false }, splitLine: { lineStyle: { color: '#374151', type: 'dashed' } }
+    },
+    series: [{
+      name: '份额(亿份)', type: 'line', data: unitsYi, smooth: true, symbol: 'none',
+      lineStyle: { width: 1.8, color: '#84cc16' },
+      areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: 'rgba(132,204,22,0.20)' },
+        { offset: 1, color: 'rgba(132,204,22,0.01)' }
+      ]) },
+      markLine: { silent: true, symbol: 'none',
+        data: [{ yAxis: peakVal, lineStyle: { color: '#84cc16', type: 'dashed', width: 1.2 },
+          label: { formatter: '峰值 ' + peakVal.toFixed(2) + '亿份', color: '#84cc16', fontSize: 10, position: 'insideEndTop' } }],
+        z: 2 },
+      z: 1
+    }],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'line', snap: true, lineStyle: { color: '#6b7280', type: 'dashed' } },
+      formatter: params => {
+        const i = params[0].dataIndex; const h = history[i];
+        const u = h.units;
+        return `${h.date}<br/>份额: <b style="color:#84cc16">${u != null ? (u / 1e8).toFixed(2) : '-'}</b> 亿份`;
+      },
+      confine: true, backgroundColor: 'rgba(17,24,39,0.92)', borderColor: '#374151', borderWidth: 1,
+      textStyle: { color: '#d1d5db', fontSize: 12 }, extraCssText: 'border-radius:6px;padding:4px 10px;'
+    },
+    animationDuration: 600
+  });
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+// 7747 区复用杠杆ETF累积净流入图（与 leveraged_etf 卡片同一份数据，仅展示位置不同）
+function createCumFlow7747Chart(etfData) {
+  const dom = document.getElementById('chart-cumflow-7747');
+  if (!dom || !window.echarts || !etfData) return;
+  if (!etfData.history || etfData.history.length === 0) {
+    dom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:12px;">暂无历史数据</div>';
+    return;
+  }
+  const chart = echarts.init(dom);
+  const peak = etfData.peak_value || 68;
+  const fair = etfData.fair_value || 24.5;
+  const defaultHistory = etfData.history.filter(h => h.date >= '2026-01-01');
+  chart.setOption(buildLeveragedEtfOption(defaultHistory, peak, fair, etfData.unit));
+  dom._chartInstance = chart;
+  charts.push(chart);
+}
+
+// 7709 区复用杠杆ETF累积净流入图（与 leveraged_etf 卡片同一份数据，仅展示位置不同）
+function createCumFlow7709Chart(etfData) {
+  const dom = document.getElementById('chart-cumflow-7709');
+  if (!dom || !window.echarts || !etfData) return;
+  if (!etfData.history || etfData.history.length === 0) {
+    dom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:12px;">暂无历史数据</div>';
+    return;
+  }
+  const chart = echarts.init(dom);
+  const peak = etfData.peak_value || 68;
+  const fair = etfData.fair_value || 24.5;
+  const defaultHistory = etfData.history.filter(h => h.date >= '2026-01-01');
+  chart.setOption(buildLeveragedEtfOption(defaultHistory, peak, fair, etfData.unit));
+  dom._chartInstance = chart;
+  charts.push(chart);
 }

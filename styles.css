@@ -133,7 +133,7 @@ body {
   border-color: var(--green-border);
 }
 .light-card.gray {
-  background: var(--gray-bg);
+  background: var(--bg-card);
   border-color: var(--gray-border);
 }
 .light-card.orange {
@@ -390,14 +390,35 @@ body {
   width: 100%;
 }
 
-/* 7709 两张图并排（左：AUM+累计涨跌幅 / 右：每日溢价率），显示在散户总杠杆水位下方 */
-.korea-7709-charts {
+/* 杠杆ETF累积净流入图：纵轴加高（默认 140px 太矮，加长到 340px 让柱形更有层次） */
+#chart-leveraged-etf {
+  height: 340px;
+}
+
+/* 7709 / 7747 图表区块（全宽，下方左右两张并排；7747 复用同一套结构） */
+.korea-7709-charts,
+.korea-7747-charts {
+  grid-column: 1 / -1;
   margin-top: 18px;
+}
+.korea-7709-charts-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #e5e7eb);
+  margin-bottom: 10px;
+  padding-left: 4px;
+  letter-spacing: 0.2px;
 }
 .korea-7709-charts-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
+}
+.korea-7709-chart-col-full {
+  grid-column: 1 / -1;
+}
+@media (max-width: 760px) {
+  .korea-7709-charts-inner { grid-template-columns: 1fr; }
 }
 .korea-7709-chart-col {
   background: rgba(255, 255, 255, 0.02);
@@ -411,19 +432,16 @@ body {
   margin-bottom: 2px;
   padding-left: 4px;
 }
-@media (max-width: 760px) {
-  .korea-7709-charts-inner { grid-template-columns: 1fr; }
-}
 
 .dim-chart.lev-chart-amount,
 .dim-chart.lev-chart-r2trend {
-  height: 260px;
+  height: 320px;
   width: 100%;
 }
 
 .dim-card.lev-thermo-expanded .dim-chart.lev-chart-amount,
 .dim-card.lev-thermo-expanded .dim-chart.lev-chart-r2trend {
-  height: 380px;
+  height: 440px;
 }
 
 .lev-chart-subtitle {
@@ -439,10 +457,31 @@ body {
   border-left-color: #dc2626;
 }
 
-/* 占满整行的卡片（存管金、稳定性） */
-.dim-card.lev-thermo-full,
-.dim-card.stability-card {
+/* 占满整行的卡片（存管金）；stability 与 leveraged_etf 同一行，保持普通列宽 */
+.dim-card.lev-thermo-full {
   grid-column: 1 / -1;
+}
+
+/* 在 dim 区 margin 卡下方追加的 KOSPI/KOSDAQ/VKOSPI 三张白卡：占整行，内部 3 列横排 */
+/* 三张指数白卡（KOSPI/KOSDAQ/VKOSPI）：已并入顶部 korea-lights-grid 作为 15 张之一，
+   在浅灰页面背景上原本太"隐身"（白底+细灰边与 #f5f5f4 撞色），加深边框 + 阴影让它们更醒目 */
+.korea-index-light {
+  border-width: 1.5px !important;
+  border-color: #d6d3d1 !important;       /* stone-300，加深一档 */
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  padding: 14px 8px !important;
+}
+.korea-index-light .light-label {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;           /* 加粗一点方便一眼找到 */
+  color: #44403c !important;
+}
+.korea-index-light .light-dot {
+  width: 11px !important;
+  height: 11px !important;
+  margin: 0 auto 6px !important;
+  background: #a8a29e !important;         /* 灰点加深一点 */
 }
 
 /* —— 杠杆温度计拆解条 —— */

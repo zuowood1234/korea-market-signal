@@ -1,0 +1,38 @@
+name: 7747 AUM 每日更新
+
+on:
+  schedule:
+    # 北京时间 22:00（港股收盘后披露易约 20:30 发布当日 Trading Information）
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update 7747 AUM (incremental)
+        run: python scripts/fetch_7747_aum.py
+
+      - name: Commit and push data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/7747_aum_history.json
+          git diff --cached --quiet && echo "no changes to commit" || ( \
+            git commit -m "auto update 7747 AUM $(date -u +%Y-%m-%d)" && \
+            git push \
+          )

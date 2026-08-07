@@ -5,7 +5,7 @@ const KOREA_DIMENSION_ORDER = ['leverage_14d', 'leverage_1d', 'stability', 'inve
 // 但用户对 dim 卡的展示顺序有独立要求（存管金稳定性放在散户总杠杆水位+7709之后，VKOSPI 卡片放最后）。
 // dim 卡网格改用以下顺序独立渲染，信号灯区保留 KOREA_DIMENSION_ORDER 不变。
 // 注：renderKoreaDimensions 内部遇到 'investor_deposits' 后会强制插入 7709 两图，再走下一项。
-const KOREA_DIM_CARDS_ORDER = ['investor_deposits', 'stability', 'leveraged_etf', 'liquidation', 'liquidation_ratio', 'vkospi', 'margin'];
+const KOREA_DIM_CARDS_ORDER = ['investor_deposits', 'stability', 'leveraged_etf', 'liquidation', 'liquidation_ratio', 'vkospi'];  // 已移除 'margin'（融资余额，韩国信用融资）— 胖丁认为冗余
 
 // T+0 指标（KOSPI/KOSDAQ/VKOSPI，当日收盘价）；其余为 T+1（KOFIA 披露滞后）
 const T0_KEYS = ['kospi', 'kosdaq', 'vkospi'];
@@ -1889,7 +1889,7 @@ function createCombined7709Chart(history) {
     grid: { left: 52, right: 46, top: 34, bottom: 30 },
     xAxis: {
       type: 'category', data: dates, boundaryGap: false,
-      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: 'auto', hideOverlap: true, formatter: v => v.length > 5 ? v.slice(0, 5) : v },
       axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
     },
     yAxis: [
@@ -1968,7 +1968,7 @@ function createPremium7709Chart(history) {
     },
     xAxis: {
       type: 'category', data: dates, boundaryGap: false,
-      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: 'auto', hideOverlap: true, formatter: v => v.length > 5 ? v.slice(0, 5) : v },
       axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
     },
     yAxis: {
@@ -2063,7 +2063,7 @@ function createUnits7709Chart(history) {
     },
     xAxis: {
       type: 'category', data: dates, boundaryGap: false,
-      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: 'auto', hideOverlap: true, formatter: v => v.length > 5 ? v.slice(0, 5) : v },
       axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
     },
     yAxis: {
@@ -2164,7 +2164,7 @@ function createCombined7747Chart(history) {
     grid: { left: 52, right: 46, top: 34, bottom: 30 },
     xAxis: {
       type: 'category', data: dates, boundaryGap: false,
-      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: 'auto', hideOverlap: true, formatter: v => v.length > 5 ? v.slice(0, 5) : v },
       axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
     },
     yAxis: [
@@ -2242,7 +2242,7 @@ function createPremium7747Chart(history) {
     },
     xAxis: {
       type: 'category', data: dates, boundaryGap: false,
-      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: 'auto', hideOverlap: true, formatter: v => v.length > 5 ? v.slice(0, 5) : v },
       axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
     },
     yAxis: {
@@ -2295,7 +2295,7 @@ function createUnits7747Chart(history) {
     },
     xAxis: {
       type: 'category', data: dates, boundaryGap: false,
-      axisLabel: { fontSize: 10, color: '#9ca3af', interval: Math.floor(dates.length / 8) },
+      axisLabel: { fontSize: 10, color: '#9ca3af', interval: 'auto', hideOverlap: true, formatter: v => v.length > 5 ? v.slice(0, 5) : v },
       axisLine: { lineStyle: { color: '#374151' } }, axisTick: { show: false }
     },
     yAxis: {

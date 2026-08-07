@@ -371,23 +371,7 @@ def build_report(latest, signals, aum7709=None, aum7747=None):
             tag = "<60" if score < 60 else "≥60"
             lines.append(f"- {st_icon} **存管金稳定性** (T+1)：{score:.1f} {tag}（{st_label}）\n")
 
-    # 7. 融资余额 + 最高点动态表述（T+1，含日环比）
-    if margin.get("current_value") is not None:
-        mar_val = margin["current_value"]
-        mar_sig = korea_signals.get("signals", {}).get("margin", {})
-        mar_icon = STATUS_ICONS.get(mar_sig.get("status", "gray"), "⚪")
-        lines.append(f"- {mar_icon} **融资余额** (T+1)：{mar_val}万亿韩元{dod_pct(margin_hist)}")
-
-        if margin_hist and len(margin_hist) > 1:
-            ps = peak_status(margin_hist)
-            if ps:
-                if ps["type"] == "up":
-                    lines.append(f"｜融资最高点上升 +{ps['pct']:.1f}%")
-                else:
-                    lines.append(f"｜融资最高点回落 -{ps['pct']:.1f}%")
-        lines.append("\n")
-
-    # 8. 强平金额（T+1，含日环比）
+    # 7. 强平金额（T+1，含日环比）  # 上一项「融资余额」已按胖丁要求从 dim 卡区删除，同步从 Server 酱推送中移除
     liq = korea_latest.get("liquidation", {})
     liq_sig = korea_signals.get("signals", {}).get("liquidation", {})
     if liq.get("current_value") is not None:

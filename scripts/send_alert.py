@@ -391,32 +391,6 @@ def build_report(latest, signals, aum7709=None, aum7747=None):
         dod_s = dod_pct(liq_ratio.get("history", []))
         lines.append(f"- {icon} **强平比例** (T+1)：{val}% {tag}{dod_s}\n")
 
-    # 10. 存管金 & R2（T+1）
-    if deposits.get("current_value") is not None:
-        dep_val = deposits["current_value"]
-        fin_val = margin.get("current_value")
-        col_val = (deposits.get("extra") or {}).get("securities_loan")
-        etf_val = korea_latest.get("leveraged_etf", {}).get("current_value")
-        if dep_val and fin_val is not None and col_val is not None and etf_val is not None:
-            r2_pct = fin_val / dep_val * 100
-            col_pct = col_val / dep_val * 100
-            etf_pct = etf_val / dep_val * 100
-            total_pct = r2_pct + col_pct + etf_pct
-            if total_pct > 75:
-                r2_icon, r2_label = "🔴", "高风险"
-            elif total_pct >= 60:
-                r2_icon, r2_label = "🟡", "警戒"
-            else:
-                r2_icon, r2_label = "🟢", "正常"
-            lines.append(f"- {r2_icon} **存管金 & R2** (T+1)：总占比 {total_pct:.1f}%（融资 {r2_pct:.1f}% · 证券抵押 {col_pct:.1f}% · 杠杆ETF {etf_pct:.1f}%）· {r2_label}\n")
-
-    # 11. 杠杆ETF累计资金净流入（T+1）
-    etf = korea_latest.get("leveraged_etf", {})
-    if etf.get("current_value") is not None:
-        etf_icon = STATUS_ICONS.get(korea_signals.get("signals", {}).get("leveraged_etf", {}).get("status", "gray"), "⚪")
-        etf_unit = etf.get("unit", "")
-        lines.append(f"- {etf_icon} **杠杆ETF累计资金净流入** (T+1)：{etf['current_value']}{etf_unit}\n")
-
     # 12-17. 7709 / 7747 杠杆 ETF 信号（T+0，含今日涨跌 emoji）
     lines.append("\n## 📈 7709 / 7747 杠杆 ETF 信号（T+0）\n")
     for tag, aum in (("7709", aum7709), ("7747", aum7747)):

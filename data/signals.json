@@ -1,13 +1,13 @@
 {
   "date": "2026-09-04",
-  "update_time": "2026-09-04 17:49:45",
+  "update_time": "2026-09-05 01:40:54",
   "korea": {
     "signals": {
       "vkospi": {
-        "status": "yellow",
-        "label": "警戒",
-        "note": "VKOSPI=39.33，正常波动",
-        "current_value": 39.33,
+        "status": "red",
+        "label": "危险",
+        "note": "VKOSPI=77.17，过度恐慌",
+        "current_value": 77.17,
         "unit": "",
         "name": "VKOSPI",
         "subtitle": "韩国波动率指数"
@@ -31,9 +31,9 @@
         "subtitle": "强平÷未收"
       }
     },
-    "red_count": 0,
+    "red_count": 1,
     "green_count": 1,
-    "yellow_count": 2,
+    "yellow_count": 1,
     "gray_count": 0
   }
 }

@@ -1,13 +1,13 @@
 {
-  "date": "2026-09-09",
-  "update_time": "2026-09-10 01:53:17",
+  "date": "2026-09-10",
+  "update_time": "2026-09-10 17:56:13",
   "korea": {
     "signals": {
       "vkospi": {
         "status": "red",
         "label": "危险",
-        "note": "VKOSPI=77.17，过度恐慌",
-        "current_value": 77.17,
+        "note": "VKOSPI=47.28，过度恐慌",
+        "current_value": 47.28,
         "unit": "",
         "name": "VKOSPI",
         "subtitle": "韩国波动率指数"
@@ -15,8 +15,8 @@
       "liquidation": {
         "status": "green",
         "label": "安全",
-        "note": "强平32.4亿韩元，市场稳定",
-        "current_value": 32.4,
+        "note": "强平22.6亿韩元，市场稳定",
+        "current_value": 22.6,
         "unit": "亿韩元",
         "name": "强平金额",
         "subtitle": "韩国信用强平"

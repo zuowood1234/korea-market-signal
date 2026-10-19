@@ -1,13 +1,13 @@
 {
-  "date": "2026-10-16",
-  "update_time": "2026-10-17 02:13:28",
+  "date": "2026-10-19",
+  "update_time": "2026-10-19 19:02:59",
   "korea": {
     "signals": {
       "vkospi": {
         "status": "red",
         "label": "危险",
-        "note": "VKOSPI=77.17，过度恐慌",
-        "current_value": 77.17,
+        "note": "VKOSPI=48.57，过度恐慌",
+        "current_value": 48.57,
         "unit": "",
         "name": "VKOSPI",
         "subtitle": "韩国波动率指数"
@@ -15,8 +15,8 @@
       "liquidation": {
         "status": "red",
         "label": "危险",
-        "note": "强平805亿韩元，强平加剧",
-        "current_value": 805,
+        "note": "强平572.5亿韩元，强平加剧",
+        "current_value": 572.5,
         "unit": "亿韩元",
         "name": "强平金额",
         "subtitle": "韩国信用强平"
@@ -24,8 +24,8 @@
       "liquidation_ratio": {
         "status": "red",
         "label": "危险",
-        "note": "强平比例5.9%，强平比例过高",
-        "current_value": 5.9,
+        "note": "强平比例4.1%，强平比例过高",
+        "current_value": 4.1,
         "unit": "%",
         "name": "强平比例",
         "subtitle": "强平÷未收"

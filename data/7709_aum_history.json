@@ -3610,5 +3610,19 @@
   "close_price": 15.8494,
   "daily_change_pct": 18.9,
   "cum_change_pct": 73.12
+ },
+ {
+  "date": "2026-11-11",
+  "release": "11/11/2026 21:54",
+  "link": "https://www1.hkexnews.hk/listedco/listconews/sehk/2026/1111/2026111101373.xlsx",
+  "nav": 17.6023,
+  "nav_ccy": "HKD",
+  "units": 1377000000.0,
+  "aum_usd": 3089847668.64,
+  "aum_ccy": "USD",
+  "premium": -0.18,
+  "close_price": 17.5706,
+  "daily_change_pct": 10.86,
+  "cum_change_pct": 91.92
  }
 ]

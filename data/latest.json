@@ -1,6 +1,6 @@
 {
   "date": "2026-11-16",
-  "update_time": "2026-11-16 21:53:22",
+  "update_time": "2026-11-17 07:27:17",
   "korea": {
     "vkospi": {
       "name": "VKOSPI",
@@ -326,7 +326,7 @@
       "subtitle": "韩国综合股价指数",
       "unit": "",
       "data_source": "yfinance",
-      "current_value": 5100.5,
+      "current_value": 5290.53,
       "history": [
         {
           "date": "2026-05-18",
@@ -815,20 +815,16 @@
         {
           "date": "2026-11-13",
           "value": 5290.53
-        },
-        {
-          "date": "2026-11-16",
-          "value": 5100.5
         }
       ],
-      "note": "自动抓取 123 条"
+      "note": "自动抓取 122 条"
     },
     "kosdaq": {
       "name": "KOSDAQ",
       "subtitle": "韩国创业板指数",
       "unit": "",
       "data_source": "yfinance",
-      "current_value": 665.65,
+      "current_value": 699.66,
       "history": [
         {
           "date": "2026-05-18",
@@ -1317,13 +1313,9 @@
         {
           "date": "2026-11-13",
           "value": 699.66
-        },
-        {
-          "date": "2026-11-16",
-          "value": 665.65
         }
       ],
-      "note": "自动抓取 123 条"
+      "note": "自动抓取 122 条"
     },
     "margin": {
       "name": "融资余额",
